@@ -108,11 +108,23 @@ public:
 			return AVX_vector(_mm256_mul_pd(v, arg.v));
 		else if constexpr (std::is_same<scalar, float>::value)
 			return AVX_vector(_mm256_mul_ps(v, arg.v));
-		else if constexpr (std::is_integral<scalar>::value && sizeof(scalar) == sizeof(int64_t)) {
-			if constexpr (std::is_signed<scalar>::value)
-				return AVX_vector(_mm256_mul_epi32(v, arg.v));
-			else
-				return AVX_vector(_mm256_mul_epu32(v, arg.v));
+		else if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (std::is_signed<scalar>::value) {
+				if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector(_mm256_mul_epi32(v, arg.v));
+				else if constexpr (sizeof(scalar) == sizeof(int32_t))
+					return AVX_vector(_mm256_mullo_epi32(v, arg.v));
+				else if constexpr (sizeof(scalar) == sizeof(int16_t))
+					return AVX_vector(_mm256_mullo_epi16(v, arg.v));
+				else
+					static_assert(false, "AVX2 : operator* is not defined in given type.");
+			}
+			else {
+				if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector(_mm256_mul_epu32(v, arg.v));
+				else
+					static_assert(false, "AVX2 : operator* is not defined in given type.");
+			}
 		}
 		else
 			static_assert(false, "AVX2 : operator* is not defined in given type.");
@@ -455,7 +467,23 @@ public:
 		else
 			static_assert(false, "AVX2 : mullsub is not defined in given type.");
 	}
-
+	// { this[0] + this[1], arg[0] + arg[1], this[2] + this[3], ... }
+	AVX_vector hadd(const AVX_vector& arg) const{
+		if constexpr (std::is_same<scalar, double>::value)
+			return AVX_vector(_mm256_hadd_pd(v, arg.v));
+		else if constexpr (std::is_same<scalar, float>::value)
+			return AVX_vector(_mm256_hadd_ps(v, arg.v));
+		else if constexpr (std::is_integral<scalar>::value && std::is_signed<scalar>::value) {
+			if constexpr (sizeof(scalar) == sizeof(int16_t))
+				return AVX_vector(_mm256_hadd_epi16(v. arg.v));
+			else if constexpr (sizeof(scalar) == sizeof(int32_t))
+				return AVX_vector(_mm256_hadd_epi32(v, arg.v));
+			else
+				static_assert(false, "AVX2 : hadd is not defined in given type.");
+		}
+		else
+			static_assert(false, "AVX2 : hadd is not defined in given type.");
+	}
 	template<typename cvt>
 	explicit operator AVX_vector<cvt>() const {
 		if constexpr (std::is_same<scalar, float>::value&& std::is_same<cvt, int32_t>::value)
@@ -466,3 +494,31 @@ public:
 			static_assert(false, "AVX2 : type casting is not defined in given type.");
 	}
 };
+
+namespace function {
+	// max(a, b)
+	template<typename Scalar>
+	AVX_vector<Scalar> mulsub(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
+		return a.max(b);
+	}
+	// min(a, b)
+	template<typename Scalar>
+	AVX_vector<Scalar> mulsub(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
+		return a.min(b);
+	}
+	// a * b + c
+	template<typename Scalar>
+	AVX_vector<Scalar> muladd(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b, const AVX_vector<Scalar>& c) {
+		return a.muladd(b, c);
+	}
+	// a * b - c
+	template<typename Scalar>
+	AVX_vector<Scalar> mulsub(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b, const AVX_vector<Scalar>& c) {
+		return a.mulsub(b, c);
+	}
+	// { a[0]+a[1], b[0]+b[1], a[2]+a[3], b[2]+b[3], ...}
+	template<typename Scalar>
+	AVX_vector<Scalar> hadd(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
+		return a.hadd(b);
+	}
+}
