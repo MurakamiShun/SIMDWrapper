@@ -1,4 +1,4 @@
-#include "AVX_wrapper.hpp"
+#include "AVXWrapper.hpp"
 #include <vector>
 #include <chrono>
 #include <iostream>
