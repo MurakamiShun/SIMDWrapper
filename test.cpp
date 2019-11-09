@@ -10,7 +10,7 @@ int main() {
 		AVX_type<float>::vector v2{};
 		auto j = _mm256_add_ps(v1, v2);
 
-		for (int a = 0; a < 10; a++) {
+		for (int a = 0; a < 0; a++) {
 			auto start = std::chrono::system_clock::now();
 			for (int i = 0; i < 100000000; i++) {
 				j = _mm256_add_ps(v1, v2);
@@ -31,7 +31,13 @@ int main() {
 		AVX_vector<float> v2 = 2.2f;
 		AVX_vector<double> d1(1, 4, 5, 4);
 		v2 >> v;
-		AVX_vector<int32_t> t = 1;
+		AVX_vector<int32_t> t;
+		AVX_vector<float> t1(1, 3, -4, 6,0,0,0,0);
+		AVX_vector<float> t2(2, -4, -5, 6,0,0,0,0);
+		auto m1 = t1.max(t2);
+		auto m2 = t1.min(t2);
+		auto f = t1 > t2;
+		auto c = (t1.max(t2) == function::cmp_blend(t1 > t2, t1, t2));
 		auto bo = (t == t).is_all_one();
 		auto b1 = (~(t == t)).is_all_zero();
 		auto f32 = static_cast<AVX_vector<float>>(t);
