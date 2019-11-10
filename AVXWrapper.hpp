@@ -435,7 +435,7 @@ public:
 					_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN))
 				));
 			else
-				static_assert(false, "AVX2 : operator> is not defined in given type.");
+				static_assert(false, "AVX2 : operator< is not defined in given type.");
 		}
 		}
 		else
@@ -697,6 +697,68 @@ public:
 		using cvt_vector = typename AVX_type<Cvt>::vector;
 		return AVX_vector<Cvt>(*reinterpret_cast<const cvt_vector*>(&v));
 	}
+	// (ex. concate(FP64x4,FP64x4) -> FP32x8)
+	auto concat(const AVX_vector& arg) const {
+		if constexpr (std::is_same<scalar, double>::value)
+			return AVX_vector<float>(_mm256_set_m128(_mm256_cvtpd_ps(arg.v), _mm256_cvtpd_ps(v)));
+		else if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (std::is_signed<scalar>::value) {
+				if constexpr (sizeof(scalar) == sizeof(int16_t))
+					return AVX_vector<int8_t>(_mm256_permute4x64_epi64(
+						_mm256_packs_epi16(v, arg.v),
+						216
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int32_t))
+					return AVX_vector<int16_t>(_mm256_permute4x64_epi64(
+						_mm256_packs_epi32(v, arg.v),
+						216
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector<int32_t>(_mm256_sub_epi32(_mm256_permutevar8x32_epi32(_mm256_or_si256(
+						_mm256_and_si256(_mm256_add_epi64(v, _mm256_set1_epi64x(INT32_MAX/2)), _mm256_set1_epi64x(UINT32_MAX)),
+						_mm256_slli_epi64(_mm256_add_epi64(arg.v, _mm256_set1_epi64x(INT32_MAX / 2)), 32)
+					), _mm256_set_epi32(7, 5, 3, 1, 6, 4, 2, 0)), _mm256_set1_epi32(INT32_MAX / 2)));
+				else
+					static_assert(false, "AVX2 : concat is not defined in given type.");
+			}
+			else {
+				if constexpr (sizeof(scalar) == sizeof(int16_t))
+					return AVX_vector<uint8_t>(_mm256_permute4x64_epi64(
+						_mm256_add_epi8(
+							_mm256_packs_epi16(
+								_mm256_sub_epi16(v, _mm256_set1_epi16(UINT8_MAX / 2+1)),
+								_mm256_sub_epi16(arg.v, _mm256_set1_epi16(UINT8_MAX / 2+1))
+							),
+							_mm256_set1_epi8(UINT8_MAX / 2+1)
+						),
+						216
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int32_t))
+					return AVX_vector<uint16_t>(_mm256_permute4x64_epi64(
+						_mm256_add_epi16(
+							_mm256_packs_epi32(
+								_mm256_sub_epi32(v, _mm256_set1_epi32(UINT16_MAX / 2+1)),
+								_mm256_sub_epi32(arg.v, _mm256_set1_epi32(UINT16_MAX / 2+1))
+							),
+							_mm256_set1_epi16(UINT16_MAX / 2+1)
+						),
+						216
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector<uint32_t>(_mm256_permutevar8x32_epi32(
+						_mm256_or_si256(
+							_mm256_and_si256(v, _mm256_set1_epi64x(UINT32_MAX)),
+							_mm256_slli_epi64(arg.v, 32)
+						),
+						_mm256_set_epi32(7, 5, 3, 1, 6, 4, 2, 0)
+					));
+				else
+					static_assert(false, "AVX2 : concat is not defined in given type.");
+			}
+		}
+		else
+			static_assert(false, "AVX2 : concat is not defined in given type.");
+	}
 };
 
 template<typename Scalar>
@@ -747,7 +809,11 @@ namespace function {
 	}
 	// reinterpret cast (data will not change)
 	template<typename Cvt, typename Scalar>
-	AVX_vector<Cvt> reinterpret(AVX_vector<Scalar> arg) {
+	AVX_vector<Cvt> reinterpret(const AVX_vector<Scalar>& arg) {
 		return arg.template reinterpret<Cvt>();
+	}
+	template<typename Scalar>
+	auto concat(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
+		return a.concat(b);
 	}
 }
