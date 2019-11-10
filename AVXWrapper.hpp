@@ -5,6 +5,46 @@
 #include <cstdint>
 #include <tuple>
 #include <array>
+#include <intrin.h>
+#include <bitset>
+#include <vector>
+
+
+class Instruction {
+public:
+	static bool AVX2() { return CPU_ref.AVX2; }
+	static bool AVX() { return CPU_ref.AVX; }
+	static bool FMA() { return CPU_ref.FMA; }
+private:
+	struct InstructionSet {
+		bool AVX2;
+		bool AVX;
+		bool FMA;
+		InstructionSet() {
+			std::vector<std::array<int, 4>> data;
+			std::array<int, 4> cpui;
+			__cpuid(cpui.data(), 0);
+			int ids = cpui[0];
+			for (int i = 0; i < ids; i++) {
+				__cpuidex(cpui.data(), i, 0);
+				data.push_back(cpui);
+			}
+			std::bitset<32> f_1_ECX;
+			if (ids >= 1) {
+				f_1_ECX = data[1][2];
+				AVX = f_1_ECX[28];
+				FMA = f_1_ECX[12];
+			}
+			std::bitset<32> f_7_EBX;
+			if (ids >= 7) {
+				f_7_EBX = data[7][1];
+				AVX2 = f_7_EBX[5];
+			}
+		}
+	};
+
+	static inline InstructionSet CPU_ref;
+};
 
 template<typename Scalar>
 struct AVX_type {
@@ -62,7 +102,7 @@ private:
 
 	class input_iterator {
 	private:
-		std::array<scalar, elements_size> tmp;
+		alignas(32) std::array<scalar, elements_size> tmp;
 		size_t index;
 	public:
 		template<size_t N>
@@ -75,10 +115,8 @@ private:
 		template<size_t N>
 		input_iterator(const AVX_vector& arg, Index<N>) {
 			index = N;
-			if constexpr (N == 0)
-				arg >> tmp.data();
-			else
-				tmp = std::array<scalar, elements_size>();
+			if constexpr (N >= 0 && N < elements_size)
+				arg.aligned_store(tmp.data());
 		}
 		const scalar operator*() const {
 			return tmp[index];
@@ -208,7 +246,7 @@ public:
 			static_assert(false, "AVX2 : operator=(scalar) is not defined in given type.");
 		return *this;
 	}
-	AVX_vector& operator=(const scalar* const arg) {
+	AVX_vector& load(const scalar* const arg) {
 		if constexpr (std::is_same<scalar, double>::value)
 			v = _mm256_loadu_pd(arg);
 		else if constexpr (std::is_same<scalar, float>::value)
@@ -217,13 +255,27 @@ public:
 			v = _mm256_loadu_si256(arg);
 		// v = _mm256_lddqu_si256(arg);
 		else
-			static_assert(false, "AVX2 : operator=(pointer) is not defined in given type.");
+			static_assert(false, "AVX2 : load(pointer) is not defined in given type.");
 		return *this;
 	}
-	AVX_vector& operator<<(const scalar* const arg) {
-		return operator=(arg);
+	AVX_vector& aligned_load(const scalar* const arg) {
+		if constexpr (std::is_same<scalar, double>::value)
+			v = _mm256_load_pd(arg);
+		else if constexpr (std::is_same<scalar, float>::value)
+			v = _mm256_load_ps(arg);
+		else if constexpr (std::is_integral<scalar>::value)
+			v = _mm256_load_si256(arg);
+		else
+			static_assert(false, "AVX2 : load(pointer) is not defined in given type.");
+		return *this;
 	}
-	scalar* operator>>(scalar* arg) const {
+	AVX_vector& operator=(const scalar* const arg) {
+		return load(arg);
+	}
+	AVX_vector& operator<<(const scalar* const arg) {
+		return load(arg);
+	}
+	void store(scalar* arg) const {
 		if constexpr (std::is_same<scalar, double>::value)
 			_mm256_storeu_pd(arg, v);
 		else if constexpr (std::is_same<scalar, float>::value)
@@ -231,8 +283,20 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			_mm256_storeu_si256(reinterpret_cast<vector*>(arg), v);
 		else
-			static_assert(false, "AVX2 : operator>>(pointer) is not defined in given type.");
-		return arg;
+			static_assert(false, "AVX2 : store(pointer) is not defined in given type.");
+	}
+	void aligned_store(scalar* arg) const {
+		if constexpr (std::is_same<scalar, double>::value)
+			_mm256_store_pd(arg, v);
+		else if constexpr (std::is_same<scalar, float>::value)
+			_mm256_store_ps(arg, v);
+		else if constexpr (std::is_integral<scalar>::value)
+			_mm256_store_si256(reinterpret_cast<vector*>(arg), v);
+		else
+			static_assert(false, "AVX2 : store(pointer) is not defined in given type.");
+	}
+	void operator>>(scalar* arg) const {
+		store(arg);
 	}
 	scalar operator[](const int index) const {
 		if constexpr (std::is_same<scalar, double>::value) {
