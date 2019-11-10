@@ -36,8 +36,8 @@ int main() {
 		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
 		v2 >> v;
 		AVX_vector<float> t(10);
-		AVX_vector<double> t1(INT8_MIN);
-		AVX_vector<double> t2(INT8_MAX);
+		AVX_vector<uint64_t> t1(UINT32_MAX);
+		AVX_vector<uint64_t> t2(0,0,0,0);
 		auto fx = d1[0];
 		auto fx2 = d1[1];
 		auto fx3 = d1[3];
@@ -53,7 +53,7 @@ int main() {
 		auto b2 = function::cmp_blend((t1 > t2), v2, t);
 		auto j = v1 + v2;
 
-		std::cout << t1.concat(t2) << std::endl;
+		std::cout << t1.alternate(t2) << std::endl;
 
 		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();
