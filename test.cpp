@@ -14,7 +14,7 @@ int main() {
 		AVX_type<float>::vector v2{};
 		auto j = _mm256_add_ps(v1, v2);
 
-		for (int a = 0; a < 10; a++) {
+		for (int a = 0; a < 0; a++) {
 			auto start = std::chrono::system_clock::now();
 			for (int i = 0; i < 100000000; i++) {
 				j = _mm256_add_ps(v1, v2);
@@ -58,13 +58,17 @@ int main() {
 		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();
 			for (int i = 0; i < 100000000; i++) {
-				j = v1 + v2;
+				/*j = v1 + v2;
 				v1 = j - v2;
 				v2 = j * v1;
 				j = v1 / v2;
-				v1 = v2.muladd(j, v1);
+				v1 = v2.muladd(j, v1);*/
+				for(auto e: j)
+					l += e;
+				
 			}
 			std::cout << (std::chrono::system_clock::now() - start).count()/1000 << std::endl;
+			std::cout << l << std::endl;
 		}
 	}
 	{

@@ -108,8 +108,8 @@ private:
 		template<size_t N>
 		struct Index {};
 
-		input_iterator(const input_iterator& it) : 
-			index(it.index), 
+		input_iterator(const input_iterator& it) :
+			index(it.index),
 			tmp(it.tmp){
 		}
 		template<size_t N>
@@ -299,44 +299,7 @@ public:
 		store(arg);
 	}
 	scalar operator[](const int index) const {
-		if constexpr (std::is_same<scalar, double>::value) {
-			return _mm256_cvtsd_f64(_mm256_castsi256_pd(
-				_mm256_permutevar8x32_epi32(_mm256_castpd_si256(v), 
-					_mm256_set_epi32(0, 0, 0, 0, 0, 0, index * 2 + 1, index * 2)
-				)
-			));
-		}
-		else if constexpr (std::is_same<scalar, float>::value)
-			return _mm256_cvtss_f32(_mm256_permutevar8x32_ps(v, _mm256_set1_epi32(index)));
-		else if constexpr (std::is_integral<scalar>::value) {
-			if constexpr (sizeof(scalar) == sizeof(int8_t)) {
-				return static_cast<scalar>(
-					_mm256_cvtsi256_si32(
-						_mm256_permutevar8x32_epi32(v, _mm256_set1_epi32(index >> 2))
-					) >> ((index & 3) * 8)& UINT8_MAX
-				);
-			}
-			else if constexpr (sizeof(scalar) == sizeof(int16_t)) {
-				return static_cast<scalar>(
-					_mm256_cvtsi256_si32(
-						_mm256_permutevar8x32_epi32(v, _mm256_set1_epi32(index >> 1))
-					) >> ((index & 1) * 16)& UINT16_MAX
-				);
-			}
-			else if constexpr (sizeof(scalar) == sizeof(int32_t))
-				return _mm256_cvtsi256_si32(_mm256_permutevar8x32_epi32(v, _mm256_set1_epi32(index)));
-			else if constexpr (sizeof(scalar) == sizeof(int64_t)) {
-				double tmp = _mm256_cvtsd_f64(_mm256_castsi256_pd(
-					_mm256_permutevar8x32_epi32(v, _mm256_set_epi32(0, 0, 0, 0, 0, 0, index * 2 + 1, index * 2))
-				));
-				return *reinterpret_cast<scalar*>(&tmp);
-			}
-			else
-				static_assert(false, "AVX2 : operator[] is not defined in given type.");
-		}
-		else
-			static_assert(false, "AVX2 : operator[] is not defined in given type.");
-
+		return reinterpret_cast<const scalar*>(&v)[index];
 	}
 	AVX_vector operator==(const AVX_vector& arg) const {
 		if constexpr (std::is_same<scalar, double>::value)
