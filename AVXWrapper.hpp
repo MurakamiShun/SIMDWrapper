@@ -69,28 +69,28 @@ private:
 	template<class... Args, size_t... I, size_t N = sizeof...(Args)>
 	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) {
 		if constexpr (std::is_same<scalar, double>::value) {
-			static_assert(N+1 == 4, "AVX2 : wrong number of arguments (expected 4).");
+			static_assert(N + 1 == 4, "AVX2 : wrong number of arguments (expected 4).");
 			v = _mm256_set_pd(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
 		}
 		else if constexpr (std::is_same<scalar, float>::value) {
-			static_assert(N+1 == 8, "AVX2 : wrong number of arguments (expected 8).");
+			static_assert(N + 1 == 8, "AVX2 : wrong number of arguments (expected 8).");
 			v = _mm256_set_ps(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
 		}
 		else if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (sizeof(scalar) == sizeof(int8_t)) {
-				static_assert(N+1 == 32, "AVX2 : wrong number of arguments (expected 32).");
+				static_assert(N + 1 == 32, "AVX2 : wrong number of arguments (expected 32).");
 				v = _mm256_set_epi8(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
 			}
 			else if constexpr (sizeof(scalar) == sizeof(int16_t)) {
-				static_assert(N+1 == 16, "AVX2 : wrong number of arguments (expected 16).");
+				static_assert(N + 1 == 16, "AVX2 : wrong number of arguments (expected 16).");
 				v = _mm256_set_epi16(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
 			}
 			else if constexpr (sizeof(scalar) == sizeof(int32_t)) {
-				static_assert(N+1 == 8, "AVX2 : wrong number of arguments (expected 8).");
+				static_assert(N + 1 == 8, "AVX2 : wrong number of arguments (expected 8).");
 				v = _mm256_set_epi32(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
 			}
 			else if constexpr (sizeof(scalar) == sizeof(int64_t)) {
-				static_assert(N+1 == 4, "AVX2 : wrong number of arguments (expected 4).");
+				static_assert(N + 1 == 4, "AVX2 : wrong number of arguments (expected 4).");
 				v = _mm256_set_epi64x(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
 			}
 			else
@@ -110,7 +110,7 @@ private:
 
 		input_iterator(const input_iterator& it) :
 			index(it.index),
-			tmp(it.tmp){
+			tmp(it.tmp) {
 		}
 		template<size_t N>
 		input_iterator(const AVX_vector& arg, Index<N>) {
@@ -140,7 +140,7 @@ public:
 	AVX_vector(const scalar* arg) { *this = arg; }
 	AVX_vector(const vector arg) : v(arg) {  }
 	template<class... Args, typename Indices = std::make_index_sequence<sizeof...(Args)>>
-	AVX_vector(scalar first, Args... args){
+	AVX_vector(scalar first, Args... args) {
 		init_by_reversed_argments(Indices(), first, std::forward<Args>(args)...);
 	}
 
@@ -253,7 +253,6 @@ public:
 			v = _mm256_loadu_ps(arg);
 		else if constexpr (std::is_integral<scalar>::value)
 			v = _mm256_loadu_si256(arg);
-		// v = _mm256_lddqu_si256(arg);
 		else
 			static_assert(false, "AVX2 : load(pointer) is not defined in given type.");
 		return *this;
@@ -323,13 +322,15 @@ public:
 	}
 	bool is_all_zero() const {
 		if constexpr (std::is_same<scalar, double>::value)
-			return static_cast<bool>(_mm256_testz_si256(_mm256_castpd_si256(v), _mm256_cmpeq_epi64(
-				_mm256_castpd_si256(v), _mm256_castpd_si256(v)
-			)));
+			return static_cast<bool>(_mm256_testz_si256(
+				_mm256_castpd_si256(v),
+				_mm256_cmpeq_epi64(_mm256_castpd_si256(v), _mm256_castpd_si256(v))
+			));
 		else if constexpr (std::is_same<scalar, float>::value)
-			return static_cast<bool>(_mm256_testz_si256(_mm256_castps_si256(v), _mm256_cmpeq_epi64(
-				_mm256_castps_si256(v), _mm256_castps_si256(v)
-			)));
+			return static_cast<bool>(_mm256_testz_si256(
+				_mm256_castps_si256(v),
+				_mm256_cmpeq_epi64(_mm256_castps_si256(v), _mm256_castps_si256(v))
+			));
 		else if constexpr (std::is_integral<scalar>::value)
 			return static_cast<bool>(_mm256_testz_si256(v, _mm256_cmpeq_epi64(v, v)));
 		else
@@ -337,13 +338,15 @@ public:
 	}
 	bool is_all_one() const {
 		if constexpr (std::is_same<scalar, double>::value)
-			return static_cast<bool>(_mm256_testc_si256(_mm256_castpd_si256(v), _mm256_cmpeq_epi64(
-				_mm256_castpd_si256(v), _mm256_castpd_si256(v)
-			)));
+			return static_cast<bool>(_mm256_testc_si256(
+				_mm256_castpd_si256(v),
+				_mm256_cmpeq_epi64(_mm256_castpd_si256(v), _mm256_castpd_si256(v))
+			));
 		else if constexpr (std::is_same<scalar, float>::value)
-			return static_cast<bool>(_mm256_testc_si256(_mm256_castps_si256(v), _mm256_cmpeq_epi64(
-				_mm256_castps_si256(v), _mm256_castps_si256(v)
-			)));
+			return static_cast<bool>(_mm256_testc_si256(
+				_mm256_castps_si256(v),
+				_mm256_cmpeq_epi64(_mm256_castps_si256(v), _mm256_castps_si256(v))
+			));
 		else if constexpr (std::is_integral<scalar>::value)
 			return static_cast<bool>(_mm256_testc_si256(v, _mm256_cmpeq_epi64(v, v)));
 		else
@@ -414,29 +417,29 @@ public:
 					static_assert(false, "AVX2 : operator< is not defined in given type.");
 			}
 			else {
-			if constexpr (sizeof(scalar) == sizeof(int8_t))
-				return AVX_vector(_mm256_cmpgt_epi8(
-					_mm256_xor_si256(arg.v, _mm256_set1_epi8(INT8_MIN)),
-					_mm256_xor_si256(v, _mm256_set1_epi8(INT8_MIN))
-				));
-			else if constexpr (sizeof(scalar) == sizeof(int16_t))
-				return AVX_vector(_mm256_cmpgt_epi16(
-					_mm256_xor_si256(arg.v, _mm256_set1_epi16(INT16_MIN)),
-					_mm256_xor_si256(v, _mm256_set1_epi16(INT16_MIN))
-				));
-			else if constexpr (sizeof(scalar) == sizeof(int32_t))
-				return AVX_vector(_mm256_cmpgt_epi32(
-					_mm256_xor_si256(arg.v, _mm256_set1_epi32(INT32_MIN)),
-					_mm256_xor_si256(v, _mm256_set1_epi32(INT32_MIN))
-				));
-			else if constexpr (sizeof(scalar) == sizeof(int64_t))
-				return AVX_vector(_mm256_cmpgt_epi64(
-					_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN)),
-					_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN))
-				));
-			else
-				static_assert(false, "AVX2 : operator< is not defined in given type.");
-		}
+				if constexpr (sizeof(scalar) == sizeof(int8_t))
+					return AVX_vector(_mm256_cmpgt_epi8(
+						_mm256_xor_si256(arg.v, _mm256_set1_epi8(INT8_MIN)),
+						_mm256_xor_si256(v, _mm256_set1_epi8(INT8_MIN))
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int16_t))
+					return AVX_vector(_mm256_cmpgt_epi16(
+						_mm256_xor_si256(arg.v, _mm256_set1_epi16(INT16_MIN)),
+						_mm256_xor_si256(v, _mm256_set1_epi16(INT16_MIN))
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int32_t))
+					return AVX_vector(_mm256_cmpgt_epi32(
+						_mm256_xor_si256(arg.v, _mm256_set1_epi32(INT32_MIN)),
+						_mm256_xor_si256(v, _mm256_set1_epi32(INT32_MIN))
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector(_mm256_cmpgt_epi64(
+						_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN)),
+						_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN))
+					));
+				else
+					static_assert(false, "AVX2 : operator< is not defined in given type.");
+			}
 		}
 		else
 			static_assert(false, "AVX2 : operator< is not defined in given type.");
@@ -567,13 +570,15 @@ public:
 					return AVX_vector(_mm256_max_epu16(v, arg.v));
 				else if constexpr (sizeof(scalar) == sizeof(int32_t))
 					return AVX_vector(_mm256_max_epu32(v, arg.v));
-				else if constexpr (sizeof(scalar) == sizeof(int64_t)) {
-					return AVX_vector(_mm256_blendv_epi8(arg.v, v,
+				else if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector(_mm256_blendv_epi8(
+						arg.v,
+						v,
 						_mm256_cmpgt_epi64(
 							_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN)),
-							_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN)))
+							_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN))
+						)
 					));
-				}
 				else
 					static_assert(false, "AVX2 : max is not defined in given type.");
 			}
@@ -607,10 +612,13 @@ public:
 				else if constexpr (sizeof(scalar) == sizeof(int32_t))
 					return AVX_vector(_mm256_min_epu32(v, arg.v));
 				else if constexpr (sizeof(scalar) == sizeof(int64_t))
-					return AVX_vector(_mm256_blendv_epi8(v, arg.v,
+					return AVX_vector(_mm256_blendv_epi8(
+						v,
+						arg.v,
 						_mm256_cmpgt_epi64(
 							_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN)),
-							_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN)))
+							_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN))
+						)
 					));
 				else
 					static_assert(false, "AVX2 : min is not defined in given type.");
@@ -654,14 +662,14 @@ public:
 			static_assert(false, "AVX2 : mullsub is not defined in given type.");
 	}
 	// { this[0] + this[1], arg[0] + arg[1], this[2] + this[3], ... }
-	AVX_vector hadd(const AVX_vector& arg) const{
+	AVX_vector hadd(const AVX_vector& arg) const {
 		if constexpr (std::is_same<scalar, double>::value)
 			return AVX_vector(_mm256_hadd_pd(v, arg.v));
 		else if constexpr (std::is_same<scalar, float>::value)
 			return AVX_vector(_mm256_hadd_ps(v, arg.v));
 		else if constexpr (std::is_integral<scalar>::value && std::is_signed<scalar>::value) {
 			if constexpr (sizeof(scalar) == sizeof(int16_t))
-				return AVX_vector(_mm256_hadd_epi16(v. arg.v));
+				return AVX_vector(_mm256_hadd_epi16(v, arg.v));
 			else if constexpr (sizeof(scalar) == sizeof(int32_t))
 				return AVX_vector(_mm256_hadd_epi32(v, arg.v));
 			else
@@ -684,9 +692,9 @@ public:
 	}
 	template<typename Cvt>
 	explicit operator AVX_vector<Cvt>() const {
-		if constexpr (std::is_same<scalar, float>::value&& std::is_same<Cvt, int32_t>::value)
+		if constexpr (std::is_same<scalar, float>::value && std::is_same<Cvt, int32_t>::value)
 			return AVX_vector<Cvt>(_mm256_cvtps_epi32(v));
-		else if constexpr (std::is_same<scalar, int32_t>::value&& std::is_same<Cvt, float>::value)
+		else if constexpr (std::is_same<scalar, int32_t>::value && std::is_same<Cvt, float>::value)
 			return AVX_vector<Cvt>(_mm256_cvtepi32_ps(v));
 		else
 			static_assert(false, "AVX2 : type casting is not defined in given type.");
@@ -714,10 +722,22 @@ public:
 						216
 					));
 				else if constexpr (sizeof(scalar) == sizeof(int64_t))
-					return AVX_vector<int32_t>(_mm256_sub_epi32(_mm256_permutevar8x32_epi32(_mm256_or_si256(
-						_mm256_and_si256(_mm256_add_epi64(v, _mm256_set1_epi64x(INT32_MAX/2)), _mm256_set1_epi64x(UINT32_MAX)),
-						_mm256_slli_epi64(_mm256_add_epi64(arg.v, _mm256_set1_epi64x(INT32_MAX / 2)), 32)
-					), _mm256_set_epi32(7, 5, 3, 1, 6, 4, 2, 0)), _mm256_set1_epi32(INT32_MAX / 2)));
+					return AVX_vector<int32_t>(_mm256_sub_epi32(
+						_mm256_permutevar8x32_epi32(
+							_mm256_or_si256(
+								_mm256_and_si256(
+									_mm256_add_epi64(v, _mm256_set1_epi64x(INT32_MAX / 2)),
+									_mm256_set1_epi64x(UINT32_MAX)
+								),
+								_mm256_slli_epi64(
+									_mm256_add_epi64(arg.v, _mm256_set1_epi64x(INT32_MAX / 2))
+									, 32
+								)
+							),
+							_mm256_set_epi32(7, 5, 3, 1, 6, 4, 2, 0)
+						),
+						_mm256_set1_epi32(INT32_MAX / 2)
+					));
 				else
 					static_assert(false, "AVX2 : concat is not defined in given type.");
 			}
@@ -726,10 +746,10 @@ public:
 					return AVX_vector<uint8_t>(_mm256_permute4x64_epi64(
 						_mm256_add_epi8(
 							_mm256_packs_epi16(
-								_mm256_sub_epi16(v, _mm256_set1_epi16(UINT8_MAX / 2+1)),
-								_mm256_sub_epi16(arg.v, _mm256_set1_epi16(UINT8_MAX / 2+1))
+								_mm256_sub_epi16(v, _mm256_set1_epi16(UINT8_MAX / 2 + 1)),
+								_mm256_sub_epi16(arg.v, _mm256_set1_epi16(UINT8_MAX / 2 + 1))
 							),
-							_mm256_set1_epi8(UINT8_MAX / 2+1)
+							_mm256_set1_epi8(UINT8_MAX / 2 + 1)
 						),
 						216
 					));
@@ -737,10 +757,10 @@ public:
 					return AVX_vector<uint16_t>(_mm256_permute4x64_epi64(
 						_mm256_add_epi16(
 							_mm256_packs_epi32(
-								_mm256_sub_epi32(v, _mm256_set1_epi32(UINT16_MAX / 2+1)),
-								_mm256_sub_epi32(arg.v, _mm256_set1_epi32(UINT16_MAX / 2+1))
+								_mm256_sub_epi32(v, _mm256_set1_epi32(UINT16_MAX / 2 + 1)),
+								_mm256_sub_epi32(arg.v, _mm256_set1_epi32(UINT16_MAX / 2 + 1))
 							),
-							_mm256_set1_epi16(UINT16_MAX / 2+1)
+							_mm256_set1_epi16(UINT16_MAX / 2 + 1)
 						),
 						216
 					));
@@ -773,18 +793,36 @@ public:
 			if constexpr (std::is_signed<scalar>::value) {
 				if constexpr (sizeof(scalar) == sizeof(int16_t))
 					return AVX_vector<int8_t>(_mm256_or_si256(
-						_mm256_or_si256(_mm256_and_si256(v, _mm256_set1_epi16(UINT8_MAX >> 1)), _mm256_srli_epi16(v, 8)),
-						_mm256_or_si256(_mm256_srli_epi16(_mm256_slli_epi16(arg.v, 9), 1), _mm256_and_si256(arg.v, _mm256_set1_epi16(1U << 15)))
+						_mm256_or_si256(
+							_mm256_and_si256(v, _mm256_set1_epi16(UINT8_MAX >> 1)),
+							_mm256_srli_epi16(v, 8)
+						),
+						_mm256_or_si256(
+							_mm256_srli_epi16(_mm256_slli_epi16(arg.v, 9), 1),
+							_mm256_and_si256(arg.v, _mm256_set1_epi16(1U << 15))
+						)
 					));
 				else if constexpr (sizeof(scalar) == sizeof(int32_t))
 					return AVX_vector<int16_t>(_mm256_or_si256(
-						_mm256_or_si256(_mm256_and_si256(v, _mm256_set1_epi32(UINT16_MAX >> 1)), _mm256_srli_epi32(v, 16)),
-						_mm256_or_si256(_mm256_srli_epi32(_mm256_slli_epi32(arg.v, 17), 1), _mm256_and_si256(arg.v, _mm256_set1_epi32(1UL << 31)))
+						_mm256_or_si256(
+							_mm256_and_si256(v, _mm256_set1_epi32(UINT16_MAX >> 1)),
+							_mm256_srli_epi32(v, 16)
+						),
+						_mm256_or_si256(
+							_mm256_srli_epi32(_mm256_slli_epi32(arg.v, 17), 1),
+							_mm256_and_si256(arg.v, _mm256_set1_epi32(1UL << 31))
+						)
 					));
 				else if constexpr (sizeof(scalar) == sizeof(int64_t))
 					return AVX_vector<int32_t>(_mm256_or_si256(
-						_mm256_or_si256(_mm256_and_si256(v, _mm256_set1_epi64x(UINT32_MAX >> 1)), _mm256_srli_epi64(v, 32)),
-						_mm256_or_si256(_mm256_srli_epi64(_mm256_slli_epi64(arg.v, 33), 1), _mm256_and_si256(arg.v, _mm256_set1_epi64x(1ULL << 63)))
+						_mm256_or_si256(
+							_mm256_and_si256(v, _mm256_set1_epi64x(UINT32_MAX >> 1)),
+							_mm256_srli_epi64(v, 32)
+						),
+						_mm256_or_si256(
+							_mm256_srli_epi64(_mm256_slli_epi64(arg.v, 33), 1),
+							_mm256_and_si256(arg.v, _mm256_set1_epi64x(1ULL << 63))
+						)
 					));
 				else
 					static_assert(false, "AVX2 : alternate is not defined in given type.");
@@ -802,8 +840,8 @@ public:
 					));
 				else if constexpr (sizeof(scalar) == sizeof(int64_t))
 					return AVX_vector<uint32_t>(_mm256_or_si256(
-							_mm256_and_si256(v, _mm256_set1_epi64x(UINT32_MAX)),
-							_mm256_slli_epi64(arg.v, 32)
+						_mm256_and_si256(v, _mm256_set1_epi64x(UINT32_MAX)),
+						_mm256_slli_epi64(arg.v, 32)
 					));
 				else
 					static_assert(false, "AVX2 : alternate is not defined in given type.");
