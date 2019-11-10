@@ -35,7 +35,7 @@ int main() {
 		AVX_vector<float> v2 = 2.2f;
 		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
 		v2 >> v;
-		AVX_vector<int32_t> t(10,224,45,5,4,35,2,52);
+		AVX_vector<float> t(10);
 		AVX_vector<uint32_t> t1(INT32_MAX+13);
 		AVX_vector<uint32_t> t2(2);
 		auto fx = d1[0];
@@ -50,6 +50,7 @@ int main() {
 		auto c = (t1.max(t2) == function::cmp_blend(t1 > t2, t1, t2));
 		auto bo = (t == t).is_all_one();
 		auto b1 = (~(t == t)).is_all_zero();
+		auto b2 = function::cmp_blend(function::reinterpret<uint32_t>(t > t), t1, t2);
 		auto j = v1 + v2;
 
 		std::cout << t << std::endl;

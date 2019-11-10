@@ -322,13 +322,29 @@ public:
 			static_assert(false, "AVX2 : operator== is not defined in given type.");
 	}
 	bool is_all_zero() const {
-		if constexpr (std::is_integral<scalar>::value)
-			return static_cast<bool>(_mm256_testz_si256(v, _mm256_cmpeq_epi64(v,v)));
+		if constexpr (std::is_same<scalar, double>::value)
+			return static_cast<bool>(_mm256_testz_si256(_mm256_castpd_si256(v), _mm256_cmpeq_epi64(
+				_mm256_castpd_si256(v), _mm256_castpd_si256(v)
+			)));
+		else if constexpr (std::is_same<scalar, float>::value)
+			return static_cast<bool>(_mm256_testz_si256(_mm256_castps_si256(v), _mm256_cmpeq_epi64(
+				_mm256_castps_si256(v), _mm256_castps_si256(v)
+			)));
+		else if constexpr (std::is_integral<scalar>::value)
+			return static_cast<bool>(_mm256_testz_si256(v, _mm256_cmpeq_epi64(v, v)));
 		else
 			static_assert(false, "AVX2 : is_all_zero is not defined in given type.");
 	}
 	bool is_all_one() const {
-		if constexpr (std::is_integral<scalar>::value)
+		if constexpr (std::is_same<scalar, double>::value)
+			return static_cast<bool>(_mm256_testc_si256(_mm256_castpd_si256(v), _mm256_cmpeq_epi64(
+				_mm256_castpd_si256(v), _mm256_castpd_si256(v)
+			)));
+		else if constexpr (std::is_same<scalar, float>::value)
+			return static_cast<bool>(_mm256_testc_si256(_mm256_castps_si256(v), _mm256_cmpeq_epi64(
+				_mm256_castps_si256(v), _mm256_castps_si256(v)
+			)));
+		else if constexpr (std::is_integral<scalar>::value)
 			return static_cast<bool>(_mm256_testc_si256(v, _mm256_cmpeq_epi64(v, v)));
 		else
 			static_assert(false, "AVX2 : is_all_one is not defined in given type.");
@@ -665,24 +681,34 @@ public:
 		else
 			static_assert(false, "AVX2 : cmp_blend is not defined in given type.");
 	}
-	template<typename cvt>
-	explicit operator AVX_vector<cvt>() const {
-		if constexpr (std::is_same<scalar, float>::value&& std::is_same<cvt, int32_t>::value)
-			return AVX_vector<cvt>(_mm256_cvtps_epi32(v));
-		else if constexpr (std::is_same<scalar, int32_t>::value&& std::is_same<cvt, float>::value)
-			return AVX_vector<cvt>(_mm256_cvtepi32_ps(v));
+	template<typename Cvt>
+	explicit operator AVX_vector<Cvt>() const {
+		if constexpr (std::is_same<scalar, float>::value&& std::is_same<Cvt, int32_t>::value)
+			return AVX_vector<Cvt>(_mm256_cvtps_epi32(v));
+		else if constexpr (std::is_same<scalar, int32_t>::value&& std::is_same<Cvt, float>::value)
+			return AVX_vector<Cvt>(_mm256_cvtepi32_ps(v));
 		else
 			static_assert(false, "AVX2 : type casting is not defined in given type.");
+	}
+	// reinterpret cast (data will not change)
+	template<typename Cvt>
+	AVX_vector<Cvt> reinterpret() const {
+		using cvt_vector = typename AVX_type<Cvt>::vector;
+		return AVX_vector<Cvt>(*reinterpret_cast<const cvt_vector*>(&v));
 	}
 };
 
 template<typename Scalar>
 std::ostream& operator<<(std::ostream& os, const AVX_vector<Scalar>& v) {
-	typename AVX_type<Scalar>::scalar elements[AVX_type<Scalar>::elements_size];
+	using scalar = typename AVX_type<Scalar>::scalar;
+	constexpr size_t elements_size = AVX_type<Scalar>::elements_size;
+	scalar elements[elements_size];
 	v >> elements;
 	os << "[";
-	for (size_t i = 0; i < AVX_type<Scalar>::elements_size; i++)
-		os << (i ? " " : "") << (int64_t)elements[i];
+	for (size_t i = 0; i < elements_size; i++) {
+		os << (i ? " " : "");
+		os << ((std::is_integral<scalar>::value && sizeof(scalar) == sizeof(int8_t)) ? static_cast<int>(elements[i]) : elements[i]);
+	}
 	os << "]";
 	return os;
 }
@@ -717,5 +743,10 @@ namespace function {
 	template<typename Scalar>
 	AVX_vector<Scalar> hadd(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
 		return a.hadd(b);
+	}
+	// reinterpret cast (data will not change)
+	template<typename Cvt, typename Scalar>
+	AVX_vector<Cvt> reinterpret(AVX_vector<Scalar> arg) {
+		return arg.template reinterpret<Cvt>();
 	}
 }
