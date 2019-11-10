@@ -23,7 +23,7 @@ private:
 	using vector = typename AVX_type<Scalar>::vector;
 
 	template<class... Args, size_t... I, size_t N = sizeof...(Args)>
-	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args... args) {
+	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) {
 		if constexpr (std::is_same<scalar, double>::value) {
 			static_assert(N+1 == 4, "AVX2 : wrong number of arguments (expected 4).");
 			v = _mm256_set_pd(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
@@ -188,6 +188,30 @@ public:
 		else
 			static_assert(false, "AVX2 : operator>>(pointer) is not defined in given type.");
 		return arg;
+	}
+	scalar operator[](const int index) const {
+		if constexpr (std::is_same<scalar, double>::value) {
+			double tmp[4];
+			_mm256_store_pd(tmp, v);
+			return tmp[index];
+		}
+		else if constexpr (std::is_same<scalar, float>::value)
+			return _mm256_cvtss_f32(_mm256_permutevar8x32_ps(v, _mm256_set1_epi32(index)));
+		else if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (sizeof(scalar) == sizeof(int8_t))
+				return _mm256_extract_epi8(v, index);
+			else if constexpr (sizeof(scalar) == sizeof(int16_t))
+				return _mm256_extract_epi16(v, index);
+			else if constexpr (sizeof(scalar) == sizeof(int32_t))
+				return _mm256_extract_epi32(v, index);
+			else if constexpr (sizeof(scalar) == sizeof(int64_t))
+				return _mm256_extract_epi64(v, index);
+			else
+				static_assert(false, "AVX2 : operator[] is not defined in given type.");
+		}
+		else
+			static_assert(false, "AVX2 : operator[] is not defined in given type.");
+
 	}
 	AVX_vector operator==(const AVX_vector& arg) const {
 		if constexpr (std::is_same<scalar, double>::value)

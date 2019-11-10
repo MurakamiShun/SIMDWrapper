@@ -34,6 +34,9 @@ int main() {
 		AVX_vector<int32_t> t;
 		AVX_vector<float> t1(1, 3, -4, 6,0,0,0,0);
 		AVX_vector<float> t2(2, -4, -5, 6,0,0,0,0);
+		auto fx = t1[0];
+		auto fx2 = t1[1];
+		auto fx3 = t1[3];
 		auto m1 = t1.max(t2);
 		auto m2 = t1.min(t2);
 		auto f = t1 > t2;
