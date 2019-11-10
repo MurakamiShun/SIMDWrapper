@@ -35,14 +35,17 @@ int main() {
 		std::cout << "]" << std::endl;
 		v1 = v1.abs().floor();
 		AVX_vector<float> v2 = 2.2f;
-		AVX_vector<double> d1(1, 4, 5, 4);
+		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
 		v2 >> v;
-		AVX_vector<int32_t> t(10);
+		AVX_vector<int32_t> t(10,224,45,5,4,35,2,52);
 		AVX_vector<float> t1(1, 3, -4, 6,0,0,0,0);
 		AVX_vector<float> t2(2, -4, -5, 6,0,0,0,0);
-		auto fx = t1[0];
-		auto fx2 = t1[1];
-		auto fx3 = t1[3];
+		auto fx = d1[0];
+		auto fx2 = d1[1];
+		auto fx3 = d1[3];
+		int64_t l = 0;
+		for (auto e : d1)
+			l += e;
 		auto m1 = t1.max(t2);
 		auto m2 = t1.min(t2);
 		auto f = t1 > t2;
@@ -54,6 +57,7 @@ int main() {
 
 		std::cout << t << std::endl;
 
+		int64_t l = 0;
 		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();
 			for (int i = 0; i < 100000000; i++) {
@@ -64,6 +68,7 @@ int main() {
 				v1 = v2.muladd(j, v1);
 			}
 			std::cout << (std::chrono::system_clock::now() - start).count()/1000 << std::endl;
+			std::cout << l << std::endl;
 		}
 	}
 	{
