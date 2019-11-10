@@ -14,7 +14,7 @@ int main() {
 		AVX_type<float>::vector v2{};
 		auto j = _mm256_add_ps(v1, v2);
 
-		for (int a = 0; a < 0; a++) {
+		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();
 			for (int i = 0; i < 100000000; i++) {
 				j = _mm256_add_ps(v1, v2);
@@ -30,11 +30,12 @@ int main() {
 	{
 		std::cout << "Wrapper Benchmark" << std::endl;
 		float v[] = { 1.1,-2.2,3.3,4.4,5,6,-7,8 };
-		AVX_vector<float> v1 = v;
+		AVX_vector<float> v1;
+		v1.load(v);
 		v1 = v1.abs().floor();
 		AVX_vector<float> v2 = 2.2f;
 		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
-		v2 >> v;
+		v2.store(v);
 		AVX_vector<float> t(10);
 		AVX_vector<int64_t> t1(UINT32_MAX);
 		AVX_vector<int64_t> t2(0,0,0,0);
@@ -57,19 +58,14 @@ int main() {
 
 		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();
-			for (int i = 0; i < 2000000000; i++) {
-				/*j = v1 + v2;
+			for (int i = 0; i < 100000000; i++) {
+				j = v1 + v2;
 				v1 = j - v2;
 				v2 = j * v1;
 				j = v1 / v2;
-				v1 = v2.muladd(j, v1);*/
-				l += t1.min(t2)[0];
-				l += t1.min(t2)[1];
-				l += t1.min(t2)[3];
-				l += t1.min(t2)[4];
+				v1 = v2.muladd(j, v1);
 			}
 			std::cout << (std::chrono::system_clock::now() - start).count()/1000 << std::endl;
-			std::cout << l << std::endl;
 		}
 	}
 	{

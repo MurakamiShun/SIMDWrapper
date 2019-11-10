@@ -137,13 +137,13 @@ public:
 
 	AVX_vector() : v() {}
 	AVX_vector(const scalar arg) { *this = arg; }
-	AVX_vector(const scalar* arg) { *this = arg; }
 	AVX_vector(const vector arg) : v(arg) {  }
 	template<class... Args, typename Indices = std::make_index_sequence<sizeof...(Args)>>
 	AVX_vector(scalar first, Args... args) {
 		init_by_reversed_argments(Indices(), first, std::forward<Args>(args)...);
 	}
-
+	AVX_vector(const AVX_vector& arg) : v(arg.v) {  }
+	
 	input_iterator begin() const {
 		return input_iterator(*this, input_iterator::template Index<0>());
 	}
@@ -268,12 +268,6 @@ public:
 			static_assert(false, "AVX2 : load(pointer) is not defined in given type.");
 		return *this;
 	}
-	AVX_vector& operator=(const scalar* const arg) {
-		return load(arg);
-	}
-	AVX_vector& operator<<(const scalar* const arg) {
-		return load(arg);
-	}
 	void store(scalar* arg) const {
 		if constexpr (std::is_same<scalar, double>::value)
 			_mm256_storeu_pd(arg, v);
@@ -293,9 +287,6 @@ public:
 			_mm256_store_si256(reinterpret_cast<vector*>(arg), v);
 		else
 			static_assert(false, "AVX2 : store(pointer) is not defined in given type.");
-	}
-	void operator>>(scalar* arg) const {
-		store(arg);
 	}
 	scalar operator[](const int index) const {
 		return reinterpret_cast<const scalar*>(&v)[index];
@@ -857,7 +848,7 @@ std::ostream& operator<<(std::ostream& os, const AVX_vector<Scalar>& v) {
 	using scalar = typename AVX_type<Scalar>::scalar;
 	constexpr size_t elements_size = AVX_type<Scalar>::elements_size;
 	scalar elements[elements_size];
-	v >> elements;
+	v.store(elements);
 	os << "[";
 	for (size_t i = 0; i < elements_size; i++) {
 		os << (i ? " " : "");
