@@ -671,13 +671,14 @@ public:
 			static_assert(false, "AVX2 : hadd is not defined in given type.");
 	}
 	// (mask) ? this : a
-	AVX_vector cmp_blend(const AVX_vector& a, const AVX_vector& mask) const {
+	template<typename MaskScalar>
+	AVX_vector cmp_blend(const AVX_vector& a, const AVX_vector<MaskScalar>& mask) const {
 		if constexpr (std::is_same<scalar, double>::value)
-			return AVX_vector(_mm256_blendv_pd(a.v, v, mask.v));
+			return AVX_vector(_mm256_blendv_pd(a.v, v, mask.reinterpret<double>().v));
 		else if constexpr (std::is_same<scalar, float>::value)
-			return AVX_vector(_mm256_blendv_ps(a.v, v, mask.v));
+			return AVX_vector(_mm256_blendv_ps(a.v, v, mask.reinterpret<float>().v));
 		else if constexpr (std::is_integral<scalar>::value)
-			return AVX_vector(_mm256_blendv_epi8(a.v, v, mask.v));
+			return AVX_vector(_mm256_blendv_epi8(a.v, v, mask.reinterpret<scalar>().v));
 		else
 			static_assert(false, "AVX2 : cmp_blend is not defined in given type.");
 	}
@@ -725,8 +726,8 @@ namespace function {
 		return a.min(b);
 	}
 	// (==) ? a : b
-	template<typename Scalar>
-	AVX_vector<Scalar> cmp_blend(const AVX_vector<Scalar>& mask, const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
+	template<typename MaskScalar, typename Scalar>
+	AVX_vector<Scalar> cmp_blend(const AVX_vector<MaskScalar>& mask, const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
 		return a.cmp_blend(b, mask);
 	}
 	// a * b + c

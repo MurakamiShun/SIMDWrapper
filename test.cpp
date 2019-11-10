@@ -50,7 +50,7 @@ int main() {
 		auto c = (t1.max(t2) == function::cmp_blend(t1 > t2, t1, t2));
 		auto bo = (t == t).is_all_one();
 		auto b1 = (~(t == t)).is_all_zero();
-		auto b2 = function::cmp_blend(function::reinterpret<uint32_t>(t > t), t1, t2);
+		auto b2 = function::cmp_blend((t1 > t2), v2, t);
 		auto j = v1 + v2;
 
 		std::cout << t << std::endl;
