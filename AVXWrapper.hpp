@@ -493,9 +493,9 @@ public:
 					_mm256_castsi256_si128(_mm256_set1_epi64x(n))
 				));
 			else if constexpr (sizeof(scalar) == sizeof(int32_t))
-				return AVX_vector(_mm256_srlv_epi32(v, _mm256_set1_epi32(n))));
+				return AVX_vector(_mm256_srlv_epi32(v, _mm256_set1_epi32(n)));
 			else if constexpr (sizeof(scalar) == sizeof(int64_t))
-				return AVX_vector(_mm256_srlv_epi64(v, _mm256_set1_epi64x(n))));
+				return AVX_vector(_mm256_srlv_epi64(v, _mm256_set1_epi64x(n)));
 			else
 				static_assert(false, "AVX2 : operator>> is not defined in given type.");
 		}
@@ -522,9 +522,9 @@ public:
 					_mm256_castsi256_si128(_mm256_set1_epi64x(n))
 				));
 			else if constexpr (sizeof(scalar) == sizeof(int32_t))
-				return AVX_vector(_mm256_sllv_epi32(v, _mm256_set1_epi32(n))));
+				return AVX_vector(_mm256_sllv_epi32(v, _mm256_set1_epi32(n)));
 			else if constexpr (sizeof(scalar) == sizeof(int64_t))
-				return AVX_vector(_mm256_sllv_epi64(v, _mm256_set1_epi64x(n))));
+				return AVX_vector(_mm256_sllv_epi64(v, _mm256_set1_epi64x(n)));
 			else
 				static_assert(false, "AVX2 : operator<< is not defined in given type.");
 		}
