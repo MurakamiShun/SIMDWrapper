@@ -339,16 +339,42 @@ public:
 		else if constexpr (std::is_same<scalar, float>::value)
 			return AVX_vector(_mm256_cmp_ps(v, arg.v, _CMP_GT_OQ));
 		else if constexpr (std::is_integral<scalar>::value) {
-			if constexpr (sizeof(scalar) == sizeof(int8_t))
-				return AVX_vector(_mm256_cmpgt_epi8(v, arg.v));
-			else if constexpr (sizeof(scalar) == sizeof(int16_t))
-				return AVX_vector(_mm256_cmpgt_epi16(v, arg.v));
-			else if constexpr (sizeof(scalar) == sizeof(int32_t))
-				return AVX_vector(_mm256_cmpgt_epi32(v, arg.v));
-			else if constexpr (sizeof(scalar) == sizeof(int64_t))
-				return AVX_vector(_mm256_cmpgt_epi64(v, arg.v));
-			else
-				static_assert(false, "AVX2 : operator> is not defined in given type.");
+			if constexpr (std::is_signed<scalar>::value) {
+				if constexpr (sizeof(scalar) == sizeof(int8_t))
+					return AVX_vector(_mm256_cmpgt_epi8(v, arg.v));
+				else if constexpr (sizeof(scalar) == sizeof(int16_t))
+					return AVX_vector(_mm256_cmpgt_epi16(v, arg.v));
+				else if constexpr (sizeof(scalar) == sizeof(int32_t))
+					return AVX_vector(_mm256_cmpgt_epi32(v, arg.v));
+				else if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector(_mm256_cmpgt_epi64(v, arg.v));
+				else
+					static_assert(false, "AVX2 : operator> is not defined in given type.");
+			}
+			else {
+				if constexpr (sizeof(scalar) == sizeof(int8_t))
+					return AVX_vector(_mm256_cmpgt_epi8(
+						_mm256_xor_si256(v, _mm256_set1_epi8(INT8_MIN)),
+						_mm256_xor_si256(arg.v, _mm256_set1_epi8(INT8_MIN))
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int16_t))
+					return AVX_vector(_mm256_cmpgt_epi16(
+						_mm256_xor_si256(v, _mm256_set1_epi16(INT16_MIN)),
+						_mm256_xor_si256(arg.v, _mm256_set1_epi16(INT16_MIN))
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int32_t))
+					return AVX_vector(_mm256_cmpgt_epi32(
+						_mm256_xor_si256(v, _mm256_set1_epi32(INT32_MIN)),
+						_mm256_xor_si256(arg.v, _mm256_set1_epi32(INT32_MIN))
+					));
+				else if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector(_mm256_cmpgt_epi64(
+						_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN)),
+						_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN))
+					));
+				else
+					static_assert(false, "AVX2 : operator> is not defined in given type.");
+			}
 		}
 		else
 			static_assert(false, "AVX2 : operator> is not defined in given type.");
@@ -359,16 +385,42 @@ public:
 		else if constexpr (std::is_same<scalar, float>::value)
 			return AVX_vector(_mm256_cmp_ps(arg.v, v, _CMP_GT_OQ));
 		else if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (std::is_signed<scalar>::value) {
+				if constexpr (sizeof(scalar) == sizeof(int8_t))
+					return AVX_vector(_mm256_cmpgt_epi8(arg.v, v));
+				else if constexpr (sizeof(scalar) == sizeof(int16_t))
+					return AVX_vector(_mm256_cmpgt_epi16(arg.v, v));
+				else if constexpr (sizeof(scalar) == sizeof(int32_t))
+					return AVX_vector(_mm256_cmpgt_epi32(arg.v, v));
+				else if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector(_mm256_cmpgt_epi64(arg.v, v));
+				else
+					static_assert(false, "AVX2 : operator< is not defined in given type.");
+			}
+			else {
 			if constexpr (sizeof(scalar) == sizeof(int8_t))
-				return AVX_vector(_mm256_cmpgt_epi8(arg.v, v));
+				return AVX_vector(_mm256_cmpgt_epi8(
+					_mm256_xor_si256(arg.v, _mm256_set1_epi8(INT8_MIN)),
+					_mm256_xor_si256(v, _mm256_set1_epi8(INT8_MIN))
+				));
 			else if constexpr (sizeof(scalar) == sizeof(int16_t))
-				return AVX_vector(_mm256_cmpgt_epi16(arg.v, v));
+				return AVX_vector(_mm256_cmpgt_epi16(
+					_mm256_xor_si256(arg.v, _mm256_set1_epi16(INT16_MIN)),
+					_mm256_xor_si256(v, _mm256_set1_epi16(INT16_MIN))
+				));
 			else if constexpr (sizeof(scalar) == sizeof(int32_t))
-				return AVX_vector(_mm256_cmpgt_epi32(arg.v, v));
+				return AVX_vector(_mm256_cmpgt_epi32(
+					_mm256_xor_si256(arg.v, _mm256_set1_epi32(INT32_MIN)),
+					_mm256_xor_si256(v, _mm256_set1_epi32(INT32_MIN))
+				));
 			else if constexpr (sizeof(scalar) == sizeof(int64_t))
-				return AVX_vector(_mm256_cmpgt_epi64(arg.v, v));
+				return AVX_vector(_mm256_cmpgt_epi64(
+					_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN)),
+					_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN))
+				));
 			else
-				static_assert(false, "AVX2 : operator< is not defined in given type.");
+				static_assert(false, "AVX2 : operator> is not defined in given type.");
+		}
 		}
 		else
 			static_assert(false, "AVX2 : operator< is not defined in given type.");

@@ -36,8 +36,8 @@ int main() {
 		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
 		v2 >> v;
 		AVX_vector<int32_t> t(10,224,45,5,4,35,2,52);
-		AVX_vector<uint64_t> t1(INT64_MAX+13456);
-		AVX_vector<uint64_t> t2(2);
+		AVX_vector<uint32_t> t1(INT32_MAX+13);
+		AVX_vector<uint32_t> t2(2);
 		auto fx = d1[0];
 		auto fx2 = d1[1];
 		auto fx3 = d1[3];
@@ -46,7 +46,7 @@ int main() {
 			l += e;
 		auto m1 = t1.max(t2);
 		auto m2 = t1.min(t2);
-		auto f = t1 > t2;
+		std::cout << (t1 < t2).is_all_one();
 		auto c = (t1.max(t2) == function::cmp_blend(t1 > t2, t1, t2));
 		auto bo = (t == t).is_all_one();
 		auto b1 = (~(t == t)).is_all_zero();
