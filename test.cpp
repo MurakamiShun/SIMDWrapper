@@ -36,8 +36,8 @@ int main() {
 		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
 		v2 >> v;
 		AVX_vector<int32_t> t(10,224,45,5,4,35,2,52);
-		AVX_vector<float> t1(1, 3, -4, 6,0,0,0,0);
-		AVX_vector<float> t2(2, -4, -5, 6,0,0,0,0);
+		AVX_vector<uint64_t> t1(INT64_MAX+13456);
+		AVX_vector<uint64_t> t2(2);
 		auto fx = d1[0];
 		auto fx2 = d1[1];
 		auto fx3 = d1[3];
@@ -50,7 +50,6 @@ int main() {
 		auto c = (t1.max(t2) == function::cmp_blend(t1 > t2, t1, t2));
 		auto bo = (t == t).is_all_one();
 		auto b1 = (~(t == t)).is_all_zero();
-		auto f32 = static_cast<AVX_vector<float>>(t);
 		auto j = v1 + v2;
 
 		std::cout << t << std::endl;
@@ -58,17 +57,14 @@ int main() {
 		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();
 			for (int i = 0; i < 100000000; i++) {
-				/*j = v1 + v2;
+				j = v1 + v2;
 				v1 = j - v2;
 				v2 = j * v1;
 				j = v1 / v2;
-				v1 = v2.muladd(j, v1);*/
-				for(auto e: j)
-					l += e;
+				v1 = v2.muladd(j, v1);
 				
 			}
 			std::cout << (std::chrono::system_clock::now() - start).count()/1000 << std::endl;
-			std::cout << l << std::endl;
 		}
 	}
 	{

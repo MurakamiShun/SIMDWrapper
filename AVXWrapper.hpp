@@ -499,6 +499,13 @@ public:
 					return AVX_vector(_mm256_max_epu16(v, arg.v));
 				else if constexpr (sizeof(scalar) == sizeof(int32_t))
 					return AVX_vector(_mm256_max_epu32(v, arg.v));
+				else if constexpr (sizeof(scalar) == sizeof(int64_t)) {
+					return AVX_vector(_mm256_blendv_epi8(arg.v, v,
+						_mm256_cmpgt_epi64(
+							_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN)),
+							_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN)))
+					));
+				}
 				else
 					static_assert(false, "AVX2 : max is not defined in given type.");
 			}
@@ -531,6 +538,12 @@ public:
 					return AVX_vector(_mm256_min_epu16(v, arg.v));
 				else if constexpr (sizeof(scalar) == sizeof(int32_t))
 					return AVX_vector(_mm256_min_epu32(v, arg.v));
+				else if constexpr (sizeof(scalar) == sizeof(int64_t))
+					return AVX_vector(_mm256_blendv_epi8(v, arg.v,
+						_mm256_cmpgt_epi64(
+							_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN)),
+							_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN)))
+					));
 				else
 					static_assert(false, "AVX2 : min is not defined in given type.");
 			}
@@ -617,7 +630,7 @@ std::ostream& operator<<(std::ostream& os, const AVX_vector<Scalar>& v) {
 	v >> elements;
 	os << "[";
 	for (size_t i = 0; i < AVX_type<Scalar>::elements_size; i++)
-		os << (i ? " " : "") << elements[i];
+		os << (i ? " " : "") << (int64_t)elements[i];
 	os << "]";
 	return os;
 }
