@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <cstdint>
 #include <tuple>
+#include <array>
 
 template<typename Scalar>
 struct AVX_type {
@@ -21,6 +22,7 @@ class AVX_vector {
 private:
 	using scalar = typename AVX_type<Scalar>::scalar;
 	using vector = typename AVX_type<Scalar>::vector;
+	static constexpr size_t elements_size = 32 / sizeof(scalar);
 
 	template<class... Args, size_t... I, size_t N = sizeof...(Args)>
 	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) {
@@ -56,6 +58,40 @@ private:
 			static_assert(false, "AVX2 : initializer is not defined in given type.");
 	}
 
+	class input_iterator {
+	private:
+		std::array<scalar, elements_size> tmp;
+		size_t index;
+	public:
+		template<size_t N>
+		struct Index {};
+
+		input_iterator(const input_iterator& it) : 
+			index(it.index), 
+			tmp(it.tmp){
+		}
+		template<size_t N>
+		input_iterator(const AVX_vector& arg, Index<N>) {
+			index = N;
+			if constexpr (N == 0)
+				arg >> tmp.data();
+			else
+				tmp = std::array<scalar, elements_size>();
+		}
+		const scalar operator*() const {
+			return tmp[index];
+		}
+		input_iterator& operator++() {
+			index++;
+			return *this;
+		}
+		bool operator==(const input_iterator& it) const {
+			return (index == it.index);
+		}
+		bool operator!=(const input_iterator& it) const {
+			return (index != it.index);
+		}
+	};
 public:
 	vector v;
 
@@ -66,6 +102,13 @@ public:
 	template<class... Args, typename Indices = std::make_index_sequence<sizeof...(Args)>>
 	AVX_vector(scalar first, Args... args){
 		init_by_reversed_argments(Indices(), first, std::forward<Args>(args)...);
+	}
+
+	input_iterator begin() const {
+		return input_iterator(*this, input_iterator::template Index<0>());
+	}
+	input_iterator end() const {
+		return input_iterator(*this, input_iterator::template Index<elements_size>());
 	}
 
 	AVX_vector operator+(const AVX_vector& arg) const {

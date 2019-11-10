@@ -2,6 +2,7 @@
 #include <vector>
 #include <chrono>
 #include <iostream>
+#include <array>
 
 int main() {
 	{
@@ -27,6 +28,11 @@ int main() {
 		std::cout << "Wrapper Benchmark" << std::endl;
 		float v[] = { 1.1,-2.2,3.3,4.4,5,6,-7,8 };
 		AVX_vector<float> v1 = v;
+		std::cout << "v1[";
+		for (auto element : v1) {
+			std::cout << element << ",";
+		}
+		std::cout << "]" << std::endl;
 		v1 = v1.abs().floor();
 		AVX_vector<float> v2 = 2.2f;
 		AVX_vector<double> d1(1, 4, 5, 4);
