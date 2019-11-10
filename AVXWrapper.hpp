@@ -485,6 +485,64 @@ public:
 		else
 			static_assert(false, "AVX2 : xor is not defined in given type.");
 	}
+	AVX_vector operator>>(const int n) const {
+		if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (sizeof(scalar) == sizeof(int16_t))
+				return AVX_vector(_mm256_srl_epi16(
+					v,
+					_mm256_castsi256_si128(_mm256_set1_epi64x(n))
+				));
+			else if constexpr (sizeof(scalar) == sizeof(int32_t))
+				return AVX_vector(_mm256_srlv_epi32(v, _mm256_set1_epi32(n))));
+			else if constexpr (sizeof(scalar) == sizeof(int64_t))
+				return AVX_vector(_mm256_srlv_epi64(v, _mm256_set1_epi64x(n))));
+			else
+				static_assert(false, "AVX2 : operator>> is not defined in given type.");
+		}
+		else
+			static_assert(false, "AVX2 : operator>> is not defined in given type.");
+	}
+	AVX_vector operator>>(const AVX_vector& arg) const {
+		if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (sizeof(scalar) == sizeof(int32_t))
+				return AVX_vector(_mm256_srlv_epi32(v, arg.v));
+			else if constexpr (sizeof(scalar) == sizeof(int64_t))
+				return AVX_vector(_mm256_srlv_epi64(v, arg.v));
+			else
+				static_assert(false, "AVX2 : operator>>(AVX_vector) is not defined in given type.");
+		}
+		else
+			static_assert(false, "AVX2 : operator>>(AVX_vector) is not defined in given type.");
+	}
+	AVX_vector operator<<(const int n) const {
+		if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (sizeof(scalar) == sizeof(int16_t))
+				return AVX_vector(_mm256_sll_epi16(
+					v,
+					_mm256_castsi256_si128(_mm256_set1_epi64x(n))
+				));
+			else if constexpr (sizeof(scalar) == sizeof(int32_t))
+				return AVX_vector(_mm256_sllv_epi32(v, _mm256_set1_epi32(n))));
+			else if constexpr (sizeof(scalar) == sizeof(int64_t))
+				return AVX_vector(_mm256_sllv_epi64(v, _mm256_set1_epi64x(n))));
+			else
+				static_assert(false, "AVX2 : operator<< is not defined in given type.");
+		}
+		else
+			static_assert(false, "AVX2 : operator<< is not defined in given type.");
+	}
+	AVX_vector operator<<(const AVX_vector& arg) const {
+		if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (sizeof(scalar) == sizeof(int32_t))
+				return AVX_vector(_mm256_sllv_epi32(v, arg.v));
+			else if constexpr (sizeof(scalar) == sizeof(int64_t))
+				return AVX_vector(_mm256_sllv_epi64(v, arg.v));
+			else
+				static_assert(false, "AVX2 : operator<<(AVX_vector) is not defined in given type.");
+		}
+		else
+			static_assert(false, "AVX2 : operator<<(AVX_vector) is not defined in given type.");
+	}
 	// Reciprocal
 	AVX_vector rcp() const {
 		if constexpr (std::is_same<scalar, float>::value)
@@ -504,7 +562,7 @@ public:
 			return AVX_vector(_mm256_andnot_pd(_mm256_set1_pd(-0.0), v));
 		else if constexpr (std::is_same<scalar, float>::value)
 			return AVX_vector(_mm256_andnot_ps(_mm256_set1_ps(-0.0f), v));
-		else if constexpr (std::is_integral<scalar>::value&& std::is_signed<scalar>::value) {
+		else if constexpr (std::is_integral<scalar>::value && std::is_signed<scalar>::value) {
 			if constexpr (sizeof(scalar) == sizeof(int8_t))
 				return AVX_vector(_mm256_abs_epi8(v));
 			else if constexpr (sizeof(scalar) == sizeof(int16_t))
