@@ -37,7 +37,7 @@ int main() {
 		AVX_vector<float> v2 = 2.2f;
 		AVX_vector<double> d1(1, 4, 5, 4);
 		v2 >> v;
-		AVX_vector<int32_t> t;
+		AVX_vector<int32_t> t(10);
 		AVX_vector<float> t1(1, 3, -4, 6,0,0,0,0);
 		AVX_vector<float> t2(2, -4, -5, 6,0,0,0,0);
 		auto fx = t1[0];
@@ -51,6 +51,8 @@ int main() {
 		auto b1 = (~(t == t)).is_all_zero();
 		auto f32 = static_cast<AVX_vector<float>>(t);
 		auto j = v1 + v2;
+
+		std::cout << t << std::endl;
 
 		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();

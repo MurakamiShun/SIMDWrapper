@@ -14,6 +14,8 @@ struct AVX_type {
 				typename std::conditional< std::is_integral<Scalar>::value, __m256i,
 				std::false_type>::type>::type>::type;
 
+	static constexpr size_t elements_size = 32 / sizeof(scalar);
+
 	static_assert(!std::is_same<vector, std::false_type>::value, "AVX2 : Given type is not supported.");
 };
 
@@ -22,7 +24,7 @@ class AVX_vector {
 private:
 	using scalar = typename AVX_type<Scalar>::scalar;
 	using vector = typename AVX_type<Scalar>::vector;
-	static constexpr size_t elements_size = 32 / sizeof(scalar);
+	static constexpr size_t elements_size = AVX_type<Scalar>::elements_size;
 
 	template<class... Args, size_t... I, size_t N = sizeof...(Args)>
 	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) {
@@ -227,7 +229,7 @@ public:
 		else if constexpr (std::is_same<scalar, float>::value)
 			_mm256_storeu_ps(arg, v);
 		else if constexpr (std::is_integral<scalar>::value)
-			_mm256_storeu_si256(arg, v);
+			_mm256_storeu_si256(reinterpret_cast<vector*>(arg), v);
 		else
 			static_assert(false, "AVX2 : operator>>(pointer) is not defined in given type.");
 		return arg;
@@ -565,6 +567,17 @@ public:
 			static_assert(false, "AVX2 : type casting is not defined in given type.");
 	}
 };
+
+template<typename Scalar>
+std::ostream& operator<<(std::ostream& os, const AVX_vector<Scalar>& v) {
+	typename AVX_type<Scalar>::scalar elements[AVX_type<Scalar>::elements_size];
+	v >> elements;
+	os << "[";
+	for (size_t i = 0; i < AVX_type<Scalar>::elements_size; i++)
+		os << (i ? " " : "") << elements[i];
+	os << "]";
+	return os;
+}
 
 namespace function {
 	// max(a, b)
