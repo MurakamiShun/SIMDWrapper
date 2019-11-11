@@ -30,14 +30,15 @@ int main() {
 	{
 		std::cout << "Wrapper Benchmark" << std::endl;
 		float v[] = { 1.1,-2.2,3.3,4.4,5,6,-7,8 };
-		AVX_vector<float> v1 = v;
+		AVX_vector<float> v1;
+		v1.load(v);
 		v1 = v1.abs().floor();
 		AVX_vector<float> v2 = 2.2f;
 		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
-		v2 >> v;
-		AVX_vector<int32_t> t(10,224,45,5,4,35,2,52);
-		AVX_vector<float> t1(1, 3, -4, 6,0,0,0,0);
-		AVX_vector<float> t2(2, -4, -5, 6,0,0,0,0);
+		v2.store(v);
+		AVX_vector<float> t(10);
+		AVX_vector<int64_t> t1(UINT32_MAX);
+		AVX_vector<int64_t> t2(0,0,0,0);
 		auto fx = d1[0];
 		auto fx2 = d1[1];
 		auto fx3 = d1[3];
@@ -46,14 +47,14 @@ int main() {
 			l += e;
 		auto m1 = t1.max(t2);
 		auto m2 = t1.min(t2);
-		auto f = t1 > t2;
+		std::cout << (t1 < t2).is_all_one();
 		auto c = (t1.max(t2) == function::cmp_blend(t1 > t2, t1, t2));
 		auto bo = (t == t).is_all_one();
 		auto b1 = (~(t == t)).is_all_zero();
-		auto f32 = static_cast<AVX_vector<float>>(t);
+		auto b2 = function::cmp_blend((t1 > t2), v2, t);
 		auto j = v1 + v2;
 
-		std::cout << t << std::endl;
+		std::cout << t1.alternate(t2) << std::endl;
 
 		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();
