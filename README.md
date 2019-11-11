@@ -2,7 +2,7 @@
 AVX2Wrapper is a C++17 header only library for AVX/AVX2/FMA .
 # Usage
 - code
-```
+```c++
 #include "AVX2Wrapper.hpp"
 #include <iostream>
 int main() {
