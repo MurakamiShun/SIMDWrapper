@@ -38,6 +38,7 @@ int main() {
 		v2.store(v);
 		AVX_vector<float> t(10);
 		AVX_vector<uint8_t> t1(UINT32_MAX);
+		std::cout << AVX_vector<uint8_t>(UINT8_MAX / 2) + AVX_vector<uint8_t>(UINT8_MAX / 2) << std::endl;
 		AVX_vector<uint8_t> t2(AVX_vector<uint16_t>(0).concat(AVX_vector<uint16_t>(UINT8_MAX)));
 		std::cout << t2.shuffle(AVX_vector<uint16_t>(30).concat(AVX_vector<uint16_t>(3))) << std::endl;
 		auto fx = d1[0];

@@ -1,14 +1,15 @@
 #pragma once
 
 #include <immintrin.h>
-#include <type_traits>
-#include <cstdint>
-#include <tuple>
-#include <array>
 #include <intrin.h>
-#include <bitset>
-#include <vector>
 
+#include <cstdint>
+#include <vector>
+#include <array>
+#include <type_traits>
+#include <tuple>
+#include <bitset>
+#include <sstream>
 
 class Instruction {
 public:
@@ -797,10 +798,10 @@ public:
 					return AVX_vector<uint8_t>(_mm256_permute4x64_epi64(
 						_mm256_add_epi8(
 							_mm256_packs_epi16(
-								_mm256_sub_epi16(v, _mm256_set1_epi16(UINT8_MAX / 2 + 1)),
-								_mm256_sub_epi16(arg.v, _mm256_set1_epi16(UINT8_MAX / 2 + 1))
+								_mm256_sub_epi16(v, _mm256_set1_epi16(UINT8_MAX / 2u + 1)),
+								_mm256_sub_epi16(arg.v, _mm256_set1_epi16(UINT8_MAX / 2u + 1))
 							),
-							_mm256_set1_epi8(UINT8_MAX / 2 + 1)
+							_mm256_set1_epi8(UINT8_MAX / 2u + 1)
 						),
 						216
 					));
@@ -999,20 +1000,23 @@ public:
 		else
 			static_assert(false, "AVX2 : shuffle is not defined in given type.");
 	}
+	std::string to_str(const std::string delim = print_format::delim::space, const std::pair<const char*, const char*> brancket = print_format::brancket::square) const {
+		std::ostringstream ss;
+		alignas(32) scalar elements[elements_size];
+		aligned_store(elements);
+		ss << brancket.first;
+		for (size_t i = 0; i < elements_size; i++) {
+			ss << (i ? delim : "");
+			ss << ((std::is_integral<scalar>::value && sizeof(scalar) == sizeof(int8_t)) ? static_cast<int>(elements[i]) : elements[i]);
+		}
+		ss << brancket.second;
+		return ss.str();
+	}
 };
 
 template<typename Scalar>
 std::ostream& operator<<(std::ostream& os, const AVX_vector<Scalar>& v) {
-	using scalar = typename AVX_type<Scalar>::scalar;
-	constexpr size_t elements_size = AVX_type<Scalar>::elements_size;
-	scalar elements[elements_size];
-	v.store(elements);
-	os << "[";
-	for (size_t i = 0; i < elements_size; i++) {
-		os << (i ? " " : "");
-		os << ((std::is_integral<scalar>::value && sizeof(scalar) == sizeof(int8_t)) ? static_cast<int>(elements[i]) : elements[i]);
-	}
-	os << "]";
+	os << v.to_str();
 	return os;
 }
 
@@ -1061,5 +1065,20 @@ namespace function {
 	template<typename Scalar>
 	auto alternate(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
 		return a.alternate(b);
+	}
+}
+
+namespace print_format {
+	namespace brancket {
+		constexpr auto round = std::make_pair("(", ")");
+		constexpr auto square = std::make_pair("[", "]");
+		constexpr auto curly = std::make_pair("{", "}");
+		constexpr auto pointy = std::make_pair("<", ">");
+	}
+	namespace delim {
+		constexpr auto space = " ";
+		constexpr auto comma = ",";
+		constexpr auto comma_space = ", ";
+		constexpr auto space_comma = " ,";
 	}
 }
