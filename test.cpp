@@ -14,7 +14,7 @@ int main() {
 		AVX_type<float>::vector v2{};
 		auto j = _mm256_add_ps(v1, v2);
 
-		for (int a = 0; a < 10; a++) {
+		for (int a = 0; a < 0; a++) {
 			auto start = std::chrono::system_clock::now();
 			for (int i = 0; i < 100000000; i++) {
 				j = _mm256_add_ps(v1, v2);
@@ -23,7 +23,7 @@ int main() {
 				j = _mm256_div_ps(v1, v2);
 				v1 = _mm256_fmadd_ps(v2, j, v1);
 			}
-			std::cout << (std::chrono::system_clock::now() - start).count()/1000 << std::endl;
+			std::cout << (std::chrono::system_clock::now() - start).count() / 1000 << std::endl;
 		}
 	}
 	std::cout << "------------------------" << std::endl;
@@ -37,8 +37,10 @@ int main() {
 		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
 		v2.store(v);
 		AVX_vector<float> t(10);
-		AVX_vector<int64_t> t1(UINT32_MAX);
-		AVX_vector<int64_t> t2(0,0,0,0);
+		AVX_vector<uint8_t> t1(UINT32_MAX);
+		std::cout << AVX_vector<uint8_t>(UINT8_MAX / 2) + AVX_vector<uint8_t>(UINT8_MAX / 2) << std::endl;
+		AVX_vector<uint8_t> t2(AVX_vector<uint16_t>(0).concat(AVX_vector<uint16_t>(UINT8_MAX)));
+		std::cout << t2.shuffle(AVX_vector<uint16_t>(30).concat(AVX_vector<uint16_t>(3))) << std::endl;
 		auto fx = d1[0];
 		auto fx2 = d1[1];
 		auto fx3 = d1[3];
@@ -54,7 +56,7 @@ int main() {
 		auto b2 = function::cmp_blend((t1 > t2), v2, t);
 		auto j = v1 + v2;
 
-		std::cout << t1.alternate(t2) << std::endl;
+		//std::cout << t1.alternate(t2) << std::endl;
 
 		for (int a = 0; a < 10; a++) {
 			auto start = std::chrono::system_clock::now();
@@ -65,7 +67,7 @@ int main() {
 				j = v1 / v2;
 				v1 = v2.muladd(j, v1);
 			}
-			std::cout << (std::chrono::system_clock::now() - start).count()/1000 << std::endl;
+			std::cout << (std::chrono::system_clock::now() - start).count() / 1000 << std::endl;
 		}
 	}
 	{

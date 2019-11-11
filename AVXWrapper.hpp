@@ -1,14 +1,15 @@
 #pragma once
 
 #include <immintrin.h>
-#include <type_traits>
-#include <cstdint>
-#include <tuple>
-#include <array>
 #include <intrin.h>
-#include <bitset>
-#include <vector>
 
+#include <cstdint>
+#include <vector>
+#include <array>
+#include <type_traits>
+#include <tuple>
+#include <bitset>
+#include <sstream>
 
 class Instruction {
 public:
@@ -17,9 +18,9 @@ public:
 	static bool FMA() { return CPU_ref.FMA; }
 private:
 	struct InstructionSet {
-		bool AVX2;
-		bool AVX;
-		bool FMA;
+		bool AVX2 = false;
+		bool AVX = false;
+		bool FMA = false;
 		InstructionSet() {
 			std::vector<std::array<int, 4>> data;
 			std::array<int, 4> cpui;
@@ -42,7 +43,6 @@ private:
 			}
 		}
 	};
-
 	static inline InstructionSet CPU_ref;
 };
 
@@ -50,9 +50,9 @@ template<typename Scalar>
 struct AVX_type {
 	using scalar = Scalar;
 	using vector = typename std::conditional< std::is_same<Scalar, double>::value, __m256d,
-				typename std::conditional< std::is_same<Scalar, float>::value, __m256,
-				typename std::conditional< std::is_integral<Scalar>::value, __m256i,
-				std::false_type>::type>::type>::type;
+		typename std::conditional< std::is_same<Scalar, float>::value, __m256,
+		typename std::conditional< std::is_integral<Scalar>::value, __m256i,
+		std::false_type>::type>::type>::type;
 
 	static constexpr size_t elements_size = 32 / sizeof(scalar);
 
@@ -68,30 +68,33 @@ private:
 
 	template<class... Args, size_t... I, size_t N = sizeof...(Args)>
 	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) {
+		constexpr bool is_right_args = ((N + 1) == elements_size);
+		auto args_tuple = std::make_tuple(std::forward<Args>(args)...);
+
 		if constexpr (std::is_same<scalar, double>::value) {
-			static_assert(N + 1 == 4, "AVX2 : wrong number of arguments (expected 4).");
-			v = _mm256_set_pd(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
+			static_assert(is_right_args, "AVX2 : wrong number of arguments (expected 4).");
+			v = _mm256_set_pd(std::get<N - 1 - I>(args_tuple)..., last);
 		}
 		else if constexpr (std::is_same<scalar, float>::value) {
-			static_assert(N + 1 == 8, "AVX2 : wrong number of arguments (expected 8).");
-			v = _mm256_set_ps(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
+			static_assert(is_right_args, "AVX2 : wrong number of arguments (expected 8).");
+			v = _mm256_set_ps(std::get<N - 1 - I>(args_tuple)..., last);
 		}
 		else if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (sizeof(scalar) == sizeof(int8_t)) {
-				static_assert(N + 1 == 32, "AVX2 : wrong number of arguments (expected 32).");
-				v = _mm256_set_epi8(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
+				static_assert(is_right_args, "AVX2 : wrong number of arguments (expected 32).");
+				v = _mm256_set_epi8(std::get<N - 1 - I>(args_tuple)..., last);
 			}
 			else if constexpr (sizeof(scalar) == sizeof(int16_t)) {
-				static_assert(N + 1 == 16, "AVX2 : wrong number of arguments (expected 16).");
-				v = _mm256_set_epi16(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
+				static_assert(is_right_args, "AVX2 : wrong number of arguments (expected 16).");
+				v = _mm256_set_epi16(std::get<N - 1 - I>(args_tuple)..., last);
 			}
 			else if constexpr (sizeof(scalar) == sizeof(int32_t)) {
-				static_assert(N + 1 == 8, "AVX2 : wrong number of arguments (expected 8).");
-				v = _mm256_set_epi32(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
+				static_assert(is_right_args, "AVX2 : wrong number of arguments (expected 8).");
+				v = _mm256_set_epi32(std::get<N - 1 - I>(args_tuple)..., last);
 			}
 			else if constexpr (sizeof(scalar) == sizeof(int64_t)) {
-				static_assert(N + 1 == 4, "AVX2 : wrong number of arguments (expected 4).");
-				v = _mm256_set_epi64x(std::get<N - 1 - I>(std::make_tuple(std::forward<Args>(args)...))..., last);
+				static_assert(is_right_args, "AVX2 : wrong number of arguments (expected 4).");
+				v = _mm256_set_epi64x(std::get<N - 1 - I>(args_tuple)..., last);
 			}
 			else
 				static_assert(false, "AVX2 : initializer is not defined in given type.");
@@ -795,10 +798,10 @@ public:
 					return AVX_vector<uint8_t>(_mm256_permute4x64_epi64(
 						_mm256_add_epi8(
 							_mm256_packs_epi16(
-								_mm256_sub_epi16(v, _mm256_set1_epi16(UINT8_MAX / 2 + 1)),
-								_mm256_sub_epi16(arg.v, _mm256_set1_epi16(UINT8_MAX / 2 + 1))
+								_mm256_sub_epi16(v, _mm256_set1_epi16(UINT8_MAX / 2u + 1)),
+								_mm256_sub_epi16(arg.v, _mm256_set1_epi16(UINT8_MAX / 2u + 1))
 							),
-							_mm256_set1_epi8(UINT8_MAX / 2 + 1)
+							_mm256_set1_epi8(UINT8_MAX / 2u + 1)
 						),
 						216
 					));
@@ -809,7 +812,7 @@ public:
 								_mm256_sub_epi32(v, _mm256_set1_epi32(UINT16_MAX / 2 + 1)),
 								_mm256_sub_epi32(arg.v, _mm256_set1_epi32(UINT16_MAX / 2 + 1))
 							),
-							_mm256_set1_epi16(UINT16_MAX / 2 + 1)
+							_mm256_set1_epi16(UINT16_MAX / 2u + 1)
 						),
 						216
 					));
@@ -899,20 +902,121 @@ public:
 		else
 			static_assert(false, "AVX2 : alternate is not defined in given type.");
 	}
+	template<typename ArgScalar>
+	AVX_vector shuffle(AVX_vector<ArgScalar> arg) const {
+		static_assert(sizeof(scalar) == sizeof(ArgScalar), "AVX2 : wrong mask is given to shuufle.");
+
+		if constexpr (std::is_same<scalar, double>::value)
+			return AVX_vector(_mm256_castps_pd(_mm256_permutevar8x32_ps(
+				_mm256_castpd_ps(v),
+				_mm256_add_epi32(
+					_mm256_slli_epi32(
+						_mm256_castps_si256(
+							_mm256_moveldup_ps(_mm256_castsi256_ps(arg.v))
+						),
+						1
+					),
+					_mm256_setr_epi32(0, 1, 0, 1, 0, 1, 0, 1)
+				)
+			)));
+		else if constexpr (std::is_same<scalar, float>::value)
+			return AVX_vector(_mm256_permutevar8x32_ps(v, arg.v));
+		else if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (sizeof(scalar) == sizeof(int8_t))
+				return AVX_vector(_mm256_or_si256(
+					// lower
+					_mm256_and_si256(
+						_mm256_shuffle_epi8(_mm256_permute2f128_si256(v, v, 0), arg.v),
+						_mm256_cmpgt_epi8(_mm256_set1_epi8(4), arg.v)
+					),
+					// upper
+					_mm256_and_si256(
+						_mm256_shuffle_epi8(_mm256_permute2f128_si256(v,v,17), arg.v),
+						_mm256_cmpgt_epi8(arg.v, _mm256_set1_epi8(4))
+					)
+				));
+			else if constexpr (sizeof(scalar) == sizeof(int16_t))
+				return AVX_vector(_mm256_or_si256(
+					// lower 
+					_mm256_and_si256(
+						_mm256_srlv_epi32(
+							_mm256_permutevar8x32_epi32(
+								v,
+								_mm256_srai_epi32(arg.v, 1)
+							),
+							_mm256_slli_epi32(
+								_mm256_and_si256(arg.v, _mm256_set1_epi32(1)),
+								4
+							)
+						),
+						_mm256_set1_epi32(UINT16_MAX)
+					),
+					// upper
+					_mm256_and_si256(
+						_mm256_sllv_epi32(
+							_mm256_permutevar8x32_epi32(
+								v,
+								_mm256_srai_epi32(arg.v, 17)
+							),
+							_mm256_slli_epi32(
+								_mm256_andnot_si256(_mm256_srai_epi32(arg.v, 16), _mm256_set1_epi32(1)),
+								4
+							)
+						),
+						_mm256_set1_epi32(~UINT16_MAX)
+					)
+				));
+			else if constexpr (sizeof(scalar) == sizeof(int32_t))
+				return AVX_vector(_mm256_permutevar8x32_epi32(v, arg.v));
+			else if constexpr (sizeof(scalar) == sizeof(int64_t))
+				return AVX_vector(_mm256_permutevar8x32_epi32(
+					v,
+					_mm256_add_epi32(
+						_mm256_slli_epi32(
+							_mm256_castps_si256(
+								_mm256_moveldup_ps(_mm256_castsi256_ps(arg.v))
+							),
+							1
+						),
+						_mm256_setr_epi32(0, 1, 0, 1, 0, 1, 0, 1)
+					)
+				));
+			else
+				static_assert(false, "AVX2 : shuffle is not defined in given type.");
+		}
+		else
+			static_assert(false, "AVX2 : shuffle is not defined in given type.");
+	}
+	template<typename... Args>
+	AVX_vector shuffle(Args... args) const {
+		static_assert(sizeof...(Args) == elements_size, "AVX2 : wrong number of arguments are given to shuffle.");
+
+		if constexpr (std::is_same<scalar, double>::value)
+			return shuffle(AVX_vector<uint64_t>(args...));
+		else if constexpr (std::is_same<scalar, float>::value)
+			return shuffle(AVX_vector<uint32_t>(args...));
+		else if constexpr (std::is_integral<scalar>::value)
+			return shuffle(AVX_vector(args...));
+		else
+			static_assert(false, "AVX2 : shuffle is not defined in given type.");
+	}
+	std::string to_str(const std::string delim = print_format::delim::space, const std::pair<const char*, const char*> brancket = print_format::brancket::square) const {
+		std::ostringstream ss;
+		alignas(32) scalar elements[elements_size];
+		aligned_store(elements);
+		ss << brancket.first;
+		for (size_t i = 0; i < elements_size; i++) {
+			ss << (i ? delim : "");
+			ss << ((std::is_integral<scalar>::value && sizeof(scalar) == sizeof(int8_t)) ? static_cast<int>(elements[i]) : elements[i]);
+		}
+		ss << brancket.second;
+		return ss.str();
+	}
 };
 
 template<typename Scalar>
 std::ostream& operator<<(std::ostream& os, const AVX_vector<Scalar>& v) {
-	using scalar = typename AVX_type<Scalar>::scalar;
-	constexpr size_t elements_size = AVX_type<Scalar>::elements_size;
-	scalar elements[elements_size];
-	v.store(elements);
-	os << "[";
-	for (size_t i = 0; i < elements_size; i++) {
-		os << (i ? " " : "");
-		os << ((std::is_integral<scalar>::value && sizeof(scalar) == sizeof(int8_t)) ? static_cast<int>(elements[i]) : elements[i]);
-	}
-	os << "]";
+	os << v.to_str();
 	return os;
 }
 
@@ -961,5 +1065,20 @@ namespace function {
 	template<typename Scalar>
 	auto alternate(const AVX_vector<Scalar>& a, const AVX_vector<Scalar>& b) {
 		return a.alternate(b);
+	}
+}
+
+namespace print_format {
+	namespace brancket {
+		constexpr auto round = std::make_pair("(", ")");
+		constexpr auto square = std::make_pair("[", "]");
+		constexpr auto curly = std::make_pair("{", "}");
+		constexpr auto pointy = std::make_pair("<", ">");
+	}
+	namespace delim {
+		constexpr auto space = " ";
+		constexpr auto comma = ",";
+		constexpr auto comma_space = ", ";
+		constexpr auto space_comma = " ,";
 	}
 }
