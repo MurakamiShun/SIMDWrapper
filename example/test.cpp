@@ -1,4 +1,4 @@
-#include "AVXWrapper.hpp"
+#include "AVX2Wrapper.hpp"
 #include <vector>
 #include <chrono>
 #include <iostream>
@@ -10,8 +10,8 @@ int main() {
 	std::cout << "FMA :" << Instruction::FMA() << std::endl;
 	{
 		std::cout << "Instrinsics Benchmark" << std::endl;
-		AVX_type<float>::vector v1{};
-		AVX_type<float>::vector v2{};
+		vector256_type<float>::vector v1{};
+		vector256_type<float>::vector v2{};
 		auto j = _mm256_add_ps(v1, v2);
 
 		for (int a = 0; a < 0; a++) {
@@ -30,17 +30,17 @@ int main() {
 	{
 		std::cout << "Wrapper Benchmark" << std::endl;
 		float v[] = { 1.1,-2.2,3.3,4.4,5,6,-7,8 };
-		AVX_vector<float> v1;
+		vector256<float> v1;
 		v1.load(v);
 		v1 = v1.abs().floor();
-		AVX_vector<float> v2 = 2.2f;
-		AVX_vector<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
+		vector256<float> v2 = 2.2f;
+		vector256<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
 		v2.store(v);
-		AVX_vector<float> t(10);
-		AVX_vector<uint8_t> t1(UINT32_MAX);
-		std::cout << AVX_vector<uint8_t>(UINT8_MAX / 2) + AVX_vector<uint8_t>(UINT8_MAX / 2) << std::endl;
-		AVX_vector<uint8_t> t2(AVX_vector<uint16_t>(0).concat(AVX_vector<uint16_t>(UINT8_MAX)));
-		std::cout << t2.shuffle(AVX_vector<uint16_t>(30).concat(AVX_vector<uint16_t>(3))) << std::endl;
+		vector256<float> t(10);
+		vector256<uint8_t> t1(UINT32_MAX);
+		std::cout << vector256<uint8_t>(UINT8_MAX / 2) + vector256<uint8_t>(UINT8_MAX / 2) << std::endl;
+		vector256<uint8_t> t2(vector256<uint16_t>(0).concat(vector256<uint16_t>(UINT8_MAX)));
+		std::cout << t2.shuffle(vector256<uint16_t>(30).concat(vector256<uint16_t>(3))) << std::endl;
 		auto fx = d1[0];
 		auto fx2 = d1[1];
 		auto fx3 = d1[3];
