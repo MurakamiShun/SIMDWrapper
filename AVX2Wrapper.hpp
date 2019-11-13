@@ -263,7 +263,7 @@ public:
 		else if constexpr (is_scalar<float>::value)
 			v = _mm256_loadu_ps(arg);
 		else if constexpr (std::is_integral<scalar>::value)
-			v = _mm256_loadu_si256(arg);
+			v = _mm256_loadu_si256(reinterpret_cast<const vector*>(arg));
 		else
 			static_assert(false, "AVX2 : load(pointer) is not defined in given type.");
 		return *this;
