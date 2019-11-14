@@ -26,7 +26,7 @@ private:
 			std::array<int, 4> cpui;
 			__cpuid(cpui.data(), 0);
 			int ids = cpui[0];
-			for (int i = 0; i < ids; i++) {
+			for (int i = 0; i < ids; ++i) {
 				__cpuidex(cpui.data(), i, 0);
 				data.push_back(cpui);
 			}
@@ -133,7 +133,7 @@ private:
 			return tmp[index];
 		}
 		input_iterator& operator++() {
-			index++;
+			++index;
 			return *this;
 		}
 		bool operator==(const input_iterator& it) const {
@@ -207,23 +207,22 @@ public:
 			return vector256(_mm256_mul_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_mul_ps(v, arg.v));
-		else if constexpr (std::is_integral<scalar>::value) {
-			if constexpr (std::is_signed<scalar>::value) {
-				if constexpr (is_scalar_size<int64_t>::value)
-					return vector256(_mm256_mul_epi32(v, arg.v));
-				else if constexpr (is_scalar_size<int32_t>::value)
-					return vector256(_mm256_mullo_epi32(v, arg.v));
-				else if constexpr (is_scalar_size<int16_t>::value)
-					return vector256(_mm256_mullo_epi16(v, arg.v));
-				else
-					static_assert(false, "AVX2 : operator* is not defined in given type.");
-			}
-			else {
-				if constexpr (is_scalar_size<int64_t>::value)
-					return vector256(_mm256_mul_epu32(v, arg.v));
-				else
-					static_assert(false, "AVX2 : operator* is not defined in given type.");
-			}
+		else if constexpr (std::is_integral<scalar>::value&& std::is_signed<scalar>::value) {
+			if constexpr (is_scalar_size<int64_t>::value)
+				return vector256(_mm256_mul_epi32(v, arg.v));
+			else if constexpr (is_scalar_size<int32_t>::value)
+				return vector256(_mm256_mullo_epi32(v, arg.v));
+			else if constexpr (is_scalar_size<int16_t>::value)
+				return vector256(_mm256_mullo_epi16(v, arg.v));
+			else
+				static_assert(false, "AVX2 : operator* is not defined in given type.");
+		}
+		else if constexpr (std::is_integral<scalar>::value&& std::is_unsigned<scalar>::value) {
+			if constexpr (is_scalar_size<int64_t>::value)
+				return vector256(_mm256_mul_epu32(v, arg.v));
+			else
+				static_assert(false, "AVX2 : operator* is not defined in given type.");
+
 		}
 		else
 			static_assert(false, "AVX2 : operator* is not defined in given type.");
@@ -1011,7 +1010,7 @@ public:
 		alignas(32) scalar elements[elements_size];
 		aligned_store(elements);
 		ss << brancket.first;
-		for (size_t i = 0; i < elements_size; i++) {
+		for (size_t i = 0; i < elements_size; ++i) {
 			ss << (i ? delim : "");
 			ss << ((std::is_integral<scalar>::value && is_scalar_size<int8_t>::value) ? static_cast<int>(elements[i]) : elements[i]);
 		}
