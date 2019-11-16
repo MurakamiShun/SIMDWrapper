@@ -1,7 +1,11 @@
 #pragma once
 
 #include <immintrin.h>
+#if defined(__GNUC__)
+#include <cpuid.h>
+#elif defined(_MSC_VER)
 #include <intrin.h>
+#endif
 
 #include <cstdint>
 #include <vector>
@@ -46,6 +50,21 @@ private:
 	static inline InstructionSet CPU_ref;
 };
 
+namespace print_format {
+	namespace brancket {
+		constexpr auto round = std::make_pair("(", ")");
+		constexpr auto square = std::make_pair("[", "]");
+		constexpr auto curly = std::make_pair("{", "}");
+		constexpr auto pointy = std::make_pair("<", ">");
+	}
+	namespace delim {
+		constexpr auto space = " ";
+		constexpr auto comma = ",";
+		constexpr auto comma_space = ", ";
+		constexpr auto space_comma = " ,";
+	}
+}
+
 template<typename Scalar>
 struct vector256_type {
 	using scalar = Scalar;
@@ -58,6 +77,9 @@ struct vector256_type {
 
 	static_assert(!std::is_same<vector, std::false_type>::value, "AVX2 : Given type is not supported.");
 };
+
+template<typename T>
+constexpr bool false_v = false;
 
 template<typename Scalar>
 class vector256 {
@@ -105,10 +127,10 @@ private:
 				v = _mm256_set_epi64x(std::get<N - 1 - I>(args_tuple)..., last);
 			}
 			else
-				static_assert(false, "AVX2 : initializer is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : initializer is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : initializer is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : initializer is not defined in given type.");
 	}
 
 	class input_iterator {
@@ -177,10 +199,10 @@ public:
 			else if constexpr (is_scalar_size<int64_t>::value)
 				return vector256(_mm256_add_epi64(v, arg.v));
 			else
-				static_assert(false, "AVX2 : operator+ is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator+ is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator+ is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator+ is not defined in given type.");
 	}
 	vector256 operator-(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -197,35 +219,47 @@ public:
 			else if constexpr (is_scalar_size<int64_t>::value)
 				return vector256(_mm256_sub_epi64(v, arg.v));
 			else
-				static_assert(false, "AVX2 : operator- is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator- is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator- is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator- is not defined in given type.");
 	}
 	vector256 operator*(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_mul_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_mul_ps(v, arg.v));
+		/*
 		else if constexpr (std::is_integral<scalar>::value&& std::is_signed<scalar>::value) {
 			if constexpr (is_scalar_size<int64_t>::value)
-				return vector256(_mm256_mul_epi32(v, arg.v));
+				return vector256(_mm256_mul_epui32(
+					_mm256_srli_epi64(
+						_mm256_or_si256(
+							_mm256_and_si256(
+								v,
+								_mm256_set1_epi64(INT64_MIN)
+							)
+						),
+						32
+					),
+					arg.v
+				));
 			else if constexpr (is_scalar_size<int32_t>::value)
 				return vector256(_mm256_mullo_epi32(v, arg.v));
 			else if constexpr (is_scalar_size<int16_t>::value)
 				return vector256(_mm256_mullo_epi16(v, arg.v));
 			else
-				static_assert(false, "AVX2 : operator* is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
 		}
+		*/
 		else if constexpr (std::is_integral<scalar>::value&& std::is_unsigned<scalar>::value) {
 			if constexpr (is_scalar_size<int64_t>::value)
 				return vector256(_mm256_mul_epu32(v, arg.v));
 			else
-				static_assert(false, "AVX2 : operator* is not defined in given type.");
-
+				static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator* is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
 	}
 	vector256 operator/(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -233,7 +267,7 @@ public:
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_div_ps(v, arg.v));
 		else
-			static_assert(false, "AVX2 : operator/ is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator/ is not defined in given type.");
 	}
 	vector256& operator=(const scalar arg) {
 		if constexpr (is_scalar<double>::value)
@@ -250,10 +284,10 @@ public:
 			else if constexpr (is_scalar_size<int64_t>::value)
 				v = _mm256_set1_epi64x(arg);
 			else
-				static_assert(false, "AVX2 : operator=(scalar) is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator=(scalar) is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator=(scalar) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator=(scalar) is not defined in given type.");
 		return *this;
 	}
 	vector256& load(const scalar* const arg) {
@@ -264,7 +298,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			v = _mm256_loadu_si256(reinterpret_cast<const vector*>(arg));
 		else
-			static_assert(false, "AVX2 : load(pointer) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : load(pointer) is not defined in given type.");
 		return *this;
 	}
 	vector256& aligned_load(const scalar* const arg) {
@@ -275,7 +309,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			v = _mm256_load_si256(arg);
 		else
-			static_assert(false, "AVX2 : load(pointer) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : load(pointer) is not defined in given type.");
 		return *this;
 	}
 	void store(scalar* arg) const {
@@ -286,7 +320,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			_mm256_storeu_si256(reinterpret_cast<vector*>(arg), v);
 		else
-			static_assert(false, "AVX2 : store(pointer) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : store(pointer) is not defined in given type.");
 	}
 	void aligned_store(scalar* arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -296,7 +330,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			_mm256_store_si256(reinterpret_cast<vector*>(arg), v);
 		else
-			static_assert(false, "AVX2 : store(pointer) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : store(pointer) is not defined in given type.");
 	}
 	scalar operator[](const size_t index) const {
 		return reinterpret_cast<const scalar*>(&v)[index];
@@ -316,10 +350,10 @@ public:
 			else if constexpr (is_scalar_size<int64_t>::value)
 				return vector256(_mm256_cmpeq_epi64(v, arg.v));
 			else
-				static_assert(false, "AVX2 : operator== is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator== is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator== is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator== is not defined in given type.");
 	}
 	bool is_all_zero() const {
 		if constexpr (is_scalar<double>::value)
@@ -335,7 +369,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return static_cast<bool>(_mm256_testz_si256(v, _mm256_cmpeq_epi64(v, v)));
 		else
-			static_assert(false, "AVX2 : is_all_zero is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : is_all_zero is not defined in given type.");
 	}
 	bool is_all_one() const {
 		if constexpr (is_scalar<double>::value)
@@ -351,7 +385,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return static_cast<bool>(_mm256_testc_si256(v, _mm256_cmpeq_epi64(v, v)));
 		else
-			static_assert(false, "AVX2 : is_all_one is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : is_all_one is not defined in given type.");
 	}
 	vector256 operator>(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -369,7 +403,7 @@ public:
 				else if constexpr (is_scalar_size<int64_t>::value)
 					return vector256(_mm256_cmpgt_epi64(v, arg.v));
 				else
-					static_assert(false, "AVX2 : operator> is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator> is not defined in given type.");
 			}
 			else {
 				if constexpr (is_scalar_size<int8_t>::value)
@@ -393,11 +427,11 @@ public:
 						_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN))
 					));
 				else
-					static_assert(false, "AVX2 : operator> is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator> is not defined in given type.");
 			}
 		}
 		else
-			static_assert(false, "AVX2 : operator> is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator> is not defined in given type.");
 	}
 	vector256 operator<(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -415,7 +449,7 @@ public:
 				else if constexpr (is_scalar_size<int64_t>::value)
 					return vector256(_mm256_cmpgt_epi64(arg.v, v));
 				else
-					static_assert(false, "AVX2 : operator< is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator< is not defined in given type.");
 			}
 			else {
 				if constexpr (is_scalar_size<int8_t>::value)
@@ -439,11 +473,11 @@ public:
 						_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN))
 					));
 				else
-					static_assert(false, "AVX2 : operator< is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator< is not defined in given type.");
 			}
 		}
 		else
-			static_assert(false, "AVX2 : operator< is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator< is not defined in given type.");
 	}
 	vector256 operator& (const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -453,7 +487,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return vector256(_mm256_and_si256(v, arg.v));
 		else
-			static_assert(false, "AVX2 : and is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : and is not defined in given type.");
 	}
 	vector256 nand(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -463,7 +497,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return vector256(_mm256_andnot_si256(v, arg.v));
 		else
-			static_assert(false, "AVX2 : nand is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : nand is not defined in given type.");
 	}
 	vector256 operator~() const {
 		if constexpr (is_scalar<double>::value)
@@ -473,7 +507,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return vector256(_mm256_andnot_si256(v, v));
 		else
-			static_assert(false, "AVX2 : not is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : not is not defined in given type.");
 	}
 	vector256 operator| (const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -483,7 +517,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return vector256(_mm256_or_si256(v, arg.v));
 		else
-			static_assert(false, "AVX2 : or is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : or is not defined in given type.");
 	}
 	vector256 operator^ (const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -493,7 +527,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return vector256(_mm256_xor_si256(v, arg.v));
 		else
-			static_assert(false, "AVX2 : xor is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : xor is not defined in given type.");
 	}
 	vector256 operator>>(const int n) const {
 		if constexpr (std::is_integral<scalar>::value) {
@@ -507,10 +541,10 @@ public:
 			else if constexpr (is_scalar_size<int64_t>::value)
 				return vector256(_mm256_srlv_epi64(v, _mm256_set1_epi64x(n)));
 			else
-				static_assert(false, "AVX2 : operator>> is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator>> is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator>> is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator>> is not defined in given type.");
 	}
 	vector256 operator>>(const vector256& arg) const {
 		if constexpr (std::is_integral<scalar>::value) {
@@ -519,10 +553,10 @@ public:
 			else if constexpr (is_scalar_size<int64_t>::value)
 				return vector256(_mm256_srlv_epi64(v, arg.v));
 			else
-				static_assert(false, "AVX2 : operator>>(vector256) is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator>>(vector256) is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator>>(vector256) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator>>(vector256) is not defined in given type.");
 	}
 	vector256 operator<<(const int n) const {
 		if constexpr (std::is_integral<scalar>::value) {
@@ -536,10 +570,10 @@ public:
 			else if constexpr (is_scalar_size<int64_t>::value)
 				return vector256(_mm256_sllv_epi64(v, _mm256_set1_epi64x(n)));
 			else
-				static_assert(false, "AVX2 : operator<< is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator<< is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator<< is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator<< is not defined in given type.");
 	}
 	vector256 operator<<(const vector256& arg) const {
 		if constexpr (std::is_integral<scalar>::value) {
@@ -548,24 +582,24 @@ public:
 			else if constexpr (is_scalar_size<int64_t>::value)
 				return vector256(_mm256_sllv_epi64(v, arg.v));
 			else
-				static_assert(false, "AVX2 : operator<<(vector256) is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : operator<<(vector256) is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : operator<<(vector256) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator<<(vector256) is not defined in given type.");
 	}
 	// Reciprocal approximation < 1.5*2^12
 	vector256 rcp() const {
 		if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_rcp_ps(v));
 		else
-			static_assert(false, "AVX2 : rcp is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : rcp is not defined in given type.");
 	}
 	// this * (1 / arg)
 	vector256 fast_div(const vector256& arg) const {
 		if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_mul_ps(v, _mm256_rcp_ps(arg.v)));
 		else
-			static_assert(false, "AVX2 : fast_div is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : fast_div is not defined in given type.");
 	}
 	vector256 abs() const {
 		if constexpr (is_scalar<double>::value)
@@ -584,10 +618,10 @@ public:
 				return vector256(_mm256_sub_epi64(_mm256_xor_si256(v, mask), mask));
 			}
 			else
-				static_assert(false, "AVX2 : abs is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : abs is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : abs is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : abs is not defined in given type.");
 	}
 	vector256 sqrt() const {
 		if constexpr (is_scalar<double>::value)
@@ -595,14 +629,14 @@ public:
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_sqrt_ps(v));
 		else
-			static_assert(false, "AVX2 : sqrt is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : sqrt is not defined in given type.");
 	}
 	// 1 / sqrt()
 	vector256 rsqrt() const {
 		if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_rsqrt_ps(v));
 		else
-			static_assert(false, "AVX2 : rsqrt is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : rsqrt is not defined in given type.");
 	}
 	vector256 max(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -620,7 +654,7 @@ public:
 				else if constexpr (is_scalar_size<int64_t>::value)
 					return vector256(_mm256_blendv_epi8(arg.v, v, _mm256_cmpgt_epi64(v, arg.v)));
 				else
-					static_assert(false, "AVX2 : max is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : max is not defined in given type.");
 			}
 			else {
 				if constexpr (is_scalar_size<int8_t>::value)
@@ -639,11 +673,11 @@ public:
 						)
 					));
 				else
-					static_assert(false, "AVX2 : max is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : max is not defined in given type.");
 			}
 		}
 		else
-			static_assert(false, "AVX2 : max is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : max is not defined in given type.");
 	}
 	vector256 min(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
@@ -661,7 +695,7 @@ public:
 				else if constexpr (is_scalar_size<int64_t>::value)
 					return vector256(_mm256_blendv_epi8(v, arg.v, _mm256_cmpgt_epi64(v, arg.v)));
 				else
-					static_assert(false, "AVX2 : min is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : min is not defined in given type.");
 			}
 			if constexpr (std::is_unsigned<scalar>::value) {
 				if constexpr (is_scalar_size<int8_t>::value)
@@ -680,11 +714,11 @@ public:
 						)
 					));
 				else
-					static_assert(false, "AVX2 : min is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : min is not defined in given type.");
 			}
 		}
 		else
-			static_assert(false, "AVX2 : min is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : min is not defined in given type.");
 	}
 	vector256 ceil() const {
 		if constexpr (is_scalar<double>::value)
@@ -692,7 +726,7 @@ public:
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_ceil_ps(v));
 		else
-			static_assert(false, "AVX2 : ceil is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : ceil is not defined in given type.");
 	}
 	vector256 floor() const {
 		if constexpr (is_scalar<double>::value)
@@ -700,7 +734,7 @@ public:
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_floor_ps(v));
 		else
-			static_assert(false, "AVX2 : floor is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : floor is not defined in given type.");
 	}
 	// this * a + b
 	vector256 muladd(const vector256& a, const vector256& b) const {
@@ -709,7 +743,7 @@ public:
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_fmadd_ps(v, a.v, b.v));
 		else
-			static_assert(false, "AVX2 : mulladd is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : mulladd is not defined in given type.");
 	}
 	// this * a - b
 	vector256 mulsub(const vector256& a, const vector256& b) const {
@@ -718,7 +752,7 @@ public:
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_fmsub_ps(v, a.v, b.v));
 		else
-			static_assert(false, "AVX2 : mullsub is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : mullsub is not defined in given type.");
 	}
 	// { this[0] + this[1], arg[0] + arg[1], this[2] + this[3], ... }
 	vector256 hadd(const vector256& arg) const {
@@ -732,10 +766,10 @@ public:
 			else if constexpr (is_scalar_size<int32_t>::value)
 				return vector256(_mm256_hadd_epi32(v, arg.v));
 			else
-				static_assert(false, "AVX2 : hadd is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : hadd is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : hadd is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : hadd is not defined in given type.");
 	}
 	// (mask) ? this : a
 	template<typename MaskScalar>
@@ -747,7 +781,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return vector256(_mm256_blendv_epi8(a.v, v, mask.reinterpret<scalar>().v));
 		else
-			static_assert(false, "AVX2 : cmp_blend is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : cmp_blend is not defined in given type.");
 	}
 	template<typename Cvt>
 	explicit operator vector256<Cvt>() const {
@@ -756,7 +790,7 @@ public:
 		else if constexpr (is_scalar<int32_t>::value&& std::is_same<Cvt, float>::value)
 			return vector256<Cvt>(_mm256_cvtepi32_ps(v));
 		else
-			static_assert(false, "AVX2 : type casting is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : type casting is not defined in given type.");
 	}
 	// reinterpret cast (data will not change)
 	template<typename Cvt>
@@ -798,7 +832,7 @@ public:
 						_mm256_set1_epi32(INT32_MAX / 2)
 					));
 				else
-					static_assert(false, "AVX2 : concat is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : concat is not defined in given type.");
 			}
 			else {
 				if constexpr (is_scalar_size<int16_t>::value)
@@ -832,11 +866,11 @@ public:
 						_mm256_set_epi32(7, 5, 3, 1, 6, 4, 2, 0)
 					));
 				else
-					static_assert(false, "AVX2 : concat is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : concat is not defined in given type.");
 			}
 		}
 		else
-			static_assert(false, "AVX2 : concat is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : concat is not defined in given type.");
 	}
 	// FP64x4x2 -> FP32x8, { a[0], b[0], .... a[n], b[n] }
 	auto alternate(const vector256& arg) const {
@@ -884,7 +918,7 @@ public:
 						)
 					));
 				else
-					static_assert(false, "AVX2 : alternate is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : alternate is not defined in given type.");
 			}
 			else {
 				if constexpr (is_scalar_size<int16_t>::value)
@@ -903,11 +937,11 @@ public:
 						_mm256_slli_epi64(arg.v, 32)
 					));
 				else
-					static_assert(false, "AVX2 : alternate is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : alternate is not defined in given type.");
 			}
 		}
 		else
-			static_assert(false, "AVX2 : alternate is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : alternate is not defined in given type.");
 	}
 	template<typename ArgScalar>
 	vector256 shuffle(vector256<ArgScalar> arg) const {
@@ -989,10 +1023,10 @@ public:
 					)
 				));
 			else
-				static_assert(false, "AVX2 : shuffle is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : shuffle is not defined in given type.");
 		}
 		else
-			static_assert(false, "AVX2 : shuffle is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : shuffle is not defined in given type.");
 	}
 	template<typename... Args>
 	vector256 shuffle(Args... args) const {
@@ -1003,7 +1037,7 @@ public:
 		else if constexpr (std::is_integral<scalar>::value)
 			return shuffle(vector256(args...));
 		else
-			static_assert(false, "AVX2 : shuffle is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : shuffle is not defined in given type.");
 	}
 	std::string to_str(std::string_view delim = print_format::delim::space, const std::pair<std::string_view, std::string_view> brancket = print_format::brancket::square) const {
 		std::ostringstream ss;
@@ -1070,20 +1104,5 @@ namespace function {
 	template<typename Scalar>
 	auto alternate(const vector256<Scalar>& a, const vector256<Scalar>& b) {
 		return a.alternate(b);
-	}
-}
-
-namespace print_format {
-	namespace brancket {
-		constexpr auto round = std::make_pair("(", ")");
-		constexpr auto square = std::make_pair("[", "]");
-		constexpr auto curly = std::make_pair("{", "}");
-		constexpr auto pointy = std::make_pair("<", ">");
-	}
-	namespace delim {
-		constexpr auto space = " ";
-		constexpr auto comma = ",";
-		constexpr auto comma_space = ", ";
-		constexpr auto space_comma = " ,";
 	}
 }
