@@ -224,39 +224,24 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator- is not defined in given type.");
 	}
-	vector256 operator*(const vector256& arg) const {
+	auto operator*(const vector256& arg) const {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_mul_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_mul_ps(v, arg.v));
-		/*
-		else if constexpr (std::is_integral<scalar>::value&& std::is_signed<scalar>::value) {
-			if constexpr (is_scalar_size<int64_t>::value)
-				return vector256(_mm256_mul_epui32(
-					_mm256_srli_epi64(
-						_mm256_or_si256(
-							_mm256_and_si256(
-								v,
-								_mm256_set1_epi64(INT64_MIN)
-							)
-						),
-						32
-					),
-					arg.v
-				));
-			else if constexpr (is_scalar_size<int32_t>::value)
-				return vector256(_mm256_mullo_epi32(v, arg.v));
-			else if constexpr (is_scalar_size<int16_t>::value)
-				return vector256(_mm256_mullo_epi16(v, arg.v));
-			else
-				static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
-		}
-		*/
-		else if constexpr (std::is_integral<scalar>::value&& std::is_unsigned<scalar>::value) {
-			if constexpr (is_scalar_size<int64_t>::value)
-				return vector256(_mm256_mul_epu32(v, arg.v));
-			else
-				static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
+		else if constexpr (std::is_integral<scalar>::value) {
+			if constexpr (std::is_signed<scalar>::value) {
+				if constexpr (is_scalar_size<int32_t>::value)
+					return vector256<int64_t>(_mm256_mul_epi32(v, arg.v));
+				else
+					static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
+			}
+			else {
+				if constexpr (is_scalar_size<int32_t>::value)
+					return vector256<uint64_t>(_mm256_mul_epu32(v, arg.v));
+				else
+					static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
+			}
 		}
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
@@ -1105,4 +1090,19 @@ namespace function {
 	auto alternate(const vector256<Scalar>& a, const vector256<Scalar>& b) {
 		return a.alternate(b);
 	}
+}
+
+namespace type {
+	using int8x32 = vector256<int8_t>;
+	using int16x16 = vector256<int16_t>;
+	using int32x8 = vector256<int32_t>;
+	using int64x4 = vector256<int64_t>;
+	
+	using uint8x32 = vector256<uint8_t>;
+	using uint16x16 = vector256<uint16_t>;
+	using uint32x8 = vector256<uint32_t>;
+	using uint64x4 = vector256<uint64_t>;
+	
+	using floatx8 = vector256<float>;
+	using doublex4 = vector256<double>;
 }
