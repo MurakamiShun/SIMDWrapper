@@ -35,10 +35,19 @@ private:
 		InstructionSet() {
 			std::vector<std::array<int, 4>> data;
 			std::array<int, 4> cpui;
+			#if defined(__GNUC__)
+			__cpuid(0, cpui[0], cpui[1], cpui[2], cpui[3]);
+			#elif defined(_MSC_VER)
 			__cpuid(cpui.data(), 0);
+			#endif
+			
 			int ids = cpui[0];
 			for (int i = 0; i < ids; ++i) {
+				#if defined(__GNUC__)
+				__cpuid_count(i, 0, cpui[0], cpui[1], cpui[2], cpui[3]);
+				#elif defined(_MSC_VER)
 				__cpuidex(cpui.data(), i, 0);
+				#endif
 				data.push_back(cpui);
 			}
 			std::bitset<32> f_1_ECX;
