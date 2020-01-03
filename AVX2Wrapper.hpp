@@ -1,69 +1,7 @@
 #pragma once
 
 #include <immintrin.h>
-#if defined(__GNUC__)
-#include <cpuid.h>
-#elif defined(_MSC_VER)
-#include <intrin.h>
-#endif
-
-#include <cstdint>
-#include <vector>
-#include <array>
-#include <type_traits>
-#include <tuple>
-#include <bitset>
-#include <sstream>
-
-class Instruction {
-public:
-	static bool AVX2() { return CPU_ref.AVX2; }
-	static bool AVX() { return CPU_ref.AVX; }
-	static bool FMA() { return CPU_ref.FMA; }
-private:
-	struct InstructionSet {
-		bool AVX2 = false;
-		bool AVX = false;
-		bool FMA = false;
-		InstructionSet() {
-			std::vector<std::array<int, 4>> data;
-			std::array<int, 4> cpui;
-			__cpuid(cpui.data(), 0);
-			int ids = cpui[0];
-			for (int i = 0; i < ids; ++i) {
-				__cpuidex(cpui.data(), i, 0);
-				data.push_back(cpui);
-			}
-			std::bitset<32> f_1_ECX;
-			if (ids >= 1) {
-				f_1_ECX = data[1][2];
-				AVX = f_1_ECX[28];
-				FMA = f_1_ECX[12];
-			}
-			std::bitset<32> f_7_EBX;
-			if (ids >= 7) {
-				f_7_EBX = data[7][1];
-				AVX2 = f_7_EBX[5];
-			}
-		}
-	};
-	static inline InstructionSet CPU_ref;
-};
-
-namespace print_format {
-	namespace brancket {
-		constexpr auto round = std::make_pair("(", ")");
-		constexpr auto square = std::make_pair("[", "]");
-		constexpr auto curly = std::make_pair("{", "}");
-		constexpr auto pointy = std::make_pair("<", ">");
-	}
-	namespace delim {
-		constexpr auto space = " ";
-		constexpr auto comma = ",";
-		constexpr auto comma_space = ", ";
-		constexpr auto space_comma = " ,";
-	}
-}
+#include "SSEWrapper.hpp"
 
 template<typename Scalar>
 struct vector256_type {
@@ -77,9 +15,6 @@ struct vector256_type {
 
 	static_assert(!std::is_same<vector, std::false_type>::value, "AVX2 : Given type is not supported.");
 };
-
-template<typename T>
-constexpr bool false_v = false;
 
 template<typename Scalar>
 class vector256 {
