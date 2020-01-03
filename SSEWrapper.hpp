@@ -764,7 +764,7 @@ public:
 		else if constexpr (is_scalar<int32_t>::value&& std::is_same<Cvt, float>::value)
 			return vector128<Cvt>(_mm_cvtepi32_ps(v));
 		else
-			static_assert(false_v<Scalar>, "AVX2 : type casting is not defined in given type.");
+			static_assert(false_v<Scalar>, "SSE4.2 : type casting is not defined in given type.");
 	}
 	// reinterpret cast (data will not change)
 	template<typename Cvt>
@@ -791,6 +791,34 @@ template<typename Scalar>
 std::ostream& operator<<(std::ostream& os, const vector128<Scalar>& v) {
 	os << v.to_str();
 	return os;
+}
+
+namespace function {
+	// max(a, b)
+	template<typename Scalar>
+	vector128<Scalar> max(const vector128<Scalar>& a, const vector128<Scalar>& b) {
+		return a.max(b);
+	}
+	// min(a, b)
+	template<typename Scalar>
+	vector128<Scalar> min(const vector128<Scalar>& a, const vector128<Scalar>& b) {
+		return a.min(b);
+	}
+	// (==) ? a : b
+	template<typename MaskScalar, typename Scalar>
+	vector128<Scalar> cmp_blend(const vector128<MaskScalar>& mask, const vector128<Scalar>& a, const vector128<Scalar>& b) {
+		return a.cmp_blend(b, mask);
+	}
+	// { a[0]+a[1], b[0]+b[1], a[2]+a[3], b[2]+b[3], ...}
+	template<typename Scalar>
+	vector128<Scalar> hadd(const vector128<Scalar>& a, const vector128<Scalar>& b) {
+		return a.hadd(b);
+	}
+	// reinterpret cast (data will not change)
+	template<typename Cvt, typename Scalar>
+	vector128<Cvt> reinterpret(const vector128<Scalar>& arg) {
+		return arg.template reinterpret<Cvt>();
+	}
 }
 
 

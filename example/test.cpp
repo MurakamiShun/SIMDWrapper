@@ -8,6 +8,9 @@ int main() {
 	std::cout << "AVX :" << std::boolalpha << Instruction::AVX() << std::endl;
 	std::cout << "AVX2:" << Instruction::AVX2() << std::endl;
 	std::cout << "FMA :" << Instruction::FMA() << std::endl;
+	std::cout << "SSE4.2" << Instruction::SSE4_2() << std::endl;
+	std::cout << "SSE4.1" << Instruction::SSE4_1() << std::endl;
+
 	{
 		std::cout << "Instrinsics Benchmark" << std::endl;
 		vector256_type<float>::vector v1{};
