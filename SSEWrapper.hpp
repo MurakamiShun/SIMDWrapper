@@ -193,10 +193,10 @@ public:
 	vector128(const vector128& arg) noexcept : v(arg.v) {  }
 
 	input_iterator begin() const noexcept {
-		return input_iterator(*this, input_iterator::template Index<0>());
+		return input_iterator(*this, typename input_iterator::template Index<0>());
 	}
 	input_iterator end() const noexcept {
-		return input_iterator(*this, input_iterator::template Index<elements_size>());
+		return input_iterator(*this, typename input_iterator::template Index<elements_size>());
 	}
 
 	vector128 operator+(const vector128& arg) const noexcept {
@@ -758,11 +758,11 @@ public:
 	template<typename MaskScalar>
 	vector128 cmp_blend(const vector128& a, const vector128<MaskScalar>& mask) const noexcept {
 		if constexpr (is_scalar<double>::value)
-			return vector128(_mm_blendv_pd(a.v, v, mask.reinterpret<double>().v));
+			return vector128(_mm_blendv_pd(a.v, v, *reinterpret_cast<const __m256d*>(&(mask.v))));
 		else if constexpr (is_scalar<float>::value)
-			return vector128(_mm_blendv_ps(a.v, v, mask.reinterpret<float>().v));
+			return vector128(_mm_blendv_ps(a.v, v, *reinterpret_cast<const __m256*>(&(mask.v))));
 		else if constexpr (std::is_integral<scalar>::value)
-			return vector128(_mm_blendv_epi8(a.v, v, mask.reinterpret<scalar>().v));
+			return vector128(_mm_blendv_epi8(a.v, v, *reinterpret_cast<const __m256i*>(&(mask.v))));
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : cmp_blend is not defined in given type.");
 	}
