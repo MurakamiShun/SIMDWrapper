@@ -32,7 +32,7 @@ private:
 	};
 
 	template<class... Args, size_t... I, size_t N = sizeof...(Args)>
-	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) {
+	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) noexcept {
 		constexpr bool is_right_args = ((N + 1) == elements_size);
 		auto args_tuple = std::make_tuple(std::forward<Args>(args)...);
 
@@ -70,56 +70,56 @@ private:
 
 	class input_iterator {
 	private:
-		alignas(32) std::array<scalar, elements_size> tmp;
+		alignas(32) std::array<scalar, elements_size> tmp = {};
 		size_t index;
 	public:
 		template<size_t N>
 		struct Index {};
 
-		input_iterator(const input_iterator& it) :
+		input_iterator(const input_iterator& it) noexcept :
 			index(it.index),
 			tmp(it.tmp) {
 		}
 		template<size_t N>
-		input_iterator(const vector256& arg, Index<N>) {
+		input_iterator(const vector256& arg, Index<N>) noexcept {
 			index = N;
 			if constexpr (N >= 0 && N < elements_size)
 				arg.aligned_store(tmp.data());
 		}
-		const scalar operator*() const {
+		const scalar operator*() const noexcept{
 			return tmp[index];
 		}
-		input_iterator& operator++() {
+		input_iterator& operator++() noexcept {
 			++index;
 			return *this;
 		}
-		bool operator==(const input_iterator& it) const {
+		bool operator==(const input_iterator& it) const noexcept {
 			return (index == it.index);
 		}
-		bool operator!=(const input_iterator& it) const {
+		bool operator!=(const input_iterator& it) const noexcept {
 			return (index != it.index);
 		}
 	};
 public:
 	vector v;
 
-	vector256() : v() {}
-	vector256(const scalar arg) { *this = arg; }
-	vector256(const vector arg) : v(arg) {  }
+	vector256() noexcept : v() {}
+	vector256(const scalar arg) noexcept { *this = arg; }
+	vector256(const vector arg) noexcept : v(arg) {  }
 	template<class... Args, typename Indices = std::make_index_sequence<sizeof...(Args)>>
-	vector256(scalar first, Args... args) {
+	vector256(scalar first, Args... args) noexcept {
 		init_by_reversed_argments(Indices(), first, std::forward<Args>(args)...);
 	}
-	vector256(const vector256& arg) : v(arg.v) {  }
+	vector256(const vector256& arg) noexcept : v(arg.v) {  }
 
-	input_iterator begin() const {
+	input_iterator begin() const noexcept {
 		return input_iterator(*this, input_iterator::template Index<0>());
 	}
-	input_iterator end() const {
+	input_iterator end() const noexcept {
 		return input_iterator(*this, input_iterator::template Index<elements_size>());
 	}
 
-	vector256 operator+(const vector256& arg) const {
+	vector256 operator+(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_add_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -139,7 +139,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator+ is not defined in given type.");
 	}
-	vector256 operator-(const vector256& arg) const {
+	vector256 operator-(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_sub_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -159,7 +159,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator- is not defined in given type.");
 	}
-	auto operator*(const vector256& arg) const {
+	auto operator*(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_mul_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -181,7 +181,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
 	}
-	vector256 operator/(const vector256& arg) const {
+	vector256 operator/(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_div_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -189,7 +189,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator/ is not defined in given type.");
 	}
-	vector256& operator=(const scalar arg) {
+	vector256& operator=(const scalar arg) noexcept {
 		if constexpr (is_scalar<double>::value)
 			v = _mm256_set1_pd(arg);
 		else if constexpr (is_scalar<float>::value)
@@ -210,7 +210,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : operator=(scalar) is not defined in given type.");
 		return *this;
 	}
-	vector256& load(const scalar* const arg) {
+	vector256& load(const scalar* const arg) noexcept {
 		if constexpr (is_scalar<double>::value)
 			v = _mm256_loadu_pd(arg);
 		else if constexpr (is_scalar<float>::value)
@@ -221,7 +221,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : load(pointer) is not defined in given type.");
 		return *this;
 	}
-	vector256& aligned_load(const scalar* const arg) {
+	vector256& aligned_load(const scalar* const arg) noexcept {
 		if constexpr (is_scalar<double>::value)
 			v = _mm256_load_pd(arg);
 		else if constexpr (is_scalar<float>::value)
@@ -232,7 +232,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : load(pointer) is not defined in given type.");
 		return *this;
 	}
-	void store(scalar* arg) const {
+	void store(scalar* arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			_mm256_storeu_pd(arg, v);
 		else if constexpr (is_scalar<float>::value)
@@ -242,7 +242,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : store(pointer) is not defined in given type.");
 	}
-	void aligned_store(scalar* arg) const {
+	void aligned_store(scalar* arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			_mm256_store_pd(arg, v);
 		else if constexpr (is_scalar<float>::value)
@@ -252,10 +252,11 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : store(pointer) is not defined in given type.");
 	}
-	scalar operator[](const size_t index) const {
+	scalar operator[](const size_t index) const noexcept{
 		return reinterpret_cast<const scalar*>(&v)[index];
+		
 	}
-	vector256 operator==(const vector256& arg) const {
+	vector256 operator==(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_cmp_pd(v, arg.v, _CMP_EQ_OQ));
 		else if constexpr (is_scalar<float>::value)
@@ -275,39 +276,39 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator== is not defined in given type.");
 	}
-	bool is_all_zero() const {
+	bool is_all_zero() const noexcept {
 		if constexpr (is_scalar<double>::value)
-			return static_cast<bool>(_mm256_testz_si256(
+			return bool(_mm256_testz_si256(
 				_mm256_castpd_si256(v),
 				_mm256_cmpeq_epi64(_mm256_castpd_si256(v), _mm256_castpd_si256(v))
 			));
 		else if constexpr (is_scalar<float>::value)
-			return static_cast<bool>(_mm256_testz_si256(
+			return bool(_mm256_testz_si256(
 				_mm256_castps_si256(v),
 				_mm256_cmpeq_epi64(_mm256_castps_si256(v), _mm256_castps_si256(v))
 			));
 		else if constexpr (std::is_integral<scalar>::value)
-			return static_cast<bool>(_mm256_testz_si256(v, _mm256_cmpeq_epi64(v, v)));
+			return bool(_mm256_testz_si256(v, _mm256_cmpeq_epi64(v, v)));
 		else
 			static_assert(false_v<Scalar>, "AVX2 : is_all_zero is not defined in given type.");
 	}
-	bool is_all_one() const {
+	bool is_all_one() const noexcept {
 		if constexpr (is_scalar<double>::value)
-			return static_cast<bool>(_mm256_testc_si256(
+			return bool(_mm256_testc_si256(
 				_mm256_castpd_si256(v),
 				_mm256_cmpeq_epi64(_mm256_castpd_si256(v), _mm256_castpd_si256(v))
 			));
 		else if constexpr (is_scalar<float>::value)
-			return static_cast<bool>(_mm256_testc_si256(
+			return bool(_mm256_testc_si256(
 				_mm256_castps_si256(v),
 				_mm256_cmpeq_epi64(_mm256_castps_si256(v), _mm256_castps_si256(v))
 			));
 		else if constexpr (std::is_integral<scalar>::value)
-			return static_cast<bool>(_mm256_testc_si256(v, _mm256_cmpeq_epi64(v, v)));
+			return bool(_mm256_testc_si256(v, _mm256_cmpeq_epi64(v, v)));
 		else
 			static_assert(false_v<Scalar>, "AVX2 : is_all_one is not defined in given type.");
 	}
-	vector256 operator>(const vector256& arg) const {
+	vector256 operator>(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_cmp_pd(v, arg.v, _CMP_GT_OQ));
 		else if constexpr (is_scalar<float>::value)
@@ -353,7 +354,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator> is not defined in given type.");
 	}
-	vector256 operator<(const vector256& arg) const {
+	vector256 operator<(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_cmp_pd(arg.v, v, _CMP_GT_OQ));
 		else if constexpr (is_scalar<float>::value)
@@ -399,7 +400,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator< is not defined in given type.");
 	}
-	vector256 operator& (const vector256& arg) const {
+	vector256 operator& (const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_and_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -409,7 +410,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : and is not defined in given type.");
 	}
-	vector256 nand(const vector256& arg) const {
+	vector256 nand(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_andnot_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -419,7 +420,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : nand is not defined in given type.");
 	}
-	vector256 operator~() const {
+	vector256 operator~() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_andnot_pd(v, v));
 		else if constexpr (is_scalar<float>::value)
@@ -429,7 +430,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : not is not defined in given type.");
 	}
-	vector256 operator| (const vector256& arg) const {
+	vector256 operator| (const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_or_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -439,7 +440,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : or is not defined in given type.");
 	}
-	vector256 operator^ (const vector256& arg) const {
+	vector256 operator^ (const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_xor_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -449,7 +450,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : xor is not defined in given type.");
 	}
-	vector256 operator>>(const int n) const {
+	vector256 operator>>(const int n) const noexcept {
 		if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (is_scalar_size<int16_t>::value)
 				return vector256(_mm256_srl_epi16(
@@ -466,7 +467,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator>> is not defined in given type.");
 	}
-	vector256 operator>>(const vector256& arg) const {
+	vector256 operator>>(const vector256& arg) const noexcept {
 		if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (is_scalar_size<int32_t>::value)
 				return vector256(_mm256_srlv_epi32(v, arg.v));
@@ -478,7 +479,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator>>(vector256) is not defined in given type.");
 	}
-	vector256 operator<<(const int n) const {
+	vector256 operator<<(const int n) const noexcept {
 		if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (is_scalar_size<int16_t>::value)
 				return vector256(_mm256_sll_epi16(
@@ -495,7 +496,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator<< is not defined in given type.");
 	}
-	vector256 operator<<(const vector256& arg) const {
+	vector256 operator<<(const vector256& arg) const noexcept {
 		if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (is_scalar_size<int32_t>::value)
 				return vector256(_mm256_sllv_epi32(v, arg.v));
@@ -508,20 +509,20 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : operator<<(vector256) is not defined in given type.");
 	}
 	// Reciprocal approximation < 1.5*2^12
-	vector256 rcp() const {
+	vector256 rcp() const noexcept {
 		if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_rcp_ps(v));
 		else
 			static_assert(false_v<Scalar>, "AVX2 : rcp is not defined in given type.");
 	}
 	// this * (1 / arg)
-	vector256 fast_div(const vector256& arg) const {
+	vector256 fast_div(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_mul_ps(v, _mm256_rcp_ps(arg.v)));
 		else
 			static_assert(false_v<Scalar>, "AVX2 : fast_div is not defined in given type.");
 	}
-	vector256 abs() const {
+	vector256 abs() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_andnot_pd(_mm256_set1_pd(-0.0), v));
 		else if constexpr (is_scalar<float>::value)
@@ -543,7 +544,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : abs is not defined in given type.");
 	}
-	vector256 sqrt() const {
+	vector256 sqrt() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_sqrt_pd(v));
 		else if constexpr (is_scalar<float>::value)
@@ -552,13 +553,13 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : sqrt is not defined in given type.");
 	}
 	// 1 / sqrt()
-	vector256 rsqrt() const {
+	vector256 rsqrt() const noexcept {
 		if constexpr (is_scalar<float>::value)
 			return vector256(_mm256_rsqrt_ps(v));
 		else
 			static_assert(false_v<Scalar>, "AVX2 : rsqrt is not defined in given type.");
 	}
-	vector256 max(const vector256& arg) const {
+	vector256 max(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_max_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -599,7 +600,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : max is not defined in given type.");
 	}
-	vector256 min(const vector256& arg) const {
+	vector256 min(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_min_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -640,7 +641,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : min is not defined in given type.");
 	}
-	vector256 ceil() const {
+	vector256 ceil() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_ceil_pd(v));
 		else if constexpr (is_scalar<float>::value)
@@ -648,7 +649,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : ceil is not defined in given type.");
 	}
-	vector256 floor() const {
+	vector256 floor() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_floor_pd(v));
 		else if constexpr (is_scalar<float>::value)
@@ -657,7 +658,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : floor is not defined in given type.");
 	}
 	// this * a + b
-	vector256 muladd(const vector256& a, const vector256& b) const {
+	vector256 muladd(const vector256& a, const vector256& b) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_fmadd_pd(v, a.v, b.v));
 		else if constexpr (is_scalar<float>::value)
@@ -666,7 +667,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : mulladd is not defined in given type.");
 	}
 	// this * a - b
-	vector256 mulsub(const vector256& a, const vector256& b) const {
+	vector256 mulsub(const vector256& a, const vector256& b) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_fmsub_pd(v, a.v, b.v));
 		else if constexpr (is_scalar<float>::value)
@@ -675,7 +676,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : mullsub is not defined in given type.");
 	}
 	// { this[0] + this[1], arg[0] + arg[1], this[2] + this[3], ... }
-	vector256 hadd(const vector256& arg) const {
+	vector256 hadd(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_hadd_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -693,7 +694,7 @@ public:
 	}
 	// (mask) ? this : a
 	template<typename MaskScalar>
-	vector256 cmp_blend(const vector256& a, const vector256<MaskScalar>& mask) const {
+	vector256 cmp_blend(const vector256& a, const vector256<MaskScalar>& mask) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256(_mm256_blendv_pd(a.v, v, mask.reinterpret<double>().v));
 		else if constexpr (is_scalar<float>::value)
@@ -704,7 +705,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : cmp_blend is not defined in given type.");
 	}
 	template<typename Cvt>
-	explicit operator vector256<Cvt>() const {
+	explicit operator vector256<Cvt>() const noexcept {
 		if constexpr (is_scalar<float>::value&& std::is_same<Cvt, int32_t>::value)
 			return vector256<Cvt>(_mm256_cvtps_epi32(v));
 		else if constexpr (is_scalar<int32_t>::value&& std::is_same<Cvt, float>::value)
@@ -714,12 +715,12 @@ public:
 	}
 	// reinterpret cast (data will not change)
 	template<typename Cvt>
-	vector256<Cvt> reinterpret() const {
+	vector256<Cvt> reinterpret() const noexcept {
 		using cvt_vector = typename vector256_type<Cvt>::vector;
 		return vector256<Cvt>(*reinterpret_cast<const cvt_vector*>(&v));
 	}
 	// FP64x4x2 -> FP32x8, { a[0], a[1], .... b[n-1], b[n] }
-	auto concat(const vector256& arg) const {
+	auto concat(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256<float>(_mm256_set_m128(_mm256_cvtpd_ps(arg.v), _mm256_cvtpd_ps(v)));
 		else if constexpr (std::is_integral<scalar>::value) {
@@ -793,7 +794,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : concat is not defined in given type.");
 	}
 	// FP64x4x2 -> FP32x8, { a[0], b[0], .... a[n], b[n] }
-	auto alternate(const vector256& arg) const {
+	auto alternate(const vector256& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector256<float>(_mm256_permutevar8x32_ps(
 				_mm256_set_m128(
@@ -864,7 +865,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : alternate is not defined in given type.");
 	}
 	template<typename ArgScalar>
-	vector256 shuffle(vector256<ArgScalar> arg) const {
+	vector256 shuffle(vector256<ArgScalar> arg) const noexcept {
 		static_assert(is_scalar_size<ArgScalar>::value, "AVX2 : wrong mask is given to shuufle.");
 
 		if constexpr (is_scalar<double>::value)
@@ -949,7 +950,7 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : shuffle is not defined in given type.");
 	}
 	template<typename... Args>
-	vector256 shuffle(Args... args) const {
+	vector256 shuffle(Args... args) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return shuffle(vector256<uint64_t>(args...));
 		else if constexpr (is_scalar<float>::value)
@@ -982,47 +983,47 @@ std::ostream& operator<<(std::ostream& os, const vector256<Scalar>& v) {
 namespace function {
 	// max(a, b)
 	template<typename Scalar>
-	vector256<Scalar> max(const vector256<Scalar>& a, const vector256<Scalar>& b) {
+	vector256<Scalar> max(const vector256<Scalar>& a, const vector256<Scalar>& b) noexcept {
 		return a.max(b);
 	}
 	// min(a, b)
 	template<typename Scalar>
-	vector256<Scalar> min(const vector256<Scalar>& a, const vector256<Scalar>& b) {
+	vector256<Scalar> min(const vector256<Scalar>& a, const vector256<Scalar>& b) noexcept {
 		return a.min(b);
 	}
 	// (==) ? a : b
 	template<typename MaskScalar, typename Scalar>
-	vector256<Scalar> cmp_blend(const vector256<MaskScalar>& mask, const vector256<Scalar>& a, const vector256<Scalar>& b) {
+	vector256<Scalar> cmp_blend(const vector256<MaskScalar>& mask, const vector256<Scalar>& a, const vector256<Scalar>& b) noexcept {
 		return a.cmp_blend(b, mask);
 	}
 	// a * b + c
 	template<typename Scalar>
-	vector256<Scalar> muladd(const vector256<Scalar>& a, const vector256<Scalar>& b, const vector256<Scalar>& c) {
+	vector256<Scalar> muladd(const vector256<Scalar>& a, const vector256<Scalar>& b, const vector256<Scalar>& c) noexcept {
 		return a.muladd(b, c);
 	}
 	// a * b - c
 	template<typename Scalar>
-	vector256<Scalar> mulsub(const vector256<Scalar>& a, const vector256<Scalar>& b, const vector256<Scalar>& c) {
+	vector256<Scalar> mulsub(const vector256<Scalar>& a, const vector256<Scalar>& b, const vector256<Scalar>& c) noexcept {
 		return a.mulsub(b, c);
 	}
 	// { a[0]+a[1], b[0]+b[1], a[2]+a[3], b[2]+b[3], ...}
 	template<typename Scalar>
-	vector256<Scalar> hadd(const vector256<Scalar>& a, const vector256<Scalar>& b) {
+	vector256<Scalar> hadd(const vector256<Scalar>& a, const vector256<Scalar>& b) noexcept {
 		return a.hadd(b);
 	}
 	// reinterpret cast (data will not change)
 	template<typename Cvt, typename Scalar>
-	vector256<Cvt> reinterpret(const vector256<Scalar>& arg) {
+	vector256<Cvt> reinterpret(const vector256<Scalar>& arg) noexcept {
 		return arg.template reinterpret<Cvt>();
 	}
 	// FP64x4x2 -> FP32x8, { a[0], a[1], .... b[n-1], b[n] }
 	template<typename Scalar>
-	auto concat(const vector256<Scalar>& a, const vector256<Scalar>& b) {
+	auto concat(const vector256<Scalar>& a, const vector256<Scalar>& b) noexcept {
 		return a.concat(b);
 	}
 	// FP64x4x2 -> FP32x8, { a[0], b[0], .... a[n], b[n] }
 	template<typename Scalar>
-	auto alternate(const vector256<Scalar>& a, const vector256<Scalar>& b) {
+	auto alternate(const vector256<Scalar>& a, const vector256<Scalar>& b) noexcept {
 		return a.alternate(b);
 	}
 }

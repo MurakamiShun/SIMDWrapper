@@ -1,4 +1,5 @@
 #include "../AVX2Wrapper.hpp"
+#include "../SSEWrapper.hpp"
 #include <vector>
 #include <chrono>
 #include <iostream>
@@ -10,6 +11,9 @@ int main() {
 	std::cout << "FMA :" << Instruction::FMA() << std::endl;
 	std::cout << "SSE4.2" << Instruction::SSE4_2() << std::endl;
 	std::cout << "SSE4.1" << Instruction::SSE4_1() << std::endl;
+
+	type::uint64x2 ine{3,2};
+	ine = ine + 9;
 
 	{
 		std::cout << "Instrinsics Benchmark" << std::endl;

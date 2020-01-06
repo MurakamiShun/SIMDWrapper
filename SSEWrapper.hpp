@@ -20,11 +20,11 @@ constexpr bool false_v = false;
 
 class Instruction {
 public:
-	static bool SSE4_1() { return CPU_ref.SSE4_1; }
-	static bool SSE4_2() { return CPU_ref.SSE4_2; }
-	static bool AVX2() { return CPU_ref.AVX2; }
-	static bool AVX() { return CPU_ref.AVX; }
-	static bool FMA() { return CPU_ref.FMA; }
+	static bool SSE4_1() noexcept { return CPU_ref.SSE4_1; }
+	static bool SSE4_2() noexcept { return CPU_ref.SSE4_2; }
+	static bool AVX2() noexcept { return CPU_ref.AVX2; }
+	static bool AVX() noexcept { return CPU_ref.AVX; }
+	static bool FMA() noexcept { return CPU_ref.FMA; }
 private:
 	struct InstructionSet {
 		bool SSE4_1 = false;
@@ -41,7 +41,7 @@ private:
 			__cpuid(cpui.data(), 0);
 			#endif
 			
-			int ids = cpui[0];
+			const int ids = cpui[0];
 			for (int i = 0; i < ids; ++i) {
 				#if defined(__GNUC__)
 				__cpuid_count(i, 0, cpui[0], cpui[1], cpui[2], cpui[3]);
@@ -112,7 +112,7 @@ private:
 	};
 
 	template<class... Args, size_t... I, size_t N = sizeof...(Args)>
-	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) {
+	void init_by_reversed_argments(std::index_sequence<I...>, scalar last, Args&&... args) noexcept {
 		constexpr bool is_right_args = ((N + 1) == elements_size);
 		auto args_tuple = std::make_tuple(std::forward<Args>(args)...);
 
@@ -150,56 +150,56 @@ private:
 
 	class input_iterator {
 	private:
-		alignas(16) std::array<scalar, elements_size> tmp;
+		alignas(16) std::array<scalar, elements_size> tmp = {};
 		size_t index;
 	public:
 		template<size_t N>
 		struct Index {};
 
-		input_iterator(const input_iterator& it) :
+		input_iterator(const input_iterator& it) noexcept :
 			index(it.index),
 			tmp(it.tmp) {
 		}
 		template<size_t N>
-		input_iterator(const vector128& arg, Index<N>) {
+		input_iterator(const vector128& arg, Index<N>) noexcept {
 			index = N;
 			if constexpr (N >= 0 && N < elements_size)
 				arg.aligned_store(tmp.data());
 		}
-		const scalar operator*() const {
+		const scalar operator*() const noexcept {
 			return tmp[index];
 		}
-		input_iterator& operator++() {
+		input_iterator& operator++() noexcept {
 			++index;
 			return *this;
 		}
-		bool operator==(const input_iterator& it) const {
+		bool operator==(const input_iterator& it) const noexcept {
 			return (index == it.index);
 		}
-		bool operator!=(const input_iterator& it) const {
+		bool operator!=(const input_iterator& it) const noexcept {
 			return (index != it.index);
 		}
 	};
 public:
 	vector v;
 
-	vector128() : v() {}
-	vector128(const scalar arg) { *this = arg; }
-	vector128(const vector arg) : v(arg) {  }
+	vector128() noexcept : v() {}
+	vector128(const scalar arg) noexcept { *this = arg; }
+	vector128(const vector arg) noexcept : v(arg) {  }
 	template<class... Args, typename Indices = std::make_index_sequence<sizeof...(Args)>>
-	vector128(scalar first, Args... args) {
+	vector128(scalar first, Args... args) noexcept {
 		init_by_reversed_argments(Indices(), first, std::forward<Args>(args)...);
 	}
-	vector128(const vector128& arg) : v(arg.v) {  }
+	vector128(const vector128& arg) noexcept : v(arg.v) {  }
 
-	input_iterator begin() const {
+	input_iterator begin() const noexcept {
 		return input_iterator(*this, input_iterator::template Index<0>());
 	}
-	input_iterator end() const {
+	input_iterator end() const noexcept {
 		return input_iterator(*this, input_iterator::template Index<elements_size>());
 	}
 
-	vector128 operator+(const vector128& arg) const {
+	vector128 operator+(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_add_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -219,7 +219,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator+ is not defined in given type.");
 	}
-	vector128 operator-(const vector128& arg) const {
+	vector128 operator-(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_sub_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -239,7 +239,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator- is not defined in given type.");
 	}
-	auto operator*(const vector128& arg) const {
+	auto operator*(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_mul_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -261,7 +261,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator* is not defined in given type.");
 	}
-	vector128 operator/(const vector128& arg) const {
+	vector128 operator/(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_div_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -269,7 +269,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator/ is not defined in given type.");
 	}
-	vector128& operator=(const scalar arg) {
+	vector128& operator=(const scalar arg) noexcept {
 		if constexpr (is_scalar<double>::value)
 			v = _mm_set1_pd(arg);
 		else if constexpr (is_scalar<float>::value)
@@ -290,7 +290,7 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : operator=(scalar) is not defined in given type.");
 		return *this;
 	}
-	vector128& load(const scalar* const arg) {
+	vector128& load(const scalar* const arg) noexcept {
 		if constexpr (is_scalar<double>::value)
 			v = _mm_loadu_pd(arg);
 		else if constexpr (is_scalar<float>::value)
@@ -301,7 +301,7 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : load(pointer) is not defined in given type.");
 		return *this;
 	}
-	vector128& aligned_load(const scalar* const arg) {
+	vector128& aligned_load(const scalar* const arg) noexcept {
 		if constexpr (is_scalar<double>::value)
 			v = _mm_load_pd(arg);
 		else if constexpr (is_scalar<float>::value)
@@ -312,7 +312,7 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : load(pointer) is not defined in given type.");
 		return *this;
 	}
-	void store(scalar* arg) const {
+	void store(scalar* arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			_mm_storeu_pd(arg, v);
 		else if constexpr (is_scalar<float>::value)
@@ -322,7 +322,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : store(pointer) is not defined in given type.");
 	}
-	void aligned_store(scalar* arg) const {
+	void aligned_store(scalar* arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			_mm_store_pd(arg, v);
 		else if constexpr (is_scalar<float>::value)
@@ -332,10 +332,10 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : store(pointer) is not defined in given type.");
 	}
-	scalar operator[](const size_t index) const {
+	scalar operator[](const size_t index) const noexcept {
 		return reinterpret_cast<const scalar*>(&v)[index];
 	}
-	vector128 operator==(const vector128& arg) const {
+	vector128 operator==(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_cmpeq_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -355,7 +355,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator== is not defined in given type.");
 	}
-	vector128 operator>(const vector128& arg) const {
+	vector128 operator>(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_cmpgt_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -401,7 +401,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator> is not defined in given type.");
 	}
-	vector128 operator<(const vector128& arg) const {
+	vector128 operator<(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_cmpgt_pd(arg.v, v));
 		else if constexpr (is_scalar<float>::value)
@@ -448,39 +448,39 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : operator< is not defined in given type.");
 	}
 
-	bool is_all_zero() const {
+	bool is_all_zero() const noexcept {
 		if constexpr (is_scalar<double>::value)
-			return static_cast<bool>(_mm_testz_si128(
+			return bool(_mm_testz_si128(
 				_mm_castpd_si128(v),
 				_mm_cmpeq_epi64(_mm_castpd_si128(v), _mm_castpd_si128(v))
 			));
 		else if constexpr (is_scalar<float>::value)
-			return static_cast<bool>(_mm_testz_si128(
+			return bool(_mm_testz_si128(
 				_mm_castps_si128(v),
 				_mm_cmpeq_epi64(_mm_castps_si128(v), _mm_castps_si128(v))
 			));
 		else if constexpr (std::is_integral<scalar>::value)
-			return static_cast<bool>(_mm_testz_si128(v, _mm_cmpeq_epi64(v, v)));
+			return bool(_mm_testz_si128(v, _mm_cmpeq_epi64(v, v)));
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : is_all_zero is not defined in given type.");
 	}
-	bool is_all_one() const {
+	bool is_all_one() const noexcept {
 		if constexpr (is_scalar<double>::value)
-			return static_cast<bool>(_mm_testc_si128(
+			return bool(_mm_testc_si128(
 				_mm_castpd_si128(v),
 				_mm_cmpeq_epi64(_mm_castpd_si128(v), _mm_castpd_si128(v))
 			));
 		else if constexpr (is_scalar<float>::value)
-			return static_cast<bool>(_mm_testc_si128(
+			return bool(_mm_testc_si128(
 				_mm_castps_si128(v),
 				_mm_cmpeq_epi64(_mm_castps_si128(v), _mm_castps_si128(v))
 			));
 		else if constexpr (std::is_integral<scalar>::value)
-			return static_cast<bool>(_mm_testc_si128(v, _mm_cmpeq_epi64(v, v)));
+			return bool(_mm_testc_si128(v, _mm_cmpeq_epi64(v, v)));
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : is_all_one is not defined in given type.");
 	}
-	vector128 operator& (const vector128& arg) const {
+	vector128 operator& (const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_and_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -490,7 +490,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : and is not defined in given type.");
 	}
-	vector128 nand(const vector128& arg) const {
+	vector128 nand(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_andnot_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -500,7 +500,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : nand is not defined in given type.");
 	}
-	vector128 operator~() const {
+	vector128 operator~() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_andnot_pd(v, v));
 		else if constexpr (is_scalar<float>::value)
@@ -510,7 +510,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : not is not defined in given type.");
 	}
-	vector128 operator| (const vector128& arg) const {
+	vector128 operator| (const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_or_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -520,7 +520,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : or is not defined in given type.");
 	}
-	vector128 operator^ (const vector128& arg) const {
+	vector128 operator^ (const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_xor_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -530,7 +530,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : xor is not defined in given type.");
 	}
-	vector128 operator>>(const int n) const {
+	vector128 operator>>(const int n) const noexcept {
 		if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (is_scalar_size<int16_t>::value)
 				return vector128(_mm_srl_epi16(
@@ -547,7 +547,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator>> is not defined in given type.");
 	}
-	vector128 operator>>(const vector128& arg) const {
+	vector128 operator>>(const vector128& arg) const noexcept {
 		if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (is_scalar_size<int32_t>::value)
 				return vector128(_mm_srlv_epi32(v, arg.v));
@@ -559,7 +559,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator>>(vector128) is not defined in given type.");
 	}
-	vector128 operator<<(const int n) const {
+	vector128 operator<<(const int n) const noexcept {
 		if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (is_scalar_size<int16_t>::value)
 				return vector128(_mm_sll_epi16(
@@ -576,7 +576,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator<< is not defined in given type.");
 	}
-	vector128 operator<<(const vector128& arg) const {
+	vector128 operator<<(const vector128& arg) const noexcept {
 		if constexpr (std::is_integral<scalar>::value) {
 			if constexpr (is_scalar_size<int32_t>::value)
 				return vector128(_mm_sllv_epi32(v, arg.v));
@@ -589,20 +589,20 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : operator<<(vector128) is not defined in given type.");
 	}
 	// Reciprocal approximation < 1.5*2^12
-	vector128 rcp() const {
+	vector128 rcp() const noexcept {
 		if constexpr (is_scalar<float>::value)
 			return vector128(_mm_rcp_ps(v));
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : rcp is not defined in given type.");
 	}
 	// this * (1 / arg)
-	vector128 fast_div(const vector128& arg) const {
+	vector128 fast_div(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<float>::value)
 			return vector128(_mm_mul_ps(v, _mm_rcp_ps(arg.v)));
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : fast_div is not defined in given type.");
 	}
-	vector128 sqrt() const {
+	vector128 sqrt() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_sqrt_pd(v));
 		else if constexpr (is_scalar<float>::value)
@@ -611,13 +611,13 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : sqrt is not defined in given type.");
 	}
 	// 1 / sqrt()
-	vector128 rsqrt() const {
+	vector128 rsqrt() const noexcept {
 		if constexpr (is_scalar<float>::value)
 			return vector128(_mm_rsqrt_ps(v));
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : rsqrt is not defined in given type.");
 	}
-	vector128 abs() const {
+	vector128 abs() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_andnot_pd(_mm_set1_pd(-0.0), v));
 		else if constexpr (is_scalar<float>::value)
@@ -639,7 +639,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : abs is not defined in given type.");
 	}
-	vector128 max(const vector128& arg) const {
+	vector128 max(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_max_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -680,7 +680,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : max is not defined in given type.");
 	}
-	vector128 min(const vector128& arg) const {
+	vector128 min(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_min_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -721,7 +721,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : min is not defined in given type.");
 	}
-	vector128 ceil() const {
+	vector128 ceil() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_ceil_pd(v));
 		else if constexpr (is_scalar<float>::value)
@@ -729,7 +729,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : ceil is not defined in given type.");
 	}
-	vector128 floor() const {
+	vector128 floor() const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_floor_pd(v));
 		else if constexpr (is_scalar<float>::value)
@@ -738,7 +738,7 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : floor is not defined in given type.");
 	}
 	// { this[0] + this[1], arg[0] + arg[1], this[2] + this[3], ... }
-	vector128 hadd(const vector128& arg) const {
+	vector128 hadd(const vector128& arg) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_hadd_pd(v, arg.v));
 		else if constexpr (is_scalar<float>::value)
@@ -756,7 +756,7 @@ public:
 	}
 	// (mask) ? this : a
 	template<typename MaskScalar>
-	vector128 cmp_blend(const vector128& a, const vector128<MaskScalar>& mask) const {
+	vector128 cmp_blend(const vector128& a, const vector128<MaskScalar>& mask) const noexcept {
 		if constexpr (is_scalar<double>::value)
 			return vector128(_mm_blendv_pd(a.v, v, mask.reinterpret<double>().v));
 		else if constexpr (is_scalar<float>::value)
@@ -767,7 +767,7 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : cmp_blend is not defined in given type.");
 	}
 	template<typename Cvt>
-	explicit operator vector128<Cvt>() const {
+	explicit operator vector128<Cvt>() const noexcept {
 		if constexpr (is_scalar<float>::value&& std::is_same<Cvt, int32_t>::value)
 			return vector128<Cvt>(_mm_cvtps_epi32(v));
 		else if constexpr (is_scalar<int32_t>::value&& std::is_same<Cvt, float>::value)
@@ -777,7 +777,7 @@ public:
 	}
 	// reinterpret cast (data will not change)
 	template<typename Cvt>
-	vector128<Cvt> reinterpret() const {
+	vector128<Cvt> reinterpret() const noexcept {
 		using cvt_vector = typename vector128_type<Cvt>::vector;
 		return vector128<Cvt>(*reinterpret_cast<const cvt_vector*>(&v));
 	}
