@@ -1,7 +1,7 @@
-#include "../AVX2Wrapper.hpp"
+#include "../include/AVX2Wrapper.hpp"
 #include <iostream>
 
-int mai() {
+int main() {
 	
 	vector256<float> f1(4.5f);
 	vector256<float> f2(0,1,2,3,4,5,6,7);

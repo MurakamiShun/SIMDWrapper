@@ -1,5 +1,5 @@
-#include "../AVX2Wrapper.hpp"
-#include "../SSEWrapper.hpp"
+#include "../include/AVX2Wrapper.hpp"
+#include "../include/SSEWrapper.hpp"
 #include <vector>
 #include <chrono>
 #include <iostream>
