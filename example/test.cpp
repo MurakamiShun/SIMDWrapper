@@ -12,6 +12,8 @@ int main() {
 	std::cout << "SSE4.2" << Instruction::SSE4_2() << std::endl;
 	std::cout << "SSE4.1" << Instruction::SSE4_1() << std::endl;
 
+	std::cout << alignof(vector128<double>{}) << std::endl;
+
 	type::uint64x2 ine{3,2};
 	ine = ine + 9;
 
