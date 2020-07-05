@@ -12,8 +12,6 @@ int main() {
 	std::cout << "SSE4.2" << Instruction::SSE4_2() << std::endl;
 	std::cout << "SSE4.1" << Instruction::SSE4_1() << std::endl;
 
-	std::cout << alignof(vector128<double>{}) << std::endl;
-
 	type::uint64x2 ine{3,2};
 	ine = ine + 9;
 
@@ -46,7 +44,7 @@ int main() {
 		vector256<int8_t> d1(1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, -4, 1, 4, 5, 4, 1, 4, 5, 4, 1, 4, 5, 4);
 		v2.store(v);
 		vector256<float> t(10);
-		vector256<uint8_t> t1(UINT32_MAX);
+		vector256<uint8_t> t1(UINT8_MAX);
 		std::cout << vector256<uint8_t>(UINT8_MAX / 2) + vector256<uint8_t>(UINT8_MAX / 2) << std::endl;
 		vector256<uint8_t> t2(vector256<uint16_t>(0).concat(vector256<uint16_t>(UINT8_MAX)));
 		std::cout << t2.shuffle(vector256<uint16_t>(30).concat(vector256<uint16_t>(3))) << std::endl;

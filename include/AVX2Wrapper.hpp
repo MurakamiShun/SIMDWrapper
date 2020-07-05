@@ -1,17 +1,26 @@
 #pragma once
+#ifdef __x86_64
 #include "SSEWrapper.hpp"
 
 template<typename Scalar>
 struct vector256_type {
+	template<typename T, typename... List>
+	using is_any = std::disjunction<std::is_same<T, List>...>;
+
+	static_assert(is_any<Scalar, float, double>::value || std::is_integral_v<Scalar>, "AVX2 : Given type is not supported.");
+
+	struct m256_wrapper{ using type = __m256; };
+	struct m256i_wrapper{ using type = __m256i; };
+	struct m256d_wrapper{ using type = __m256d; };
+	struct false_type{ using type = std::false_type; };
+
 	using scalar = Scalar;
-	using vector = typename std::conditional_t<std::is_same_v<Scalar, double>, __m256,
-			typename std::conditional_t< std::is_same_v<Scalar, float>, __m256,
-			typename std::conditional_t< std::is_integral_v<Scalar>, __m256i,
-			std::false_type>>>;
+	using vector = typename std::conditional_t<std::is_same_v<Scalar, double>, m256d_wrapper,
+			typename std::conditional_t< std::is_same_v<Scalar, float>, m256_wrapper,
+			typename std::conditional_t< std::is_integral_v<Scalar>, m256i_wrapper,
+			false_type>>>::type;
 
 	static constexpr size_t elements_size = 32 / sizeof(Scalar);
-
-	static_assert(!std::is_same_v<vector, std::false_type>, "AVX2 : Given type is not supported.");
 };
 
 template<typename Scalar>
@@ -1041,3 +1050,5 @@ namespace type {
 	using floatx8 = vector256<float>;
 	using doublex4 = vector256<double>;
 }
+
+#endif

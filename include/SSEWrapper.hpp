@@ -1,4 +1,6 @@
 #pragma once
+#ifdef __x86_64
+
 #include <cstdint>
 #include <vector>
 #include <array>
@@ -81,15 +83,23 @@ namespace print_format {
 
 template<typename Scalar>
 struct vector128_type {
+	template<typename T, typename... List>
+	using is_any = std::disjunction<std::is_same<T, List>...>;
+
+	static_assert(is_any<Scalar, float, double>::value || std::is_integral_v<Scalar>, "SSE4.2 : Given type is not supported.");
+
+	struct m128_wrapper{ using type = __m128; };
+	struct m128i_wrapper{ using type = __m128i; };
+	struct m128d_wrapper{ using type = __m128d; };
+	struct false_type{ using type = std::false_type; };
+
 	using scalar = Scalar;
-	using vector = typename std::conditional_t< std::is_same_v<Scalar, double>, __m128d,
-		typename std::conditional_t< std::is_same_v<Scalar, float>, __m128,
-		typename std::conditional_t< std::is_integral_v<Scalar>, __m128i,
-		std::false_type>>>;
+	using vector = typename std::conditional_t< std::is_same_v<Scalar, double>, m128d_wrapper,
+		typename std::conditional_t< std::is_same_v<Scalar, float>, m128_wrapper,
+		typename std::conditional_t< std::is_integral_v<Scalar>, m128i_wrapper,
+		false_type>>>::type;
 
 	static constexpr size_t elements_size = 16 / sizeof(scalar);
-
-	static_assert(!std::is_same_v<vector, std::false_type>, "SSE4.2 : Given type is not supported.");
 };
 
 template<typename Scalar>
@@ -842,3 +852,5 @@ namespace type {
 	using floatx4 = vector128<float>;
 	using doublex2 = vector128<double>;
 }
+
+#endif
