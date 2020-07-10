@@ -1,5 +1,5 @@
-# AVX2Wrapper
-AVX2Wrapper is a C++17 header only library for AVX/AVX2/FMA .
+# SIMDWrapper
+SIMDWrapper is a C++17 header only library for AVX/AVX2/FMA .
 # Usage
 - code
 ```c++
