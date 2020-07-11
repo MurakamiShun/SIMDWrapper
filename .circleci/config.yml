@@ -1,0 +1,19 @@
+version: 2.1
+jobs:
+  docs:
+    docker:
+      - image: python:3.8.3
+    working_directory: /docs
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "91:ca:40:c1:78:bf:b8:1c:81:49:25:16:3a:7c:f6:57"
+      - checkout
+      - run: cd docs; pip install -r requirements.txt; make html
+      - run: cd docs; ./deploy.sh
+      
+workflows:
+  version: 2
+  build-docs:
+    jobs:
+      - docs
