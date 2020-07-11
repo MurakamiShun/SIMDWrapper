@@ -6,5 +6,4 @@ git config --global user.name "circle-ci"
 git config --global user.email "<>"
 git add -A
 git commit -m "[ci skip] deploy documents by circle-ci"
-echo ${remote_url}
 git push -f ${remote_url} master:gh-pages
