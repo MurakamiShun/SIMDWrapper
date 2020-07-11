@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   docs:
     docker:
-      - image:   sphinxdoc/sphinx:3.1.2
+      - image: python:3.8.3
     working_directory: /docs
     steps:
       - checkout
