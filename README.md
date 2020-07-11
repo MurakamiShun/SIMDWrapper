@@ -1,6 +1,6 @@
 # SIMDWrapper [![SIMDWrapper](https://circleci.com/gh/akisute514/SIMDWrapper.svg?style=svg)](https://circleci.com/gh/akisute514/SIMDWrapper)
 SIMDWrapper is a C++17 header only library for AVX/AVX2/FMA .
-# Usage
+## Usage
 - code
 ```c++
 #include "AVX2Wrapper.hpp"
@@ -31,5 +31,8 @@ FMA :true
 [0 -0.14 4.73 4.41 4 6.82 6 9.66]
 ```
 
-# License
+## Documents
+https://akisute514.github.io/SIMDWrapper/
+
+## License
 This software is released under the MIT License, see [LICENSE](https://github.com/MurakamiShun/AVX2Wrapper/blob/master/LICENSE).
