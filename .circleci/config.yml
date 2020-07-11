@@ -13,7 +13,10 @@ jobs:
       - run: cd docs; ./deploy.sh
       
 workflows:
-  version: 2
+  version: 2.1
   build-docs:
     jobs:
-      - docs
+      - docs:
+          filters:
+            branches:
+              only: master
