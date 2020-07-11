@@ -7,6 +7,7 @@ jobs:
     steps:
       - checkout
       - run: cd docs; pip install -r requirements.txt; make html
+      - run: cd docs/build; ./deploy.sh
       
 workflows:
   version: 2
