@@ -2,7 +2,7 @@
 Instrcution
 ###########
 
-.. cpp:class:: Instruction
+.. cpp:class:: instruction
 
     This class provides checking functions for extended instruction sets of x86-64 architecture.
 
@@ -14,27 +14,27 @@ Instrcution
         #include <SSEWrapper.hpp>
 
         int main() {
-            std::cout << SIMDW::Instruction::SSE4_2() << '\n'
-                      << SIMDW::Instruction::AVX2()   << '\n'
-                      << SIMDW::Instruction::FMA()    << std::endl;
+            std::cout << SIMDW::instruction::SSE4_2() << '\n'
+                      << SIMDW::instruction::AVX2()   << '\n'
+                      << SIMDW::instruction::FMA()    << std::endl;
         }
 
-    .. cpp:function:: static bool SSE4_1() const noexcept
+    .. cpp:function:: static bool SSE4_1() noexcept
       
        Returns a bool indicationg if SSE4.1 is currently available.
    
-    .. cpp:function:: static bool SSE4_2() const noexcept
+    .. cpp:function:: static bool SSE4_2() noexcept
 
        Returns a bool indicationg if SSE4.2 is currently available.
 
-    .. cpp:function:: static bool AVX() const noexcept
+    .. cpp:function:: static bool AVX() noexcept
 
        Returns a bool indicationg if AVX is currently available.
 
-    .. cpp:function:: static bool AVX2() const noexcept
+    .. cpp:function:: static bool AVX2() noexcept
 
        Returns a bool indicationg if AVX2 is currently available.
 
-    .. cpp:function:: static bool FMA() const noexcept
+    .. cpp:function:: static bool FMA() noexcept
 
        Returns a bool indicationg if FMA is currently available.

@@ -16,21 +16,21 @@
 #include <intrin.h>
 #endif
 
-class Instruction {
+class instruction {
 public:
-	static bool SSE4_1() const noexcept { return CPU_ref.SSE4_1; }
-	static bool SSE4_2() const noexcept { return CPU_ref.SSE4_2; }
-	static bool AVX2() const noexcept { return CPU_ref.AVX2; }
-	static bool AVX() const noexcept { return CPU_ref.AVX; }
-	static bool FMA() const noexcept { return CPU_ref.FMA; }
+	static bool SSE4_1() noexcept { return CPU_ref.SSE4_1; }
+	static bool SSE4_2() noexcept { return CPU_ref.SSE4_2; }
+	static bool AVX2() noexcept { return CPU_ref.AVX2; }
+	static bool AVX() noexcept { return CPU_ref.AVX; }
+	static bool FMA() noexcept { return CPU_ref.FMA; }
 private:
-	struct InstructionSet {
+	struct instructionSet {
 		bool SSE4_1 = false;
 		bool SSE4_2 = false;
 		bool AVX2 = false;
 		bool AVX = false;
 		bool FMA = false;
-		InstructionSet() {
+		instructionSet() {
 			std::vector<std::array<int, 4>> data;
 			std::array<int, 4> cpui;
 			#if defined(__GNUC__)
@@ -63,7 +63,7 @@ private:
 			}
 		}
 	};
-	static inline InstructionSet CPU_ref;
+	static inline instructionSet CPU_ref;
 };
 
 namespace print_format {

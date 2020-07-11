@@ -6,11 +6,11 @@
 #include <array>
 
 int main() {
-	std::cout << "AVX :" << std::boolalpha << Instruction::AVX() << std::endl;
-	std::cout << "AVX2:" << Instruction::AVX2() << std::endl;
-	std::cout << "FMA :" << Instruction::FMA() << std::endl;
-	std::cout << "SSE4.2" << Instruction::SSE4_2() << std::endl;
-	std::cout << "SSE4.1" << Instruction::SSE4_1() << std::endl;
+	std::cout << "AVX :" << std::boolalpha << instruction::AVX() << std::endl;
+	std::cout << "AVX2:" << instruction::AVX2() << std::endl;
+	std::cout << "FMA :" << instruction::FMA() << std::endl;
+	std::cout << "SSE4.2" << instruction::SSE4_2() << std::endl;
+	std::cout << "SSE4.1" << instruction::SSE4_1() << std::endl;
 
 	type::uint64x2 ine{3,2};
 	ine = ine + 9;
