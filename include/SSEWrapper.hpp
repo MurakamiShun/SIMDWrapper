@@ -454,6 +454,98 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator< is not defined in given type.");
 	}
+	vector128 operator>=(const vector128& arg) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_cmpge_pd(v, arg.v));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_cmpge_ps(v, arg.v));
+		else if constexpr (std::is_integral_v<scalar>) {
+			if constexpr (std::is_signed_v<scalar>) {
+				if constexpr (is_scalar_size_v<int8_t>)
+					return vector128(_mm_cmpge_epi8(v, arg.v));
+				else if constexpr (is_scalar_size_v<int16_t>)
+					return vector128(_mm_cmpge_epi16(v, arg.v));
+				else if constexpr (is_scalar_size_v<int32_t>)
+					return vector128(_mm_cmpge_epi32(v, arg.v));
+				else if constexpr (is_scalar_size_v<int64_t>)
+					return vector128(_mm_cmpge_epi64(v, arg.v));
+				else
+					static_assert(false_v<Scalar>, "SSE4.2 : operator>= is not defined in given type.");
+			}
+			else {
+				if constexpr (is_scalar_size_v<int8_t>)
+					return vector128(_mm_cmpge_epi8(
+						_mm_xor_si128(v, _mm_set1_epi8(INT8_MIN)),
+						_mm_xor_si128(arg.v, _mm_set1_epi8(INT8_MIN))
+					));
+				else if constexpr (is_scalar_size_v<int16_t>)
+					return vector128(_mm_cmpge_epi16(
+						_mm_xor_si128(v, _mm_set1_epi16(INT16_MIN)),
+						_mm_xor_si128(arg.v, _mm_set1_epi16(INT16_MIN))
+					));
+				else if constexpr (is_scalar_size_v<int32_t>)
+					return vector128(_mm_cmpge_epi32(
+						_mm_xor_si128(v, _mm_set1_epi32(INT32_MIN)),
+						_mm_xor_si128(arg.v, _mm_set1_epi32(INT32_MIN))
+					));
+				else if constexpr (is_scalar_size_v<int64_t>)
+					return vector128(_mm_cmpge_epi64(
+						_mm_xor_si128(v, _mm_set1_epi64x(INT64_MIN)),
+						_mm_xor_si128(arg.v, _mm_set1_epi64x(INT64_MIN))
+					));
+				else
+					static_assert(false_v<Scalar>, "SSE4.2 : operator>= is not defined in given type.");
+			}
+		}
+		else
+			static_assert(false_v<Scalar>, "SSE4.2 : operator>= is not defined in given type.");
+	}
+	vector128 operator<=(const vector128& arg) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_cmpge_pd(arg.v, v));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_cmpge_ps(arg.v, v));
+		else if constexpr (std::is_integral_v<scalar>) {
+			if constexpr (std::is_signed_v<scalar>) {
+				if constexpr (is_scalar_size_v<int8_t>)
+					return vector128(_mm_cmpge_epi8(arg.v, v));
+				else if constexpr (is_scalar_size_v<int16_t>)
+					return vector128(_mm_cmpge_epi16(arg.v, v));
+				else if constexpr (is_scalar_size_v<int32_t>)
+					return vector128(_mm_cmpge_epi32(arg.v, v));
+				else if constexpr (is_scalar_size_v<int64_t>)
+					return vector128(_mm_cmpge_epi64(arg.v, v));
+				else
+					static_assert(false_v<Scalar>, "SSE4.2 : operator<= is not defined in given type.");
+			}
+			else {
+				if constexpr (is_scalar_size_v<int8_t>)
+					return vector128(_mm_cmpge_epi8(
+						_mm_xor_si128(arg.v, _mm_set1_epi8(INT8_MIN)),
+						_mm_xor_si128(v, _mm_set1_epi8(INT8_MIN))
+					));
+				else if constexpr (is_scalar_size_v<int16_t>)
+					return vector128(_mm_cmpge_epi16(
+						_mm_xor_si128(arg.v, _mm_set1_epi16(INT16_MIN)),
+						_mm_xor_si128(v, _mm_set1_epi16(INT16_MIN))
+					));
+				else if constexpr (is_scalar_size_v<int32_t>)
+					return vector128(_mm_cmpge_epi32(
+						_mm_xor_si128(arg.v, _mm_set1_epi32(INT32_MIN)),
+						_mm_xor_si128(v, _mm_set1_epi32(INT32_MIN))
+					));
+				else if constexpr (is_scalar_size_v<int64_t>)
+					return vector128(_mm_cmpge_epi64(
+						_mm_xor_si128(arg.v, _mm_set1_epi64x(INT64_MIN)),
+						_mm_xor_si128(v, _mm_set1_epi64x(INT64_MIN))
+					));
+				else
+					static_assert(false_v<Scalar>, "SSE4.2 : operator<= is not defined in given type.");
+			}
+		}
+		else
+			static_assert(false_v<Scalar>, "SSE4.2 : operator<= is not defined in given type.");
+	}
 
 	bool is_all_zero() const noexcept {
 		if constexpr (is_scalar_v<double>)
