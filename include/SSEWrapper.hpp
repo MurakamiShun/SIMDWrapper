@@ -24,13 +24,13 @@ public:
 	static bool AVX() noexcept { return CPU_ref.AVX; }
 	static bool FMA() noexcept { return CPU_ref.FMA; }
 private:
-	struct instructionSet {
+	struct instruction_set {
 		bool SSE4_1 = false;
 		bool SSE4_2 = false;
 		bool AVX2 = false;
 		bool AVX = false;
 		bool FMA = false;
-		instructionSet() {
+		instruction_set() {
 			std::vector<std::array<int, 4>> data;
 			std::array<int, 4> cpui;
 			#if defined(__GNUC__)
@@ -63,7 +63,7 @@ private:
 			}
 		}
 	};
-	static inline instructionSet CPU_ref;
+	static inline instruction_set CPU_ref;
 };
 
 namespace print_format {

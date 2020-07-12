@@ -7,3 +7,5 @@ x86-64
    :caption: API
 
    instruction
+   vector128/index
+   vector256/index

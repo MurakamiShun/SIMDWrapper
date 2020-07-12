@@ -1,5 +1,5 @@
 ###########
-Instrcution
+instrcution
 ###########
 
 .. cpp:class:: instruction
