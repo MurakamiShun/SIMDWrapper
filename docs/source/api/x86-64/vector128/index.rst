@@ -28,6 +28,9 @@ Comparison operations
 ^^^^^^^^^^^^^^^^^^^^^
 
     * :ref:`operator == <vector128_operator==>`
+    * :ref:`operator != <vector128_operator!=>`
+    * :ref:`operator \<= <vector128_operator\<=>`
+    * :ref:`operator \>= <vector128_operator\>=>`
     * :ref:`operator \< <vector128_operator\<>`
     * :ref:`operator \> <vector128_operator\>>`
 

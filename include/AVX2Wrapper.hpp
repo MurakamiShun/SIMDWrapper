@@ -264,39 +264,6 @@ public:
 		return reinterpret_cast<const scalar*>(&v)[index];
 		
 	}
-
-	bool is_all_false() const noexcept {
-		if constexpr (is_scalar_v<double>)
-			return bool(_mm256_testz_si256(
-				_mm256_castpd_si256(v),
-				_mm256_set1_epi64x(-1)
-			));
-		else if constexpr (is_scalar_v<float>)
-			return bool(_mm256_testz_si256(
-				_mm256_castps_si256(v),
-				_mm256_set1_epi64x(-1)
-			));
-		else if constexpr (std::is_integral_v<scalar>)
-			return bool(_mm256_testz_si256(v, _mm256_set1_epi64x(-1)));
-		else
-			static_assert(false_v<Scalar>, "AVX2 : is_all_zero is not defined in given type.");
-	}
-	bool is_all_true() const noexcept {
-		if constexpr (is_scalar_v<double>)
-			return bool(_mm256_testc_si256(
-				_mm256_castpd_si256(v),
-				_mm256_set1_epi64x(-1)
-			));
-		else if constexpr (is_scalar_v<float>)
-			return bool(_mm256_testc_si256(
-				_mm256_castps_si256(v),
-				_mm256_set1_epi64x(-1)
-			));
-		else if constexpr (std::is_integral_v<scalar>)
-			return bool(_mm256_testc_si256(v, _mm256_set1_epi64x(-1)));
-		else
-			static_assert(false_v<Scalar>, "AVX2 : is_all_one is not defined in given type.");
-	}
 	vector256 operator==(const vector256& arg) const noexcept {
 		if constexpr (is_scalar_v<double>)
 			return vector256(_mm256_cmp_pd(v, arg.v, _CMP_EQ_OQ));
@@ -449,61 +416,61 @@ public:
 		else if constexpr (std::is_integral_v<scalar>) {
 			if constexpr (std::is_signed_v<scalar>) {
 				if constexpr (is_scalar_size_v<int8_t>)
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi8(v, arg.v),
-						_mm256_cmpeq_epi8(v, arg.v)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi8(arg.v, v),
+						_mm256_set1_epi8(-1)
 					));
 				else if constexpr (is_scalar_size_v<int16_t>)
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi16(v, arg.v),
-						_mm256_cmpeq_epi16(v, arg.v)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi16(arg.v, v),
+						_mm256_set1_epi16(-1)
 					));
 				else if constexpr (is_scalar_size_v<int32_t>)
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi32(v, arg.v),
-						_mm256_cmpeq_epi32(v, arg.v)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi32(arg.v, v),
+						_mm256_set1_epi32(-1)
 					));
 				else if constexpr (is_scalar_size_v<int64_t>)
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi64(v, arg.v),
-						_mm256_cmpeq_epi64(v, arg.v)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi64(arg.v, v),
+						_mm256_set1_epi64x(-1)
 					));
 				else
 					static_assert(false_v<Scalar>, "AVX2 : operator>= is not defined in given type.");
 			}
 			else {
-				if constexpr (is_scalar_size_v<int8_t>) {
-					auto v_signed = _mm256_xor_si256(v, _mm256_set1_epi8(INT8_MIN));
-					auto arg_signed = _mm256_xor_si256(arg.v, _mm256_set1_epi8(INT8_MIN));
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi8(v_signed, arg_signed),
-						_mm256_cmpeq_epi8(v_signed, arg_signed)
+				if constexpr (is_scalar_size_v<int8_t>)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi8(
+							_mm256_xor_si256(arg.v, _mm256_set1_epi8(INT8_MIN)),
+							_mm256_xor_si256(v, _mm256_set1_epi8(INT8_MIN))
+						),
+						_mm256_set1_epi8(-1)
 					));
-				}
-				else if constexpr (is_scalar_size_v<int16_t>) {
-					auto v_signed = _mm256_xor_si256(v, _mm256_set1_epi16(INT16_MIN));
-					auto arg_signed = _mm256_xor_si256(arg.v, _mm256_set1_epi16(INT16_MIN));
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi16(v_signed, arg_signed),
-						_mm256_cmpeq_epi16(v_signed, arg_signed)
+				else if constexpr (is_scalar_size_v<int16_t>)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi16(
+							_mm256_xor_si256(arg.v, _mm256_set1_epi16(INT16_MIN)),
+							_mm256_xor_si256(v, _mm256_set1_epi16(INT16_MIN))
+						),
+						_mm256_set1_epi16(-1)
 					));
-				}
-				else if constexpr (is_scalar_size_v<int32_t>) {
-					auto v_signed = _mm256_xor_si256(v, _mm256_set1_epi32(INT32_MIN));
-					auto arg_signed = _mm256_xor_si256(arg.v, _mm256_set1_epi32(INT32_MIN));
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi32(v_signed, arg_signed),
-						_mm256_cmpeq_epi32(v_signed, arg_signed)
+				else if constexpr (is_scalar_size_v<int32_t>)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi32(
+							_mm256_xor_si256(arg.v, _mm256_set1_epi32(INT32_MIN)),
+							_mm256_xor_si256(v, _mm256_set1_epi32(INT32_MIN))
+						),
+						_mm256_set1_epi32(-1)
 					));
-				}
-				else if constexpr (is_scalar_size_v<int64_t>) {
-					auto v_signed = _mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN));
-					auto arg_signed = _mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN));
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi64(v_signed, arg_signed),
-						_mm256_cmpeq_epi64(v_signed, arg_signed)
+				else if constexpr (is_scalar_size_v<int64_t>)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi64(
+							_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN)),
+							_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN))
+						),
+						_mm256_set1_epi64x(-1)
 					));
-				}
 				else
 					static_assert(false_v<Scalar>, "AVX2 : operator>= is not defined in given type.");
 			}
@@ -519,67 +486,99 @@ public:
 		else if constexpr (std::is_integral_v<scalar>) {
 			if constexpr (std::is_signed_v<scalar>) {
 				if constexpr (is_scalar_size_v<int8_t>)
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi8(arg.v, v),
-						_mm256_cmpeq_epi8(arg.v, v)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi8(v, arg.v),
+						_mm256_set1_epi8(-1)
 					));
 				else if constexpr (is_scalar_size_v<int16_t>)
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi16(arg.v, v),
-						_mm256_cmpeq_epi16(arg.v, v)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi16(v, arg.v),
+						_mm256_set1_epi16(-1)
 					));
 				else if constexpr (is_scalar_size_v<int32_t>)
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi32(arg.v, v),
-						_mm256_cmpeq_epi32(arg.v, v)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi32(v, arg.v),
+						_mm256_set1_epi32(-1)
 					));
 				else if constexpr (is_scalar_size_v<int64_t>)
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi64(arg.v, v),
-						_mm256_cmpeq_epi64(arg.v, v)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi64(v, arg.v),
+						_mm256_set1_epi64x(-1)
 					));
 				else
 					static_assert(false_v<Scalar>, "AVX2 : operator<= is not defined in given type.");
 			}
 			else {
-				if constexpr (is_scalar_size_v<int8_t>) {
-					auto v_signed = _mm256_xor_si256(v, _mm256_set1_epi8(INT8_MIN));
-					auto arg_signed = _mm256_xor_si256(arg.v, _mm256_set1_epi8(INT8_MIN));
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi8(arg_signed, v_signed),
-						_mm256_cmpeq_epi8(arg_signed, v_signed)
+				if constexpr (is_scalar_size_v<int8_t>)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi8(
+							_mm256_xor_si256(v, _mm256_set1_epi8(INT8_MIN)),
+							_mm256_xor_si256(arg.v, _mm256_set1_epi8(INT8_MIN))
+						),
+						_mm256_set1_epi8(-1)
 					));
-				}
-				else if constexpr (is_scalar_size_v<int16_t>) {
-					auto v_signed = _mm256_xor_si256(v, _mm256_set1_epi16(INT16_MIN));
-					auto arg_signed = _mm256_xor_si256(arg.v, _mm256_set1_epi16(INT16_MIN));
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi16(arg_signed, v_signed),
-						_mm256_cmpeq_epi16(arg_signed, v_signed)
+				else if constexpr (is_scalar_size_v<int16_t>)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi16(
+							_mm256_xor_si256(v, _mm256_set1_epi16(INT16_MIN)),
+							_mm256_xor_si256(arg.v, _mm256_set1_epi16(INT16_MIN))
+						),
+						_mm256_set1_epi16(-1)
 					));
-				}
-				else if constexpr (is_scalar_size_v<int32_t>) {
-					auto v_signed = _mm256_xor_si256(v, _mm256_set1_epi32(INT32_MIN));
-					auto arg_signed = _mm256_xor_si256(arg.v, _mm256_set1_epi32(INT32_MIN));
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi32(arg_signed, v_signed),
-						_mm256_cmpeq_epi32(arg_signed, v_signed)
+				else if constexpr (is_scalar_size_v<int32_t>)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi32(
+							_mm256_xor_si256(v, _mm256_set1_epi32(INT32_MIN)),
+							_mm256_xor_si256(arg.v, _mm256_set1_epi32(INT32_MIN))
+						),
+						_mm256_set1_epi32(-1)
 					));
-				}
-				else if constexpr (is_scalar_size_v<int64_t>) {
-					auto v_signed = _mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN));
-					auto arg_signed = _mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN));
-					return vector256(_mm256_or_si256(
-						_mm256_cmpgt_epi64(arg_signed, v_signed),
-						_mm256_cmpeq_epi64(arg_signed, v_signed)
+				else if constexpr (is_scalar_size_v<int64_t>)
+					return vector256(_mm256_xor_si256(
+						_mm256_cmpgt_epi64(
+							_mm256_xor_si256(v, _mm256_set1_epi64x(INT64_MIN)),
+							_mm256_xor_si256(arg.v, _mm256_set1_epi64x(INT64_MIN))
+						),
+						_mm256_set1_epi64x(-1)
 					));
-				}
 				else
 					static_assert(false_v<Scalar>, "AVX2 : operator<= is not defined in given type.");
 			}
 		}
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator<= is not defined in given type.");
+	}
+	bool is_all_false() const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return bool(_mm256_testz_si256(
+				_mm256_castpd_si256(v),
+				_mm256_set1_epi64x(-1)
+			));
+		else if constexpr (is_scalar_v<float>)
+			return bool(_mm256_testz_si256(
+				_mm256_castps_si256(v),
+				_mm256_set1_epi64x(-1)
+			));
+		else if constexpr (std::is_integral_v<scalar>)
+			return bool(_mm256_testz_si256(v, _mm256_set1_epi64x(-1)));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : is_all_zero is not defined in given type.");
+	}
+	bool is_all_true() const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return bool(_mm256_testc_si256(
+				_mm256_castpd_si256(v),
+				_mm256_set1_epi64x(-1)
+			));
+		else if constexpr (is_scalar_v<float>)
+			return bool(_mm256_testc_si256(
+				_mm256_castps_si256(v),
+				_mm256_set1_epi64x(-1)
+			));
+		else if constexpr (std::is_integral_v<scalar>)
+			return bool(_mm256_testc_si256(v, _mm256_set1_epi64x(-1)));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : is_all_one is not defined in given type.");
 	}
 	vector256 operator& (const vector256& arg) const noexcept {
 		if constexpr (is_scalar_v<double>)

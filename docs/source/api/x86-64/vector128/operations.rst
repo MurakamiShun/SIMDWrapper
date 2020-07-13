@@ -29,6 +29,9 @@ Arithmetic operations
     .. math::
         {\rm out}[i] = {\rm this}[i] * {\rm input}[i]
 
+    .. warning::
+        * This operation is valid only double, float, int32_t and uint32_t.
+
 .. _vector128_operator/:
 .. cpp:function:: vector128 operator/(const vector128& input) const noexcept
     
@@ -36,6 +39,9 @@ Arithmetic operations
     
     .. math::
         {\rm out}[i] = \frac{{\rm this}[i]}{{\rm input}[i]}
+
+    .. warning::
+        * This operation is valid only double and float.
 
 .. _vector128_rcp:
 .. cpp:function:: vector128 rcp() const noexcept
@@ -150,6 +156,45 @@ Comparison operations make bit mask. value will be ``~0`` (all bits are 1) when 
             \begin{array}{r}
                 \lnot 0 & ({\rm this}[i] = {\rm input}[i]) \\
                 0 & ({\rm this}[i] \ne {\rm input}[i])
+            \end{array}
+        \right.
+
+.. _vector128_operator!=:
+.. cpp:function:: vector128 operator!=(const vector128& input) const noexcept
+
+    Check whether ``this`` and input are not equal at each element and make bitmask.
+
+    .. math::
+        {\rm out}[i] = \left\{
+            \begin{array}{r}
+                \lnot 0 & ({\rm this}[i] \ne {\rm input}[i]) \\
+                0 & ({\rm this}[i] = {\rm input}[i])
+            \end{array}
+        \right.
+
+.. _vector128_operator\<=:
+.. cpp:function:: vector128 operator<=(const vector128& input) const noexcept
+
+    Check whether ``this`` is less than or equal input at each element and make bitmask.
+
+    .. math::
+        {\rm out}[i] = \left\{
+            \begin{array}{r}
+                \lnot 0 & ({\rm this}[i] \le {\rm input}[i]) \\
+                0 & ({\rm this}[i] > {\rm input}[i])
+            \end{array}
+        \right.
+
+.. _vector128_operator\>=:
+.. cpp:function:: vector128 operator>=(const vector128& input) const noexcept
+
+    Check whether ``this`` is greater than or equal input at each element and make bitmask.
+
+    .. math::
+        {\rm out}[i] = \left\{
+            \begin{array}{r}
+                \lnot 0 & ({\rm this}[i] \ge {\rm input}[i]) \\
+                0 & ({\rm this}[i] < {\rm input}[i])
             \end{array}
         \right.
 
