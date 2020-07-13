@@ -36,8 +36,8 @@ int main() {
 	int32_t element = t1.concat(t2)[1];
 	element = t1.alternate(t2)[7];
 	
-	bool be_true = (t1 > t2).is_all_one();
-	bool be_false = (t1 == t2).is_all_zero();
+	bool be_true = (t1 > t2).is_all_true();
+	bool be_false = (t1 == t2).is_all_false();
 	
 	t2 = t1 >> 1;
 	t2 = t1 << vector256<uint32_t>(3).reinterpret<int64_t>();

@@ -56,10 +56,10 @@ int main() {
 			l += e;
 		auto m1 = t1.max(t2);
 		auto m2 = t1.min(t2);
-		std::cout << (t1 < t2).is_all_one();
+		std::cout << (t1 < t2).is_all_true();
 		auto c = (t1.max(t2) == function::cmp_blend(t1 > t2, t1, t2));
-		auto bo = (t == t).is_all_one();
-		auto b1 = (~(t == t)).is_all_zero();
+		auto bo = (t == t).is_all_true();
+		auto b1 = (~(t == t)).is_all_false();
 		auto b2 = function::cmp_blend((t1 > t2), v2, t);
 		auto j = v1 + v2;
 

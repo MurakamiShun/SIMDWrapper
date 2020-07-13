@@ -547,37 +547,42 @@ public:
 			static_assert(false_v<Scalar>, "SSE4.2 : operator<= is not defined in given type.");
 	}
 
-	bool is_all_zero() const noexcept {
+	bool is_all_false() const noexcept {
 		if constexpr (is_scalar_v<double>)
-			return bool(_mm_testz_si128(
-				_mm_castpd_si128(v),
-				_mm_cmpeq_epi64(_mm_castpd_si128(v), _mm_castpd_si128(v))
+			return bool(_mm_test_all_ones(
+				_mm_xor_si128(
+					_mm_castpd_si128(v),
+					_mm_set1_epi32(-1)
+				)
 			));
 		else if constexpr (is_scalar_v<float>)
-			return bool(_mm_testz_si128(
-				_mm_castps_si128(v),
-				_mm_cmpeq_epi64(_mm_castps_si128(v), _mm_castps_si128(v))
+			return bool(_mm_test_all_ones(
+				_mm_xor_si128(
+					_mm_castps_si128(v),
+					_mm_set1_epi32(-1)
+				)
 			));
 		else if constexpr (std::is_integral_v<scalar>)
-			return bool(_mm_testz_si128(v, _mm_cmpeq_epi64(v, v)));
+			return bool(_mm_test_all_ones(_mm_xor_si128(
+				v,
+				_mm_set1_epi32(-1)
+			)));
 		else
-			static_assert(false_v<Scalar>, "SSE4.2 : is_all_zero is not defined in given type.");
+			static_assert(false_v<Scalar>, "SSE4.2 : is_all_false is not defined in given type.");
 	}
-	bool is_all_one() const noexcept {
+	bool is_all_true() const noexcept {
 		if constexpr (is_scalar_v<double>)
-			return bool(_mm_testc_si128(
-				_mm_castpd_si128(v),
-				_mm_cmpeq_epi64(_mm_castpd_si128(v), _mm_castpd_si128(v))
+			return bool(_mm_test_all_ones(
+				_mm_castpd_si128(v)
 			));
 		else if constexpr (is_scalar_v<float>)
-			return bool(_mm_testc_si128(
-				_mm_castps_si128(v),
-				_mm_cmpeq_epi64(_mm_castps_si128(v), _mm_castps_si128(v))
+			return bool(_mm_test_all_ones(
+				_mm_castps_si128(v)
 			));
 		else if constexpr (std::is_integral_v<scalar>)
-			return bool(_mm_testc_si128(v, _mm_cmpeq_epi64(v, v)));
+			return bool(_mm_test_all_ones(v));
 		else
-			static_assert(false_v<Scalar>, "SSE4.2 : is_all_one is not defined in given type.");
+			static_assert(false_v<Scalar>, "SSE4.2 : is_all_true is not defined in given type.");
 	}
 	vector128 operator& (const vector128& arg) const noexcept {
 		if constexpr (is_scalar_v<double>)
@@ -589,23 +594,13 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : and is not defined in given type.");
 	}
-	vector128 nand(const vector128& arg) const noexcept {
-		if constexpr (is_scalar_v<double>)
-			return vector128(_mm_andnot_pd(v, arg.v));
-		else if constexpr (is_scalar_v<float>)
-			return vector128(_mm_andnot_ps(v, arg.v));
-		else if constexpr (std::is_integral_v<scalar>)
-			return vector128(_mm_andnot_si128(v, arg.v));
-		else
-			static_assert(false_v<Scalar>, "SSE4.2 : nand is not defined in given type.");
-	}
 	vector128 operator~() const noexcept {
 		if constexpr (is_scalar_v<double>)
-			return vector128(_mm_andnot_pd(v, v));
+			return vector128(_mm_xor_pd(v, _mm_castsi128_pd(_mm_set1_epi32(-1))));
 		else if constexpr (is_scalar_v<float>)
-			return vector128(_mm_andnot_ps(v, v));
+			return vector128(_mm_xor_ps(v, _mm_castsi128_ps(_mm_set1_epi32(-1))));
 		else if constexpr (std::is_integral_v<scalar>)
-			return vector128(_mm_andnot_si128(v, v));
+			return vector128(_mm_xor_si128(v, _mm_set1_epi32(-1)));
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : not is not defined in given type.");
 	}

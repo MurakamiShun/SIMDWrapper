@@ -284,35 +284,35 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator== is not defined in given type.");
 	}
-	bool is_all_zero() const noexcept {
+	bool is_all_false() const noexcept {
 		if constexpr (is_scalar_v<double>)
 			return bool(_mm256_testz_si256(
 				_mm256_castpd_si256(v),
-				_mm256_cmpeq_epi64(_mm256_castpd_si256(v), _mm256_castpd_si256(v))
+				_mm256_set1_epi64x(-1)
 			));
 		else if constexpr (is_scalar_v<float>)
 			return bool(_mm256_testz_si256(
 				_mm256_castps_si256(v),
-				_mm256_cmpeq_epi64(_mm256_castps_si256(v), _mm256_castps_si256(v))
+				_mm256_set1_epi64x(-1)
 			));
 		else if constexpr (std::is_integral_v<scalar>)
-			return bool(_mm256_testz_si256(v, _mm256_cmpeq_epi64(v, v)));
+			return bool(_mm256_testz_si256(v, _mm256_set1_epi64x(-1)));
 		else
 			static_assert(false_v<Scalar>, "AVX2 : is_all_zero is not defined in given type.");
 	}
-	bool is_all_one() const noexcept {
+	bool is_all_true() const noexcept {
 		if constexpr (is_scalar_v<double>)
 			return bool(_mm256_testc_si256(
 				_mm256_castpd_si256(v),
-				_mm256_cmpeq_epi64(_mm256_castpd_si256(v), _mm256_castpd_si256(v))
+				_mm256_set1_epi64x(-1)
 			));
 		else if constexpr (is_scalar_v<float>)
 			return bool(_mm256_testc_si256(
 				_mm256_castps_si256(v),
-				_mm256_cmpeq_epi64(_mm256_castps_si256(v), _mm256_castps_si256(v))
+				_mm256_set1_epi64x(-1)
 			));
 		else if constexpr (std::is_integral_v<scalar>)
-			return bool(_mm256_testc_si256(v, _mm256_cmpeq_epi64(v, v)));
+			return bool(_mm256_testc_si256(v, _mm256_set1_epi64x(-1)));
 		else
 			static_assert(false_v<Scalar>, "AVX2 : is_all_one is not defined in given type.");
 	}
@@ -418,23 +418,13 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : and is not defined in given type.");
 	}
-	vector256 nand(const vector256& arg) const noexcept {
-		if constexpr (is_scalar_v<double>)
-			return vector256(_mm256_andnot_pd(v, arg.v));
-		else if constexpr (is_scalar_v<float>)
-			return vector256(_mm256_andnot_ps(v, arg.v));
-		else if constexpr (std::is_integral_v<scalar>)
-			return vector256(_mm256_andnot_si256(v, arg.v));
-		else
-			static_assert(false_v<Scalar>, "AVX2 : nand is not defined in given type.");
-	}
 	vector256 operator~() const noexcept {
 		if constexpr (is_scalar_v<double>)
-			return vector256(_mm256_andnot_pd(v, v));
+			return vector256(_mm256_xor_pd(v, _mm256_castsi256_pd(_mm256_set1_epi64x(-1))));
 		else if constexpr (is_scalar_v<float>)
-			return vector256(_mm256_andnot_ps(v, v));
+			return vector256(_mm256_xor_ps(v, _mm256_castsi256_ps(_mm256_set1_epi64x(-1))));
 		else if constexpr (std::is_integral_v<scalar>)
-			return vector256(_mm256_andnot_si256(v, v));
+			return vector256(_mm256_xor_si256(v, _mm256_set1_epi64x(-1)));
 		else
 			static_assert(false_v<Scalar>, "AVX2 : not is not defined in given type.");
 	}
