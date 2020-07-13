@@ -362,6 +362,44 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator== is not defined in given type.");
 	}
+	vector128 operator!=(const vector128& arg) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_xor_pd(
+					_mm_cmpeq_pd(v, arg.v),
+					_mm_castsi128_pd(_mm_set1_epi64x(-1))
+				));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_xor_ps(
+					_mm_cmpeq_ps(v, arg.v),
+					_mm_castsi128_ps(_mm_set1_epi64x(-1))
+				));
+		else if constexpr (std::is_integral_v<scalar>) {
+			if constexpr (is_scalar_size_v<int8_t>)
+				return vector128(_mm_xor_si128(
+					_mm_cmpeq_epi8(v, arg.v),
+					_mm_set1_epi8(-1)
+				));
+			else if constexpr (is_scalar_size_v<int16_t>)
+				return vector128(_mm_xor_si128(
+					_mm_cmpeq_epi16(v, arg.v),
+					_mm_set1_epi16(-1)
+				));
+			else if constexpr (is_scalar_size_v<int32_t>)
+				return vector128(_mm_xor_si128(
+					_mm_cmpeq_epi32(v, arg.v),
+					_mm_set1_epi32(-1)
+				));
+			else if constexpr (is_scalar_size_v<int64_t>)
+				return vector128(_mm_xor_si128(
+					_mm_cmpeq_epi64(v, arg.v),
+					_mm_set1_epi64x(-1)
+				));
+			else
+				static_assert(false_v<Scalar>, "SSE4.2 : operator!= is not defined in given type.");
+		}
+		else
+			static_assert(false_v<Scalar>, "SSE4.2 : operator!= is not defined in given type.");
+	}
 	vector128 operator>(const vector128& arg) const noexcept {
 		if constexpr (is_scalar_v<double>)
 			return vector128(_mm_cmpgt_pd(v, arg.v));

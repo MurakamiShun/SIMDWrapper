@@ -1,0 +1,57 @@
+		const scalar operator*() const noexcept{
+		input_iterator& operator++() noexcept {
+		bool operator==(const input_iterator& it) const noexcept {
+		bool operator!=(const input_iterator& it) const noexcept {
+	vector256 operator+(const vector256& arg) const noexcept {
+				static_assert(false_v<Scalar>, "AVX2 : operator+ is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator+ is not defined in given type.");
+	vector256 operator-(const vector256& arg) const noexcept {
+				static_assert(false_v<Scalar>, "AVX2 : operator- is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator- is not defined in given type.");
+	auto operator*(const vector256& arg) const noexcept {
+					static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator* is not defined in given type.");
+	vector256 operator/(const vector256& arg) const noexcept {
+			static_assert(false_v<Scalar>, "AVX2 : operator/ is not defined in given type.");
+	vector256& operator=(const scalar arg) noexcept {
+				static_assert(false_v<Scalar>, "AVX2 : operator=(scalar) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator=(scalar) is not defined in given type.");
+	scalar operator[](const size_t index) const noexcept{
+	vector256 operator==(const vector256& arg) const noexcept {
+				static_assert(false_v<Scalar>, "AVX2 : operator== is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator== is not defined in given type.");
+	vector256 operator>(const vector256& arg) const noexcept {
+					static_assert(false_v<Scalar>, "AVX2 : operator> is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator> is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator> is not defined in given type.");
+	vector256 operator<(const vector256& arg) const noexcept {
+					static_assert(false_v<Scalar>, "AVX2 : operator< is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator< is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator< is not defined in given type.");
+	vector256 operator>=(const vecotr256& arg) const noexcept {
+					static_assert(false_v<Scalar>, "AVX2 : operator>= is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator>= is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator>= is not defined in given type.");
+	vector256 operator<=(const vecotr256& arg) const noexcept {
+					static_assert(false_v<Scalar>, "AVX2 : operator<= is not defined in given type.");
+					static_assert(false_v<Scalar>, "AVX2 : operator<= is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator<= is not defined in given type.");
+	vector256 operator& (const vector256& arg) const noexcept {
+	vector256 operator~() const noexcept {
+	vector256 operator| (const vector256& arg) const noexcept {
+	vector256 operator^ (const vector256& arg) const noexcept {
+	vector256 operator>>(const int n) const noexcept {
+				static_assert(false_v<Scalar>, "AVX2 : operator>> is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator>> is not defined in given type.");
+	vector256 operator>>(const vector256& arg) const noexcept {
+				static_assert(false_v<Scalar>, "AVX2 : operator>>(vector256) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator>>(vector256) is not defined in given type.");
+	vector256 operator<<(const int n) const noexcept {
+				static_assert(false_v<Scalar>, "AVX2 : operator<< is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator<< is not defined in given type.");
+	vector256 operator<<(const vector256& arg) const noexcept {
+				static_assert(false_v<Scalar>, "AVX2 : operator<<(vector256) is not defined in given type.");
+			static_assert(false_v<Scalar>, "AVX2 : operator<<(vector256) is not defined in given type.");
+	explicit operator vector256<Cvt>() const noexcept {
+std::ostream& operator<<(std::ostream& os, const vector256<Scalar>& v) {
