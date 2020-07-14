@@ -8,6 +8,7 @@
 #include <tuple>
 #include <bitset>
 #include <sstream>
+#include <limits>
 
 #if defined(__GNUC__)
 #include <x86intrin.h>
@@ -188,6 +189,27 @@ private:
 		}
 	};
 public:
+	static constexpr scalar truthy = [](){
+		if constexpr (is_scalar_v<double>)
+			return -std::numeric_limits<double>::quiet_NaN();
+		else if constexpr (is_scalar_v<float>)
+			return -std::numeric_limits<float>::quiet_NaN();
+		else if constexpr (std::is_integral_v<scalar>)
+			return static_cast<scalar>(-1);
+		else
+			static_assert(false_v<Scalar>, "vector128 is not defined in given type.");
+	}();
+	static constexpr scalar falsy = [](){
+		if constexpr (is_scalar_v<double>)
+			return 0.0;
+		else if constexpr (is_scalar_v<float>)
+			return 0.0f;
+		else if constexpr (std::is_integral_v<scalar>)
+			return 0;
+		else
+			static_assert(false_v<Scalar>, "vector128 is not defined in given type.");
+	}();
+
 	vector v;
 
 	vector128() noexcept : v() {}
@@ -584,7 +606,36 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : operator<= is not defined in given type.");
 	}
-
+	vector128 operator&&(const vector128& arg) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_and_pd(v, arg.v));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_and_ps(v, arg.v));
+		else if constexpr (std::is_integral_v<scalar>)
+			return vector128(_mm_and_si128(v, arg.v));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : operator&& is not defined in given type.");
+	}
+	vector128 operator||(const vector128& arg) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_or_pd(v, arg.v));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_or_ps(v, arg.v));
+		else if constexpr (std::is_integral_v<scalar>)
+			return vector128(_mm_or_si128(v, arg.v));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : operator|| is not defined in given type.");
+	}
+	vector128 operator!() const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_xor_pd(v, _mm_castsi128_pd(_mm_set1_epi64x(-1))));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_xor_ps(v, _mm_castsi128_ps(_mm_set1_epi64x(-1))));
+		else if constexpr (std::is_integral_v<scalar>)
+			return vector128(_mm_xor_si128(v, _mm_set1_epi64x(-1)));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : operator! is not defined in given type.");
+	}
 	bool is_all_false() const noexcept {
 		if constexpr (is_scalar_v<double>)
 			return bool(_mm_test_all_ones(

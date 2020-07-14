@@ -109,6 +109,27 @@ private:
 		}
 	};
 public:
+	static constexpr scalar truthy = [](){
+		if constexpr (is_scalar_v<double>)
+			return -std::numeric_limits<double>::quiet_NaN();
+		else if constexpr (is_scalar_v<float>)
+			return -std::numeric_limits<float>::quiet_NaN();
+		else if constexpr (std::is_integral_v<scalar>)
+			return static_cast<scalar>(-1);
+		else
+			static_assert(false_v<Scalar>, "vector128 is not defined in given type.");
+	}();
+	static constexpr scalar falsy = [](){
+		if constexpr (is_scalar_v<double>)
+			return 0.0;
+		else if constexpr (is_scalar_v<float>)
+			return 0.0f;
+		else if constexpr (std::is_integral_v<scalar>)
+			return 0;
+		else
+			static_assert(false_v<Scalar>, "vector128 is not defined in given type.");
+	}();
+
 	vector v;
 
 	vector256() noexcept : v() {}
@@ -547,6 +568,36 @@ public:
 		}
 		else
 			static_assert(false_v<Scalar>, "AVX2 : operator<= is not defined in given type.");
+	}
+	vector256 operator&&(const vector256& arg) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_and_pd(v, arg.v));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_and_ps(v, arg.v));
+		else if constexpr (std::is_integral_v<scalar>)
+			return vector256(_mm256_and_si256(v, arg.v));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : operator&& is not defined in given type.");
+	}
+	vector256 operator||(const vector256& arg) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_or_pd(v, arg.v));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_or_ps(v, arg.v));
+		else if constexpr (std::is_integral_v<scalar>)
+			return vector256(_mm256_or_si256(v, arg.v));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : operator|| is not defined in given type.");
+	}
+	vector256 operator!() const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_xor_pd(v, _mm256_castsi256_pd(_mm256_set1_epi64x(-1))));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_xor_ps(v, _mm256_castsi256_ps(_mm256_set1_epi64x(-1))));
+		else if constexpr (std::is_integral_v<scalar>)
+			return vector256(_mm256_xor_si256(v, _mm256_set1_epi64x(-1)));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : operator! is not defined in given type.");
 	}
 	bool is_all_false() const noexcept {
 		if constexpr (is_scalar_v<double>)

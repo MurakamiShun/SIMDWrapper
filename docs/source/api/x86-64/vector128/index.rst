@@ -34,6 +34,15 @@ Comparison operations
     * :ref:`operator \< <vector128_operator\<>`
     * :ref:`operator \> <vector128_operator\>>`
 
+Boolean operations
+^^^^^^^^^^^^^^^^^^
+
+    * :ref:`operator && <vector128_operator&&>`
+    * :ref:`operator || <vector128_operator||>`
+    * :ref:`operator ! <vector128_operator!>`
+    * :ref:`is_all_true <vector128_is_all_true>`
+    * :ref:`is_all_true <vector128_is_all_true>`
+
 Binary operations
 ^^^^^^^^^^^^^^^^^
 

@@ -4,8 +4,8 @@
 
 int main(){
 
-    vector256<uint64_t> a(-14,652,1,-1);
-    vector256<uint64_t> b(-1, 1, 1, 1);
+    vector256<int64_t> a(-14,652,1,-1);
+    vector256<int64_t> b(-1, 1, 1, 1);
 
     std::cout << a << std::endl;
     std::cout << b << std::endl;
