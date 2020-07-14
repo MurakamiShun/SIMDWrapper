@@ -23,7 +23,7 @@ int main() {
 	std::cout << f1
 		<< f2.to_str()
 		<< static_cast<vector256<int32_t>>(f1)
-			.to_str(print_format::delim::comma, print_format::brancket::curly)
+			.to_str(print_format::brancket::curly, print_format::delim::comma)
 		<< std::endl;
 
 	int64_t data[] = { 6,7,8,9 };

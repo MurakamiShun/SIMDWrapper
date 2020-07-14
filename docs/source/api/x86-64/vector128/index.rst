@@ -41,7 +41,7 @@ Boolean operations
     * :ref:`operator || <vector128_operator||>`
     * :ref:`operator ! <vector128_operator!>`
     * :ref:`is_all_true <vector128_is_all_true>`
-    * :ref:`is_all_true <vector128_is_all_true>`
+    * :ref:`is_all_false <vector128_is_all_false>`
 
 Binary operations
 ^^^^^^^^^^^^^^^^^
@@ -68,7 +68,7 @@ Other operations
     * :ref:`ceil <vector128_ceil>`
     * :ref:`floor <vector128_floor>`
     * :ref:`to_str <vector128_to_str>`
-
+    * :ref:`operator [] <vector128_operator\[\]>`
 
 :doc:`functions`
 ================

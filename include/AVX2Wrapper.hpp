@@ -281,7 +281,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : store(pointer) is not defined in given type.");
 	}
-	scalar operator[](const size_t index) const noexcept{
+	scalar operator[](const size_t index) const {
 		return reinterpret_cast<const scalar*>(&v)[index];
 		
 	}
@@ -731,8 +731,13 @@ public:
 	}
 	// Reciprocal approximation < 1.5*2^12
 	vector256 rcp() const noexcept {
-		if constexpr (is_scalar_v<float>)
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_cvtps_pd(
+				_mm_rcp_ps(_mm256_cvtpd_ps(v))
+			));
+		else if constexpr (is_scalar_v<float>){
 			return vector256(_mm256_rcp_ps(v));
+		}
 		else
 			static_assert(false_v<Scalar>, "AVX2 : rcp is not defined in given type.");
 	}
@@ -1181,7 +1186,7 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : shuffle is not defined in given type.");
 	}
-	std::string to_str(std::string_view delim = print_format::delim::space, const std::pair<std::string_view, std::string_view> brancket = print_format::brancket::square) const {
+	std::string to_str(const std::pair<std::string_view, std::string_view> brancket = print_format::brancket::square, std::string_view delim = print_format::delim::space) const {
 		std::ostringstream ss;
 		alignas(32) scalar elements[elements_size];
 		aligned_store(elements);
