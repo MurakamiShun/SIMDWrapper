@@ -5,10 +5,13 @@ vector256
 .. cpp:class:: template<typename Scalar>\
             vector256 
 
-    This class provides AVX2 operations on x86-64 architecture.
+    This class provides AVX2 and FMA operations on x86-64 architecture.
 
-:doc:`operations`
-=================
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   operations
 
 Arithmetic operations
 ^^^^^^^^^^^^^^^^^^^^^
@@ -23,6 +26,10 @@ Arithmetic operations
     * :ref:`rsqrt <vector256_rsqrt>`
     * :ref:`abs <vector256_abs>`
     * :ref:`hadd <vector256_hadd>`
+    * :ref:`muladd <vector256_muladd>`
+    * :ref:`nmuladd <vector256_nmuladd>`
+    * :ref:`mulsub <vector256_mulsub>`
+    * :ref:`nmulsub <vector256_mulsub>`
 
 Comparison operations
 ^^^^^^^^^^^^^^^^^^^^^
@@ -69,6 +76,7 @@ Other operations
     * :ref:`floor <vector256_floor>`
     * :ref:`to_str <vector256_to_str>`
     * :ref:`operator [] <vector256_operator\[\]>`
+    * :ref:`shuffle <vector256_shuffle>`
 
 :doc:`functions`
 ================
@@ -77,4 +85,8 @@ Other operations
     * :ref:`min <vector256_min_function>`
     * :ref:`cmp_blend <vector256_cmp_blend_function>`
     * :ref:`hadd <vector256_hadd_function>`
+    * :ref:`muladd <vector256_muladd>`
+    * :ref:`nmuladd <vector256_nmuladd>`
+    * :ref:`mulsub <vector256_mulsub>`
+    * :ref:`nmulsub <vector256_mulsub>`
     * :ref:`reinterpret <vector256_reinterpret_function>`

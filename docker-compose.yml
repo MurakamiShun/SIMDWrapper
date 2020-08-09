@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  gcc:
+    image: gcc:9.3.0
+    volumes: 
+      - ./:/usr/src
+    working_dir: /usr/src
+  
+  sphinx:
+    build:
+      context: ./docs
+    volumes:
+      - ./docs:/usr/src
+    working_dir: /usr/src

@@ -7,8 +7,11 @@ vector128
 
     This class provides SSE4.2 operations on x86-64 architecture.
 
-:doc:`operations`
-=================
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   operations
 
 Arithmetic operations
 ^^^^^^^^^^^^^^^^^^^^^

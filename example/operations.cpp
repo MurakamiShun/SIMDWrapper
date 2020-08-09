@@ -17,7 +17,7 @@ int main() {
 		.floor()
 		.ceil()
 		.max(f2).min(f1)
-		.nand(f1) & f2 | f1 ^ (~f2)
+		 & f2 | f1 ^ (~f2)
 		.cmp_blend(f1 < f2 == f2 > f1, f2);
 
 	std::cout << f1

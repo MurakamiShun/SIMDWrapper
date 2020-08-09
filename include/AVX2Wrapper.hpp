@@ -890,7 +890,16 @@ public:
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fmadd_ps(v, a.v, b.v));
 		else
-			static_assert(false_v<Scalar>, "AVX2 : mulladd is not defined in given type.");
+			static_assert(false_v<Scalar>, "FMA : mulladd is not defined in given type.");
+	}
+	// -(this * a) + b
+	vector256 nmuladd(const vector256& a, const vector256& b) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_fnmadd_pd(v, a.v, b.v));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_fnmadd_ps(v, a.v, b.v));
+		else
+			static_assert(false_v<Scalar>, "FMA : nmulladd is not defined in given type.");
 	}
 	// this * a - b
 	vector256 mulsub(const vector256& a, const vector256& b) const noexcept {
@@ -899,7 +908,16 @@ public:
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fmsub_ps(v, a.v, b.v));
 		else
-			static_assert(false_v<Scalar>, "AVX2 : mullsub is not defined in given type.");
+			static_assert(false_v<Scalar>, "FMA : mullsub is not defined in given type.");
+	}
+	// -(this * a) - b
+	vector256 nmulsub(const vector256& a, const vector256& b) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_fnmsub_pd(v, a.v, b.v));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_fnmsub_ps(v, a.v, b.v));
+		else
+			static_assert(false_v<Scalar>, "FMA : nmullsub is not defined in given type.");
 	}
 	// { this[0] + this[1], arg[0] + arg[1], this[2] + this[3], ... }
 	vector256 hadd(const vector256& arg) const noexcept {
@@ -1227,10 +1245,20 @@ namespace function {
 	vector256<Scalar> muladd(const vector256<Scalar>& a, const vector256<Scalar>& b, const vector256<Scalar>& c) noexcept {
 		return a.muladd(b, c);
 	}
+	// -(a * b) + c
+	template<typename Scalar>
+	vector256<Scalar> nmuladd(const vector256<Scalar>& a, const vector256<Scalar>& b, const vector256<Scalar>& c) noexcept {
+		return a.nmuladd(b, c);
+	}
 	// a * b - c
 	template<typename Scalar>
 	vector256<Scalar> mulsub(const vector256<Scalar>& a, const vector256<Scalar>& b, const vector256<Scalar>& c) noexcept {
 		return a.mulsub(b, c);
+	}
+	// -(a * b) - c
+	template<typename Scalar>
+	vector256<Scalar> nmulsub(const vector256<Scalar>& a, const vector256<Scalar>& b, const vector256<Scalar>& c) noexcept {
+		return a.nmulsub(b, c);
 	}
 	// { a[0]+a[1], b[0]+b[1], a[2]+a[3], b[2]+b[3], ...}
 	template<typename Scalar>

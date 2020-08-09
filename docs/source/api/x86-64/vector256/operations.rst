@@ -125,6 +125,38 @@ Arithmetic operations
         * - 7
           - input[6] + input[7]
 
+.. _vector256_muladd:
+.. cpp:function:: vector256 muladd(const vector256& scale, const vector256& bias) const noexcept
+
+    Computes element-wise multiple scale and add bias.
+
+    .. math::
+      {\rm out}[i] = {\rm this}[i] * {\rm scale}[i] + {\rm bias}[i]
+
+.. _vector256_nmuladd:
+.. cpp:function:: vector256 nmuladd(const vector256& scale, const vector256& bias) const noexcept
+
+    Computes element-wise multiple negative scale and add bias.
+
+    .. math::
+      {\rm out}[i] = -({\rm this}[i] * {\rm scale}[i]) + {\rm bias}[i]
+
+.. _vector256_mulsub:
+.. cpp:function:: vector256 mulsub(const vector256& scale, const vector256& bias) const noexcept
+
+    Computes element-wise multiple scale and sub bias.
+
+    .. math::
+      {\rm out}[i] = {\rm this}[i] * {\rm scale}[i] - {\rm bias}[i]
+
+.. _vector256_nmulsub:
+.. cpp:function:: vector256 nmulsub(const vector256& scale, const vector256& bias) const noexcept
+
+    Computes element-wise multiple negative scale and sub bias.
+
+    .. math::
+      {\rm out}[i] = -({\rm this}[i] * {\rm scale}[i]) - {\rm bias}[i]
+
 Comparison operations
 =====================
 
