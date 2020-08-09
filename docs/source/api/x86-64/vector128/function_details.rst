@@ -23,7 +23,7 @@ function details
     .. math::
         {\rm out}[i] = \left\{
             \begin{array}{l}
-                {\rm a}[i] & ({\rm a}[i] ><{\rm b}[i]) \\
+                {\rm a}[i] & ({\rm a}[i] < {\rm b}[i]) \\
                 {\rm b}[i] & ({\rm a}[i] \ge {\rm b}[i])
             \end{array}
         \right.
