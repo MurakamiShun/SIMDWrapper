@@ -5,7 +5,7 @@ vector256
 .. cpp:class:: template<typename Scalar>\
             vector256 
 
-    This class provides SSE4.2 operations on x86-64 architecture.
+    This class provides AVX2 operations on x86-64 architecture.
 
 :doc:`operations`
 =================

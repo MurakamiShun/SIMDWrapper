@@ -1255,18 +1255,18 @@ namespace function {
 }
 
 namespace type {
-	using int8x32 = vector256<int8_t>;
-	using int16x16 = vector256<int16_t>;
-	using int32x8 = vector256<int32_t>;
-	using int64x4 = vector256<int64_t>;
+	using i8x32 = vector256<int8_t>;
+	using i16x16 = vector256<int16_t>;
+	using i32x8 = vector256<int32_t>;
+	using i64x4 = vector256<int64_t>;
 	
-	using uint8x32 = vector256<uint8_t>;
-	using uint16x16 = vector256<uint16_t>;
-	using uint32x8 = vector256<uint32_t>;
-	using uint64x4 = vector256<uint64_t>;
+	using u8x32 = vector256<uint8_t>;
+	using u16x16 = vector256<uint16_t>;
+	using u32x8 = vector256<uint32_t>;
+	using u64x4 = vector256<uint64_t>;
 	
-	using floatx8 = vector256<float>;
-	using doublex4 = vector256<double>;
+	using fp32x8 = vector256<float>;
+	using fp64x4 = vector256<double>;
 }
 
 #endif

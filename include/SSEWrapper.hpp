@@ -1019,18 +1019,18 @@ namespace function {
 
 
 namespace type {
-	using int8x16 = vector128<int8_t>;
-	using int16x8 = vector128<int16_t>;
-	using int32x4 = vector128<int32_t>;
-	using int64x2 = vector128<int64_t>;
+	using i8x16 = vector128<int8_t>;
+	using i16x8 = vector128<int16_t>;
+	using i32x4 = vector128<int32_t>;
+	using i64x2 = vector128<int64_t>;
 
-	using uint8x16 = vector128<uint8_t>;
-	using uint16x8 = vector128<uint16_t>;
-	using uint32x4 = vector128<uint32_t>;
-	using uint64x2 = vector128<uint64_t>;
+	using u8x16 = vector128<uint8_t>;
+	using u16x8 = vector128<uint16_t>;
+	using u32x4 = vector128<uint32_t>;
+	using u64x2 = vector128<uint64_t>;
 
-	using floatx4 = vector128<float>;
-	using doublex2 = vector128<double>;
+	using fp32x4 = vector128<float>;
+	using fp64x2 = vector128<double>;
 }
 
 #endif
