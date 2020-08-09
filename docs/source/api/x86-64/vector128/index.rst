@@ -11,6 +11,7 @@ vector128
    :maxdepth: 1
 
    member_function_details
+   function_details
 
 member functions
 ================
