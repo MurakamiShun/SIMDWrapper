@@ -102,18 +102,7 @@ Arithmetic operations
 
     Computes horizontally add adjacent pairs in ``this`` and input.
 
-    .. math::
-        \begin{gathered}
-            n = \frac{128}{\rm element\ bit\ width} \\\\
-            {\rm out}[i] = \left\{
-                \begin{array}{l}\begin{gathered}
-                    {\rm this}[i \times 2] &+& {\rm this}[i \times 2+1] & (i < \frac{n}{2}) \\
-                    {\rm input}[(i-\frac{n}{2}) \times 2] &+& {\rm input}[(i-\frac{n}{2}) \times 2+1] & (i \ge \frac{n}{2})
-                \end{gathered}\end{array}
-            \right.
-        \end{gathered}
-    
-    .. list-table:: hadd example (16bit elements)
+    .. list-table:: hadd example (32bit elements)
         :header-rows: 1
         :widths: 10 15
         
@@ -124,13 +113,13 @@ Arithmetic operations
         * - 1
           - this[2] + this[3]
         * - 2
-          - this[4] + this[5]
-        * - 3
-          - this[6] + this[7]
-        * - 4
           - input[0] + input[1]
-        * - 5
+        * - 3
           - input[2] + input[3]
+        * - 4
+          - this[4] + this[5]
+        * - 5
+          - this[6] + this[7]
         * - 6
           - input[4] + input[5]
         * - 7
@@ -147,7 +136,7 @@ Comparison operations make bit mask. value will be :math:`\tilde 0` (all bits ar
     * - true
       - false
     * - :math:`\tilde 0`
-      - 0
+      - :math:`0`
 
 .. _vector256_operator==:
 .. cpp:function:: vector256 operator==(const vector256& input) const noexcept

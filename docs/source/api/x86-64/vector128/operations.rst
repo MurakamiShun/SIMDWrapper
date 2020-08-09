@@ -147,7 +147,7 @@ Comparison operations make bit mask. value will be :math:`\tilde 0` (all bits ar
     * - true
       - false
     * - :math:`\tilde 0`
-      - 0
+      - :math:`0`
 
 .. _vector128_operator==:
 .. cpp:function:: vector128 operator==(const vector128& input) const noexcept
