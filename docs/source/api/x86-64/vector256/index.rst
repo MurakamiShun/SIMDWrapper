@@ -8,10 +8,12 @@ vector256
     This class provides AVX2 and FMA operations on x86-64 architecture.
 
 .. toctree::
-   :maxdepth: 2
-   :hidden:
+   :maxdepth: 1
 
-   operations
+   member_function_details
+
+member functions
+================
 
 Arithmetic operations
 ^^^^^^^^^^^^^^^^^^^^^
@@ -78,15 +80,15 @@ Other operations
     * :ref:`operator [] <vector256_operator\[\]>`
     * :ref:`shuffle <vector256_shuffle>`
 
-:doc:`functions`
-================
+Functions
+=========
 
     * :ref:`max <vector256_max_function>`
     * :ref:`min <vector256_min_function>`
     * :ref:`cmp_blend <vector256_cmp_blend_function>`
     * :ref:`hadd <vector256_hadd_function>`
-    * :ref:`muladd <vector256_muladd>`
-    * :ref:`nmuladd <vector256_nmuladd>`
-    * :ref:`mulsub <vector256_mulsub>`
-    * :ref:`nmulsub <vector256_mulsub>`
+    * :ref:`muladd <vector256_muladd_function>`
+    * :ref:`nmuladd <vector256_nmuladd_function>`
+    * :ref:`mulsub <vector256_mulsub_function>`
+    * :ref:`nmulsub <vector256_mulsub_function>`
     * :ref:`reinterpret <vector256_reinterpret_function>`

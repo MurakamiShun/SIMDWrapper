@@ -8,10 +8,12 @@ vector128
     This class provides SSE4.2 operations on x86-64 architecture.
 
 .. toctree::
-   :maxdepth: 2
-   :hidden:
+   :maxdepth: 1
 
-   operations
+   member_function_details
+
+member functions
+================
 
 Arithmetic operations
 ^^^^^^^^^^^^^^^^^^^^^
@@ -73,8 +75,8 @@ Other operations
     * :ref:`to_str <vector128_to_str>`
     * :ref:`operator [] <vector128_operator\[\]>`
 
-:doc:`functions`
-================
+Functions
+=========
 
     * :ref:`max <vector128_max_function>`
     * :ref:`min <vector128_min_function>`
