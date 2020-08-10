@@ -117,7 +117,7 @@ public:
 		else if constexpr (std::is_integral_v<scalar>)
 			return static_cast<scalar>(-1);
 		else
-			static_assert(false_v<Scalar>, "vector128 is not defined in given type.");
+			static_assert(false_v<Scalar>, "vector256 is not defined in given type.");
 	}();
 	static constexpr scalar falsy = [](){
 		if constexpr (is_scalar_v<double>)
@@ -127,7 +127,7 @@ public:
 		else if constexpr (std::is_integral_v<scalar>)
 			return 0;
 		else
-			static_assert(false_v<Scalar>, "vector128 is not defined in given type.");
+			static_assert(false_v<Scalar>, "vector256 is not defined in given type.");
 	}();
 
 	vector v;

@@ -486,3 +486,11 @@ Other operations
 
     .. math::
         {\rm out} = {\rm this}[{\rm index}]
+
+.. _vector256_shuffle:
+.. cpp:function:: vector256 shuffle(const vector256& indices) const noexcept
+
+    Shuffle elements.
+
+    .. math::
+        {\rm out}[i] = {\rm this}[{\rm indices[i]}] 
