@@ -1,5 +1,5 @@
 #pragma once
-#ifdef __x86_64
+#if defined(__x86_64__) || defined(_M_AMD64) || defined(_M_IX86)
 #include "SSEWrapper.hpp"
 
 template<typename Scalar>
@@ -1283,18 +1283,18 @@ namespace function {
 }
 
 namespace type {
-	using i8x32 = vector256<int8_t>;
-	using i16x16 = vector256<int16_t>;
-	using i32x8 = vector256<int32_t>;
-	using i64x4 = vector256<int64_t>;
+	using i8x32_t = vector256<int8_t>;
+	using i16x16_t = vector256<int16_t>;
+	using i32x8_t = vector256<int32_t>;
+	using i64x4_t = vector256<int64_t>;
 	
-	using u8x32 = vector256<uint8_t>;
-	using u16x16 = vector256<uint16_t>;
-	using u32x8 = vector256<uint32_t>;
-	using u64x4 = vector256<uint64_t>;
+	using u8x32_t = vector256<uint8_t>;
+	using u16x16_t = vector256<uint16_t>;
+	using u32x8_t = vector256<uint32_t>;
+	using u64x4_t = vector256<uint64_t>;
 	
-	using fp32x8 = vector256<float>;
-	using fp64x4 = vector256<double>;
+	using fp32x8_t = vector256<float>;
+	using fp64x4_t = vector256<double>;
 }
 
 #endif

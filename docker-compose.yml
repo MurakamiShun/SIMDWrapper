@@ -7,6 +7,14 @@ services:
       - ./:/usr/src
     working_dir: /usr/src
   
+  aarch64-gcc:
+    build:
+      context: .
+      dockerfile: aarch64-Dockerfile
+    volumes:
+      - ./:/usr/src
+    working_dir: /usr/src
+
   sphinx:
     build:
       context: ./docs

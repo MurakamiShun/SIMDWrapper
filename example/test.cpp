@@ -12,7 +12,7 @@ int main() {
 	std::cout << "SSE4.2" << instruction::SSE4_2() << std::endl;
 	std::cout << "SSE4.1" << instruction::SSE4_1() << std::endl;
 
-	type::u64x2 ine{3,2};
+	type::u64x2_t ine{3,2};
 	ine = ine + 9;
 
 	{
