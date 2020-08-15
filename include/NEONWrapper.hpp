@@ -83,7 +83,7 @@ private:
 	static constexpr bool false_v = false;
 
 	template<typename F, typename T, T... Seq>
-	static constexpr auto apply(std::integer_sequence<T, Seq...>, F f) {
+	static constexpr auto sequence_map(std::integer_sequence<T, Seq...>, F f) {
 		return std::integer_sequence<T, f(Seq)...>();
 	}
 
@@ -91,6 +91,39 @@ private:
 	static auto expand_sequence(std::integer_sequence<T, Seq...>) {
 		return E{Seq...};
 	}
+
+	class input_iterator {
+	private:
+		alignas(16) std::array<scalar, elements_size> tmp = {};
+		size_t index;
+	public:
+		template<size_t N>
+		struct Index {};
+
+		input_iterator(const input_iterator& it) noexcept :
+			index(it.index),
+			tmp(it.tmp) {
+		}
+		template<size_t N>
+		input_iterator(const vector128& arg, Index<N>) noexcept {
+			index = N;
+			if constexpr (N >= 0 && N < elements_size)
+				arg.aligned_store(tmp.data());
+		}
+		const scalar operator*() const noexcept {
+			return tmp[index];
+		}
+		input_iterator& operator++() noexcept {
+			++index;
+			return *this;
+		}
+		bool operator==(const input_iterator& it) const noexcept {
+			return (index == it.index);
+		}
+		bool operator!=(const input_iterator& it) const noexcept {
+			return (index != it.index);
+		}
+	};
 public:
 	vector v;
 
@@ -102,6 +135,13 @@ public:
 	vector128(const scalar first, const Args... args) noexcept {
 		alignas(16) scalar tmp[elements_size] = { first, static_cast<scalar>(args)... };
 		aligned_load(tmp);
+	}
+
+	input_iterator begin() const noexcept {
+		return input_iterator(*this, typename input_iterator::template Index<0>());
+	}
+	input_iterator end() const noexcept {
+		return input_iterator(*this, typename input_iterator::template Index<elements_size>());
 	}
 
 	vector128 operator+(const vector128& arg) const noexcept {
@@ -198,6 +238,9 @@ public:
 
 	scalar operator[](const size_t index) const {
 		return reinterpret_cast<const scalar*>(&v)[index];
+	}
+	scalar& operator[](const size_t index) {
+		return reinterpret_cast<scalar*>(&v)[index];
 	}
 
 	auto operator==(const vector128& arg) const noexcept {
@@ -488,11 +531,11 @@ public:
 		
 		if constexpr(!is_scalar_size_v<int8_t>){
 			constexpr uint8_t stride = sizeof(scalar) / sizeof(uint8_t);
-			const auto offsets = expand_sequence<vector128<uint8_t>>(apply(
+			const auto offsets = expand_sequence<vector128<uint8_t>>(sequence_map(
 					std::make_integer_sequence<uint8_t, 16>(),
 					[](auto n){ return n % stride; }
 			));
-			const auto copy_idx = expand_sequence<vector128<uint8_t>>(apply(
+			const auto copy_idx = expand_sequence<vector128<uint8_t>>(sequence_map(
 					std::make_integer_sequence<uint8_t, 16>(),
 					[](auto n){ return (n / stride) * stride; }
 			));
@@ -538,6 +581,13 @@ template<typename Scalar>
 std::ostream& operator<<(std::ostream& os, const vector128<Scalar>& v) {
 	os << v.to_str();
 	return os;
+}
+
+namespace function {
+	std::array<vector128<float>, 4> transpose(const std::array<vector128<float>, 4>& arg) {
+		auto tmp = vld4q_f32(reinterpret_cast<const float*>(arg.data()));
+		return {tmp.val[0], tmp.val[1], tmp.val[2], tmp.val[3]};
+	}
 }
 
 namespace type {

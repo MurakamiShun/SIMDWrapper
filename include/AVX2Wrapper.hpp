@@ -282,8 +282,10 @@ public:
 			static_assert(false_v<Scalar>, "AVX2 : store(pointer) is not defined in given type.");
 	}
 	scalar operator[](const size_t index) const {
-		return reinterpret_cast<const scalar*>(&v)[index];
-		
+		return reinterpret_cast<const scalar*>(&v)[index];	
+	}
+	scalar& operator[](const size_t index) {
+		return reinterpret_cast<scalar*>(&v)[index];
 	}
 	vector256 operator==(const vector256& arg) const noexcept {
 		if constexpr (is_scalar_v<double>)

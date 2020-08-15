@@ -364,6 +364,9 @@ public:
 	scalar operator[](const size_t index) const {
 		return reinterpret_cast<const scalar*>(&v)[index];
 	}
+	scalar& operator[](const size_t index) {
+		return reinterpret_cast<scalar*>(&v)[index];
+	}
 	vector128 operator==(const vector128& arg) const noexcept {
 		if constexpr (is_scalar_v<double>)
 			return vector128(_mm_cmpeq_pd(v, arg.v));
@@ -941,6 +944,13 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : hadd is not defined in given type.");
 	}
+	scalar sum() const noexcept {
+		if constexpr(is_scalar_v<float>) {
+			auto tmp = _mm_add_ps(v, _mm_movehl_ps(v, v));
+			return _mm_add_ss(tmp, _mm_shuffle_ps(tmp, tmp, 1))[0];
+		}
+		else static_assert(false_v<Scalar>, "SSE4.2 : sum is not defined in given type.");
+	}
 	// (mask) ? this : a
 	template<typename MaskScalar>
 	vector128 cmp_blend(const vector128& a, const vector128<MaskScalar>& mask) const noexcept {
@@ -1014,6 +1024,11 @@ namespace function {
 	template<typename Cvt, typename Scalar>
 	vector128<Cvt> reinterpret(const vector128<Scalar>& arg) {
 		return arg.template reinterpret<Cvt>();
+	}
+	std::array<vector128<float>, 4> transpose(const std::array<vector128<float>, 4>& arg) {
+		std::array<vector128<float>, 4> rtn = arg;
+		_MM_TRANSPOSE4_PS(rtn[0].v, rtn[1].v, rtn[2].v, rtn[3].v);
+		return rtn;
 	}
 }
 
