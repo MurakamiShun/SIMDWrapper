@@ -1025,10 +1025,19 @@ namespace function {
 	vector128<Cvt> reinterpret(const vector128<Scalar>& arg) {
 		return arg.template reinterpret<Cvt>();
 	}
-	std::array<vector128<float>, 4> transpose(const std::array<vector128<float>, 4>& arg) {
-		std::array<vector128<float>, 4> rtn = arg;
-		_MM_TRANSPOSE4_PS(rtn[0].v, rtn[1].v, rtn[2].v, rtn[3].v);
-		return rtn;
+	std::array<vector128<float>, 4> transpose(const std::array<vector128<float>, 4>& arg) noexcept {
+		vector128_type<float>::vector tmp[4] = {
+			_mm_unpacklo_ps(arg[0].v, arg[1].v),
+			_mm_unpackhi_ps(arg[0].v, arg[1].v),
+			_mm_unpacklo_ps(arg[2].v, arg[3].v),
+			_mm_unpackhi_ps(arg[2].v, arg[3].v),
+		};
+		return {
+			_mm_movelh_ps(tmp[0], tmp[2]),
+			_mm_movehl_ps(tmp[2], tmp[0]),
+			_mm_movelh_ps(tmp[1], tmp[3]),
+			_mm_movehl_ps(tmp[3], tmp[1])
+		};
 	}
 }
 
