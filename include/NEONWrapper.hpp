@@ -145,50 +145,50 @@ public:
 	}
 
 	vector128 operator+(const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<double>) return vaddq_f64(v, arg.v);
-		else if constexpr(is_scalar_v<float>) return vaddq_f32(v, arg.v);
-		else if constexpr(is_scalar_v<int64_t>) return vaddq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return vaddq_u64(v, arg.v);
-		else if constexpr(is_scalar_v<int32_t>) return vaddq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return vaddq_u32(v, arg.v);
-		else if constexpr(is_scalar_v<int16_t>) return vaddq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return vaddq_u16(v, arg.v);
-		else if constexpr(is_scalar_v<int8_t>) return vaddq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return vaddq_u8(v, arg.v);
+		if constexpr(is_scalar_v<double>) return vector128(vaddq_f64(v, arg.v));
+		else if constexpr(is_scalar_v<float>) return vector128(vaddq_f32(v, arg.v));
+		else if constexpr(is_scalar_v<int64_t>) return vector128(vaddq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vaddq_u64(v, arg.v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vaddq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vaddq_u32(v, arg.v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vaddq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vaddq_u16(v, arg.v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vaddq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vaddq_u8(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : operator+ is not defined in given type.");
 	}
 
 	vector128 operator-(const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<double>) return vsubq_f64(v, arg.v);
-		else if constexpr(is_scalar_v<float>) return vsubq_f32(v, arg.v);
-		else if constexpr(is_scalar_v<int64_t>) return vsubq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return vsubq_u64(v, arg.v);
-		else if constexpr(is_scalar_v<int32_t>) return vsubq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return vsubq_u32(v, arg.v);
-		else if constexpr(is_scalar_v<int16_t>) return vsubq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return vsubq_u16(v, arg.v);
-		else if constexpr(is_scalar_v<int8_t>) return vsubq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return vsubq_u8(v, arg.v);
+		if constexpr(is_scalar_v<double>) return vector128(vsubq_f64(v, arg.v));
+		else if constexpr(is_scalar_v<float>) return vector128(vsubq_f32(v, arg.v));
+		else if constexpr(is_scalar_v<int64_t>) return vector128(vsubq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vsubq_u64(v, arg.v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vsubq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vsubq_u32(v, arg.v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vsubq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vsubq_u16(v, arg.v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vsubq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vsubq_u8(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : operator- is not defined in given type.");
 	}
 
 	vector128 operator*(const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<double>) return vmulq_f64(v, arg.v);
-		else if constexpr(is_scalar_v<float>) return vmulq_f32(v, arg.v);
-		else if constexpr(is_scalar_v<int64_t>) return vmulq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return vmulq_u64(v, arg.v);
-		else if constexpr(is_scalar_v<int32_t>) return vmulq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return vmulq_u32(v, arg.v);
-		else if constexpr(is_scalar_v<int16_t>) return vmulq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return vmulq_u16(v, arg.v);
-		else if constexpr(is_scalar_v<int8_t>) return vmulq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return vmulq_u8(v, arg.v);
+		if constexpr(is_scalar_v<double>) return vector128(vmulq_f64(v, arg.v));
+		else if constexpr(is_scalar_v<float>) return vector128(vmulq_f32(v, arg.v));
+		else if constexpr(is_scalar_v<int64_t>) return vector128(vmulq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vmulq_u64(v, arg.v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vmulq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vmulq_u32(v, arg.v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vmulq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vmulq_u16(v, arg.v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vmulq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vmulq_u8(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : operator* is not defined in given type.");
 	}
 
 	vector128 operator/(const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<double>) return vdivq_f64(v, arg.v);
-		else if constexpr(is_scalar_v<float>) return vdivq_f32(v, arg.v);
+		if constexpr(is_scalar_v<double>) return vector128(vdivq_f64(v, arg.v));
+		else if constexpr(is_scalar_v<float>) return vector128(vdivq_f32(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : operator/ is not defined in given type.");
 	}
 
@@ -224,15 +224,15 @@ public:
 
 	void aligned_store(scalar* arg) const noexcept {
 		if constexpr (is_scalar_v<double>) vst1q_f64(arg, v);
-		else if constexpr(is_scalar_v<float>) return vst1q_f32(arg, v);
-		else if constexpr(is_scalar_v<int64_t>) return vst1q_s64(arg, v);
-		else if constexpr(is_scalar_v<uint64_t>) return vst1q_u64(arg, v);
-		else if constexpr(is_scalar_v<int32_t>) return vst1q_s32(arg, v);
-		else if constexpr(is_scalar_v<uint32_t>) return vst1q_u32(arg, v);
-		else if constexpr(is_scalar_v<int16_t>) return vst1q_s16(arg, v);
-		else if constexpr(is_scalar_v<uint16_t>) return vst1q_u16(arg, v);
-		else if constexpr(is_scalar_v<int8_t>) return vst1q_s8(arg, v);
-		else if constexpr(is_scalar_v<uint8_t>) return vst1q_u8(arg, v);
+		else if constexpr(is_scalar_v<float>) vst1q_f32(arg, v);
+		else if constexpr(is_scalar_v<int64_t>) vst1q_s64(arg, v);
+		else if constexpr(is_scalar_v<uint64_t>) vst1q_u64(arg, v);
+		else if constexpr(is_scalar_v<int32_t>) vst1q_s32(arg, v);
+		else if constexpr(is_scalar_v<uint32_t>) vst1q_u32(arg, v);
+		else if constexpr(is_scalar_v<int16_t>) vst1q_s16(arg, v);
+		else if constexpr(is_scalar_v<uint16_t>) vst1q_u16(arg, v);
+		else if constexpr(is_scalar_v<int8_t>) vst1q_s8(arg, v);
+		else if constexpr(is_scalar_v<uint8_t>) vst1q_u8(arg, v);
 		else static_assert(false_v<scalar>, "NEON : aligned store is not defined in given type.");
 	}
 
@@ -328,193 +328,205 @@ public:
 	}
 
 	vector128 operator& (const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<int64_t>) return vandq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return vandq_u64(v, arg.v);
-		else if constexpr(is_scalar_v<int32_t>) return vandq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return vandq_u32(v, arg.v);
-		else if constexpr(is_scalar_v<int16_t>) return vandq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return vandq_u16(v, arg.v);
-		else if constexpr(is_scalar_v<int8_t>) return vandq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return vandq_u8(v, arg.v);
+		if constexpr(is_scalar_v<int64_t>) return vector128(vandq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vandq_u64(v, arg.v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vandq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vandq_u32(v, arg.v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vandq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vandq_u16(v, arg.v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vandq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vandq_u8(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : operator& is not defined in given type.");
 	}
 	
 	vector128 operator| (const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<int64_t>) return vorrq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return vorrq_u64(v, arg.v);
-		else if constexpr(is_scalar_v<int32_t>) return vorrq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return vorrq_u32(v, arg.v);
-		else if constexpr(is_scalar_v<int16_t>) return vorrq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return vorrq_u16(v, arg.v);
-		else if constexpr(is_scalar_v<int8_t>) return vorrq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return vorrq_u8(v, arg.v);
+		if constexpr(is_scalar_v<int64_t>) return vector128(vorrq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vorrq_u64(v, arg.v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vorrq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vorrq_u32(v, arg.v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vorrq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vorrq_u16(v, arg.v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vorrq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vorrq_u8(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : operator| is not defined in given type.");
 	}
 
 	vector128 operator^ (const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<int64_t>) return veorq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return veorq_u64(v, arg.v);
-		else if constexpr(is_scalar_v<int32_t>) return veorq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return veorq_u32(v, arg.v);
-		else if constexpr(is_scalar_v<int16_t>) return veorq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return veorq_u16(v, arg.v);
-		else if constexpr(is_scalar_v<int8_t>) return veorq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return veorq_u8(v, arg.v);
+		if constexpr(is_scalar_v<int64_t>) return vector128(veorq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(veorq_u64(v, arg.v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(veorq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(veorq_u32(v, arg.v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(veorq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(veorq_u16(v, arg.v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(veorq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(veorq_u8(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : operator^ is not defined in given type.");
 	}
 	
 	vector128 operator~ () const noexcept {
-		if constexpr(is_scalar_v<int64_t>) return vmvniq_s64(v);
-		else if constexpr(is_scalar_v<uint64_t>) return vmvnq_u64(v);
-		else if constexpr(is_scalar_v<int32_t>) return vmvnq_s32(v);
-		else if constexpr(is_scalar_v<uint32_t>) return vmvnq_u32(v);
-		else if constexpr(is_scalar_v<int16_t>) return vmvnq_s16(v);
-		else if constexpr(is_scalar_v<uint16_t>) return vmvnq_u16(v);
-		else if constexpr(is_scalar_v<int8_t>) return vmvnq_s8(v);
-		else if constexpr(is_scalar_v<uint8_t>) return vmvnq_u8(v);
+		if constexpr(is_scalar_v<int64_t>) return vector128(vmvniq_s64(v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vmvnq_u64(v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vmvnq_s32(v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vmvnq_u32(v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vmvnq_s16(v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vmvnq_u16(v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vmvnq_s8(v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vmvnq_u8(v));
 		else static_assert(false_v<scalar>, "NEON : operator~ is not defined in given type.");
 	}
 
 	vector128 operator<<(const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<int64_t>) return vshlq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return vshlq_u64(v, vreinterpretq_s64_u64(arg.v));
-		else if constexpr(is_scalar_v<int32_t>) return vshlq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return vshlq_u32(v, vreinterpretq_s32_u32(arg.v));
-		else if constexpr(is_scalar_v<int16_t>) return vshlq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return vshlq_u16(v, vreinterpretq_s16_u16(arg.v));
-		else if constexpr(is_scalar_v<int8_t>) return vshlq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return vshlq_u8(v, vreinterpretq_s8_u8(arg.v));
+		if constexpr(is_scalar_v<int64_t>) return vector128(vshlq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vshlq_u64(v, vreinterpretq_s64_u64(arg.v)));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vshlq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vshlq_u32(v, vreinterpretq_s32_u32(arg.v)));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vshlq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vshlq_u16(v, vreinterpretq_s16_u16(arg.v)));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vshlq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vshlq_u8(v, vreinterpretq_s8_u8(arg.v)));
 		else static_assert(false_v<scalar>, "NEON : operator<< is not defined in given type.");
 	}
 
 	vector128 operator<<(const int arg) const noexcept {
-		if constexpr(is_scalar_v<int64_t>) return vshlq_n_s64(v, arg);
-		else if constexpr(is_scalar_v<uint64_t>) return vshlq_n_u64(v, arg);
-		else if constexpr(is_scalar_v<int32_t>) return vshlq_n_s32(v, arg);
-		else if constexpr(is_scalar_v<uint32_t>) return vshlq_n_u32(v, arg);
-		else if constexpr(is_scalar_v<int16_t>) return vshlq_n_s16(v, arg);
-		else if constexpr(is_scalar_v<uint16_t>) return vshlq_n_u16(v, arg);
-		else if constexpr(is_scalar_v<int8_t>) return vshlq_n_s8(v, arg);
-		else if constexpr(is_scalar_v<uint8_t>) return vshlq_n_u8(v, arg);
+		if constexpr(is_scalar_v<int64_t>) return vector128(vshlq_n_s64(v, arg));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vshlq_n_u64(v, arg));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vshlq_n_s32(v, arg));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vshlq_n_u32(v, arg));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vshlq_n_s16(v, arg));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vshlq_n_u16(v, arg));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vshlq_n_s8(v, arg));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vshlq_n_u8(v, arg));
 		else static_assert(false_v<scalar>, "NEON : operator<< is not defined in given type.");
 	}
 
 	vector128 operator>>(const vector128& arg) const noexcept {
-		if constexpr(is_scalar_v<int64_t>) return vshlq_s64(v, vnegq_s64(arg.v));
-		else if constexpr(is_scalar_v<uint64_t>) return vshlq_u64(v, vnegq_s64(vreinterpretq_s64_u64(arg.v)));
-		else if constexpr(is_scalar_v<int32_t>) return vshlq_s32(v, vnegq_s32(arg.v));
-		else if constexpr(is_scalar_v<uint32_t>) return vshlq_u32(v, vnegq_s32(vreinterpretq_s32_u32(arg.v)));
-		else if constexpr(is_scalar_v<int16_t>) return vshlq_s16(v, vnegq_s16(arg.v));
-		else if constexpr(is_scalar_v<uint16_t>) return vshlq_u16(v, vnegq_s16(vreinterpretq_s32_u32(arg.v)));
-		else if constexpr(is_scalar_v<int8_t>) return vshlq_s8(v, vnegq_s8(arg.v));
-		else if constexpr(is_scalar_v<uint8_t>) return vshlq_u8(v, vnegq_s8(vreinterpretq_s32_u32(arg.v)));
+		if constexpr(is_scalar_v<int64_t>) return vector128(vshlq_s64(v, vnegq_s64(arg.v)));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vshlq_u64(v, vnegq_s64(vreinterpretq_s64_u64(arg.v))));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vshlq_s32(v, vnegq_s32(arg.v)));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vshlq_u32(v, vnegq_s32(vreinterpretq_s32_u32(arg.v))));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vshlq_s16(v, vnegq_s16(arg.v)));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vshlq_u16(v, vnegq_s16(vreinterpretq_s32_u32(arg.v))));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vshlq_s8(v, vnegq_s8(arg.v)));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vshlq_u8(v, vnegq_s8(vreinterpretq_s32_u32(arg.v))));
 		else static_assert(false_v<scalar>, "NEON : operator>> is not defined in given type.");
 	}
 
 	vector128 operator>>(const int arg) const noexcept {
-		if constexpr(is_scalar_v<int64_t>) return vshrq_n_s64(v, arg);
-		else if constexpr(is_scalar_v<uint64_t>) return vshrq_n_u64(v, arg);
-		else if constexpr(is_scalar_v<int32_t>) return vshrq_n_s32(v, arg);
-		else if constexpr(is_scalar_v<uint32_t>) return vshrq_n_u32(v, arg);
-		else if constexpr(is_scalar_v<int16_t>) return vshrq_n_s16(v, arg);
-		else if constexpr(is_scalar_v<uint16_t>) return vshrq_n_u16(v, arg);
-		else if constexpr(is_scalar_v<int8_t>) return vshrq_n_s8(v, arg);
-		else if constexpr(is_scalar_v<uint8_t>) return vshrq_n_u8(v, arg);
+		if constexpr(is_scalar_v<int64_t>) return vector128(vshrq_n_s64(v, arg));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vshrq_n_u64(v, arg));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vshrq_n_s32(v, arg));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vshrq_n_u32(v, arg));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vshrq_n_s16(v, arg));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vshrq_n_u16(v, arg));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vshrq_n_s8(v, arg));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vshrq_n_u8(v, arg));
 		else static_assert(false_v<scalar>, "NEON : operator>> is not defined in given type.");
 	}
 
 	vector128 rcp() const noexcept {
-		if constexpr (is_scalar_v<double>) return vrecpeq_f64(v);
-		else if constexpr(is_scalar_v<float>) return vrecpeq_f32(v);
+		if constexpr (is_scalar_v<double>) return vector128(vrecpeq_f64(v));
+		else if constexpr(is_scalar_v<float>) return vector128(vrecpeq_f32(v));
 		else static_assert(false_v<scalar>, "NEON : rcp is not defined in given type.");
 	}
 
 	vector128 sqrt() const noexcept {
-		if constexpr (is_scalar_v<double>) return vsqrtq_f64(v);
-		else if constexpr(is_scalar_v<float>) return vsqrtq_f32(v);
+		if constexpr (is_scalar_v<double>) return vector128(vsqrtq_f64(v));
+		else if constexpr(is_scalar_v<float>) return vector128(vsqrtq_f32(v));
 		else static_assert(false_v<scalar>, "NEON : sqrt is not defined in given type.");
 	}
 
 	vector128 rsqrt() const noexcept {
-		if constexpr (is_scalar_v<double>) return vrsqrteq_f64(v);
-		else if constexpr(is_scalar_v<float>) return vrsqrteq_f32(v);
+		if constexpr (is_scalar_v<double>) return vector128(vrsqrteq_f64(v));
+		else if constexpr(is_scalar_v<float>) return vector128(vrsqrteq_f32(v));
 		else static_assert(false_v<scalar>, "NEON : rsqrt is not defined in given type.");
 	}
 
 	vector128 abs() const noexcept {
-		if constexpr (is_scalar_v<double>) return vabsq_f64(v);
-		else if constexpr(is_scalar_v<float>) return vabsq_f32(v);
-		else if constexpr(is_scalar_v<int64_t>) return vqabsq_s64(v);
-		else if constexpr(is_scalar_v<int32_t>) return vqabsq_n_s32(v);
-		else if constexpr(is_scalar_v<int16_t>) return vqabsq_n_s16(v);
-		else if constexpr(is_scalar_v<int8_t>) return vqabsq_n_s8(v);
+		if constexpr (is_scalar_v<double>) return vector128(vabsq_f64(v));
+		else if constexpr(is_scalar_v<float>) return vector128(vabsq_f32(v));
+		else if constexpr(is_scalar_v<int64_t>) return vector128(vqabsq_s64(v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vqabsq_n_s32(v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vqabsq_n_s16(v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vqabsq_n_s8(v));
 		else static_assert(false_v<scalar>, "NEON : abs is not defined in given type.");
 	}
 
+	// this + a * b 
+	vector128 addmul(const vector128& a, const vector128& b) const noexcept {
+		if constexpr (is_scalar_v<double>) return vector128(vfmaq_f64(v, a.v, b.v));
+		else if constexpr (is_scalar_v<float>) return vector128(vfmaq_f32(v, a.v, b.v));
+		else static_assert(false_v<scalar>, "NEON : addmul is not defined in given type.");
+	}
+	// this - a * b 
+	vector128 submul(const vector128& a, const vector128& b) const noexcept {
+		if constexpr (is_scalar_v<double>) return vector128(vfmsq_f64(v, a.v, b.v));
+		else if constexpr (is_scalar_v<float>) return vector128(vfmsq_f32(v, a.v, b.v));
+		else static_assert(false_v<scalar>, "NEON : submul is not defined in given type.");
+	}
 	// this * a + b
 	vector128 muladd(const vector128& a, const vector128& b) const noexcept {
-		if constexpr (is_scalar_v<double>) return vfmaq_f64(b.v, v, a.v);
-		else if constexpr (is_scalar_v<float>) return vfmaq_f32(b.v, v, a.v);
+		if constexpr (is_scalar_v<double>) return vector128(vfmaq_f64(b.v, v, a.v));
+		else if constexpr (is_scalar_v<float>) return vector128(vfmaq_f32(b.v, v, a.v));
 		else static_assert(false_v<scalar>, "NEON : muladd is not defined in given type.");
 	}
 	// this* a -b
 	vector128 mulsub(const vector128& a, const vector128& b) const noexcept {
-		if constexpr (is_scalar_v<double>) return vfmaq_f64(vnegq_f64(b.v), v, a.v);
-		else if constexpr (is_scalar_v<float>) return vfmaq_f32(vnegq_f32(b.v), v, a.v);
+		if constexpr (is_scalar_v<double>) return vector128(vfmaq_f64(vnegq_f64(b.v), v, a.v));
+		else if constexpr (is_scalar_v<float>) return vector128(vfmaq_f32(vnegq_f32(b.v), v, a.v));
 		else static_assert(false_v<scalar>, "NEON : mulsub is not defined in given type.");
 	}
 	// -(this * a) + b
 	vector128 nmuladd(const vector128& a, const vector128& b) const noexcept {
-		if constexpr (is_scalar_v<double>) return vfmsq_f64(b.v, v, a.v);
-		else if constexpr (is_scalar_v<float>) return vfmsq_f32(b.v, v, a.v);
+		if constexpr (is_scalar_v<double>) return vector128(vfmsq_f64(b.v, v, a.v));
+		else if constexpr (is_scalar_v<float>) return vector128(vfmsq_f32(b.v, v, a.v));
 		else static_assert(false_v<scalar>, "NEON : nmuladd is not defined in given type.");
 	}
 	// -(this* a) -b
 	vector128 nmulsub(const vector128& a, const vector128& b) const noexcept {
-		if constexpr (is_scalar_v<double>) return vnegq_f64(vfmaq_f64(b.v, v, a.v));
-		else if constexpr (is_scalar_v<float>) return vnegq_f32(vfmaq_f32(b.v, v, a.v));
+		if constexpr (is_scalar_v<double>) return vector128(vnegq_f64(vfmaq_f64(b.v, v, a.v)));
+		else if constexpr (is_scalar_v<float>) return vector128(vnegq_f32(vfmaq_f32(b.v, v, a.v)));
 		else static_assert(false_v<scalar>, "NEON : nmulsub is not defined in given type.");
 	}
 
 	vector128 max(const vector128& arg) const noexcept {
-		if constexpr (is_scalar_v<double>) return vmaxq_f64(v, arg.v);
-		else if constexpr(is_scalar_v<float>) return vmaxq_f32(v, arg.v);
-		else if constexpr(is_scalar_v<int64_t>) return vmaxq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return vmaxq_u64(v, arg.v);
-		else if constexpr(is_scalar_v<int32_t>) return vmaxq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return vmaxq_u32(v, arg.v);
-		else if constexpr(is_scalar_v<int16_t>) return vmaxq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return vmaxq_u16(v, arg.v);
-		else if constexpr(is_scalar_v<int8_t>) return vmaxq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return vmaxq_u8(v, arg.v);
+		if constexpr (is_scalar_v<double>) return vector128(vmaxq_f64(v, arg.v));
+		else if constexpr(is_scalar_v<float>) return vector128(vmaxq_f32(v, arg.v));
+		else if constexpr(is_scalar_v<int64_t>) return vector128(vmaxq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vmaxq_u64(v, arg.v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vmaxq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vmaxq_u32(v, arg.v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vmaxq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vmaxq_u16(v, arg.v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vmaxq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vmaxq_u8(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : max is not defined in given type.");
 	}
 
 	vector128 min(const vector128& arg) const noexcept {
-		if constexpr (is_scalar_v<double>) return vminq_f64(v, arg.v);
-		else if constexpr(is_scalar_v<float>) return vminq_f32(v, arg.v);
-		else if constexpr(is_scalar_v<int64_t>) return vminq_s64(v, arg.v);
-		else if constexpr(is_scalar_v<uint64_t>) return vminq_u64(v, arg.v);
-		else if constexpr(is_scalar_v<int32_t>) return vminq_s32(v, arg.v);
-		else if constexpr(is_scalar_v<uint32_t>) return vminq_u32(v, arg.v);
-		else if constexpr(is_scalar_v<int16_t>) return vminq_s16(v, arg.v);
-		else if constexpr(is_scalar_v<uint16_t>) return vminq_u16(v, arg.v);
-		else if constexpr(is_scalar_v<int8_t>) return vminq_s8(v, arg.v);
-		else if constexpr(is_scalar_v<uint8_t>) return vminq_u8(v, arg.v);
+		if constexpr (is_scalar_v<double>) return vector128(vminq_f64(v, arg.v));
+		else if constexpr(is_scalar_v<float>) return vector128(vminq_f32(v, arg.v));
+		else if constexpr(is_scalar_v<int64_t>) return vector128(vminq_s64(v, arg.v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vminq_u64(v, arg.v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vminq_s32(v, arg.v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vminq_u32(v, arg.v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vminq_s16(v, arg.v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vminq_u16(v, arg.v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vminq_s8(v, arg.v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vminq_u8(v, arg.v));
 		else static_assert(false_v<scalar>, "NEON : min is not defined in given type.");
 	}
 
 	scalar sum() const noexcept {
-		if constexpr (is_scalar_v<double>) return vaddvq_f64(v);
-		else if constexpr(is_scalar_v<float>) return vaddvq_f32(v);
-		else if constexpr(is_scalar_v<int64_t>) return vaddvq_s64(v);
-		else if constexpr(is_scalar_v<uint64_t>) return vaddvq_u64(v);
-		else if constexpr(is_scalar_v<int32_t>) return vaddvq_s32(v);
-		else if constexpr(is_scalar_v<uint32_t>) return vaddvq_u32(v);
-		else if constexpr(is_scalar_v<int16_t>) return vaddvq_s16(v);
-		else if constexpr(is_scalar_v<uint16_t>) return vaddvq_u16(v);
-		else if constexpr(is_scalar_v<int8_t>) return vaddvq_s8(v);
-		else if constexpr(is_scalar_v<uint8_t>) return vaddvq_u8(v);
+		if constexpr (is_scalar_v<double>) return vector128(vaddvq_f64(v));
+		else if constexpr(is_scalar_v<float>) return vector128(vaddvq_f32(v));
+		else if constexpr(is_scalar_v<int64_t>) return vector128(vaddvq_s64(v));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vaddvq_u64(v));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vaddvq_s32(v));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vaddvq_u32(v));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vaddvq_s16(v));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vaddvq_u16(v));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vaddvq_s8(v));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vaddvq_u8(v));
 		else static_assert(false_v<scalar>, "NEON : sum is not defined in given type.");
 	}
 
@@ -586,7 +598,10 @@ std::ostream& operator<<(std::ostream& os, const vector128<Scalar>& v) {
 namespace function {
 	std::array<vector128<float>, 4> transpose(const std::array<vector128<float>, 4>& arg) {
 		auto tmp = vld4q_f32(reinterpret_cast<const float*>(arg.data()));
-		return {tmp.val[0], tmp.val[1], tmp.val[2], tmp.val[3]};
+		return {
+			vector128<float>(tmp.val[0]), vector128<float>(tmp.val[1]),
+			vector128<float>(tmp.val[2]), vector128<float>(tmp.val[3])
+		};
 	}
 }
 

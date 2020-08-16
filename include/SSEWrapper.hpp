@@ -963,6 +963,34 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : cmp_blend is not defined in given type.");
 	}
+	#ifdef __FMA__
+	// this + a * b
+	vector128 addmul(const vector128& a, const vector128& b) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_fmadd_pd(a.v, b.v, v));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_fmadd_ps(a.v, b.v, v));
+		else
+			static_assert(false_v<Scalar>, "FMA : addmul is not defined in given type.");
+	}
+	#else
+	// this + a * b
+	vector128 addmul(const vector128& a, const vector128& b) const noexcept {
+		return *this + a * b;
+	}
+	#endif
+	
+	vector128 permeate(const size_t index) const noexcept {
+		constexpr size_t idx = [index]() constexpr {
+			size_t mask = index;
+			for(auto i = 1; i < elements_size; ++i)
+				mask = (mask << 2) + index;
+			return mask;
+		}();
+		if constexpr (is_scalar_v<float>) return vector128(_mm_shuffle_ps(v, v, index));
+		else if constexpr (is_scalar_v<double>) return vector128(_mm_shuffle_pd(v, v, idx));
+		else static_assert(false_v<Scalar>, "SSE4.2 : permeate is not defined in given type.");
+	}
 	template<typename Cvt>
 	explicit operator vector128<Cvt>() const noexcept {
 		if constexpr (is_scalar_v<float>&& std::is_same_v<Cvt, int32_t>)
@@ -1033,10 +1061,10 @@ namespace function {
 			_mm_unpackhi_ps(arg[2].v, arg[3].v),
 		};
 		return {
-			_mm_movelh_ps(tmp[0], tmp[2]),
-			_mm_movehl_ps(tmp[2], tmp[0]),
-			_mm_movelh_ps(tmp[1], tmp[3]),
-			_mm_movehl_ps(tmp[3], tmp[1])
+			vector128<float>(_mm_movelh_ps(tmp[0], tmp[2])),
+			vector128<float>(_mm_movehl_ps(tmp[2], tmp[0])),
+			vector128<float>(_mm_movelh_ps(tmp[1], tmp[3])),
+			vector128<float>(_mm_movehl_ps(tmp[3], tmp[1]))
 		};
 	}
 }

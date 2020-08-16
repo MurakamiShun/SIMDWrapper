@@ -1,5 +1,5 @@
 #pragma once
-#if defined(__x86_64__) || defined(_M_AMD64) || defined(_M_IX86)
+#if defined(__AVX2__) && (defined(__x86_64__) || defined(_M_AMD64) || defined(_M_IX86))
 #include "SSEWrapper.hpp"
 
 template<typename Scalar>
@@ -892,7 +892,16 @@ public:
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fmadd_ps(v, a.v, b.v));
 		else
-			static_assert(false_v<Scalar>, "FMA : mulladd is not defined in given type.");
+			static_assert(false_v<Scalar>, "FMA : muladd is not defined in given type.");
+	}
+	// this + a * b
+	vector256 addmul(const vector256& a, const vector256& b) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_fmadd_pd(a.v, b.v, v));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_fmadd_ps(a.v, b.v, v));
+		else
+			static_assert(false_v<Scalar>, "FMA : addmul is not defined in given type.");
 	}
 	// -(this * a) + b
 	vector256 nmuladd(const vector256& a, const vector256& b) const noexcept {
@@ -901,7 +910,7 @@ public:
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fnmadd_ps(v, a.v, b.v));
 		else
-			static_assert(false_v<Scalar>, "FMA : nmulladd is not defined in given type.");
+			static_assert(false_v<Scalar>, "FMA : nmuladd is not defined in given type.");
 	}
 	// this * a - b
 	vector256 mulsub(const vector256& a, const vector256& b) const noexcept {
@@ -910,7 +919,7 @@ public:
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fmsub_ps(v, a.v, b.v));
 		else
-			static_assert(false_v<Scalar>, "FMA : mullsub is not defined in given type.");
+			static_assert(false_v<Scalar>, "FMA : mulsub is not defined in given type.");
 	}
 	// -(this * a) - b
 	vector256 nmulsub(const vector256& a, const vector256& b) const noexcept {
@@ -937,6 +946,16 @@ public:
 		}
 		else
 			static_assert(false_v<Scalar>, "AVX2 : hadd is not defined in given type.");
+	}
+	static constexpr size_t permeate_idx(const size_t index) {
+		size_t mask = index;
+		for(auto i = 1; i < elements_size; ++i)
+			mask = (mask << 2) + index;
+		return mask;
+	}
+	vector256 permeate(const size_t index) const noexcept {
+		if constexpr (is_scalar_v<double>) return vector256(_mm256_permute4x64_pd(v, index));
+		else static_assert(false_v<Scalar>, "AVX2 : permeate is not defined in given type.");
 	}
 	// (mask) ? this : a
 	template<typename MaskScalar>
@@ -1206,6 +1225,26 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : shuffle is not defined in given type.");
 	}
+	vector256 swap_hilo() const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_setr_m128d(
+				_mm256_extractf128_pd(v, 1),
+				_mm256_extractf128_pd(v, 0)
+			));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_setr_m128(
+				_mm256_extractf128_ps(v, 1),
+				_mm256_extractf128_ps(v, 0)
+			));
+		else if constexpr (std::is_integral_v<scalar>)
+			return vector256(_mm256_setr_m128i(
+				_mm256_extractf128_si256(v, 1),
+				_mm256_extractf128_si256(v, 0)
+			));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : swap_hi_lo is not defined in given type.");
+	
+	}
 	std::string to_str(const std::pair<std::string_view, std::string_view> brancket = print_format::brancket::square, std::string_view delim = print_format::delim::space) const {
 		std::ostringstream ss;
 		alignas(32) scalar elements[elements_size];
@@ -1277,10 +1316,42 @@ namespace function {
 	auto concat(const vector256<Scalar>& a, const vector256<Scalar>& b) noexcept {
 		return a.concat(b);
 	}
+	template<typename Scalar>
+	vector256<Scalar> concat(const vector128<Scalar>& lo, const vector128<Scalar>& hi) noexcept {
+		if constexpr(std::is_same_v<Scalar, double>) return vector256<double>(_mm256_setr_m128d(lo.v, hi.v));
+		else if constexpr(std::is_same_v<Scalar, float>) return vector256<float>(_mm256_setr_m128(lo.v, hi.v));
+		else return vector256<Scalar>(_mm256_setr_m128i(lo.v, hi.v));
+	}
 	// FP64x4x2 -> FP32x8, { a[0], b[0], .... a[n], b[n] }
 	template<typename Scalar>
 	auto alternate(const vector256<Scalar>& a, const vector256<Scalar>& b) noexcept {
 		return a.alternate(b);
+	}
+	std::array<vector256<double>, 4> transpose(const std::array<vector256<double>, 4>& arg) noexcept {
+		vector256_type<double>::vector tmp[4] = {
+			_mm256_unpacklo_pd(arg[0].v, arg[1].v),
+			_mm256_unpackhi_pd(arg[0].v, arg[1].v),
+			_mm256_unpacklo_pd(arg[2].v, arg[3].v),
+			_mm256_unpackhi_pd(arg[2].v, arg[3].v),
+		};
+		return {
+			_mm256_setr_m128d(
+				_mm256_extractf128_pd(tmp[0], 0),
+				_mm256_extractf128_pd(tmp[3], 0)
+			),
+			_mm256_setr_m128d(
+				_mm256_extractf128_pd(tmp[1], 0),
+				_mm256_extractf128_pd(tmp[2], 0)
+			),
+			_mm256_setr_m128d(
+				_mm256_extractf128_pd(tmp[0], 1),
+				_mm256_extractf128_pd(tmp[3], 1)
+			),
+			_mm256_setr_m128d(
+				_mm256_extractf128_pd(tmp[0], 1),
+				_mm256_extractf128_pd(tmp[3], 1)
+			)
+		};
 	}
 }
 
