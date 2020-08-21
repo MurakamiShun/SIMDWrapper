@@ -1,5 +1,8 @@
 #pragma once
 #ifdef __aarch64__
+#if __cplusplus < 201703L
+#error C++17 is required.
+#else
 
 #include <cstdint>
 #include <type_traits>
@@ -450,7 +453,21 @@ public:
 		else if constexpr(is_scalar_v<int8_t>) return vector128(vqabsq_n_s8(v));
 		else static_assert(false_v<scalar>, "NEON : abs is not defined in given type.");
 	}
-
+	vector128 ceil() const noexcept {
+		if constexpr (is_scalar_v<double>) return vector128(vrndpq_f32(v));
+		else if constexpr (is_scalar_v<float>) return vector128(vrndpq_f64(v));
+		else static_assert(false_v<Scalar>, "NEON : ceil is not defined in given type.");
+	}
+	vector128 floor() const noexcept {
+		if constexpr (is_scalar_v<double>) return vector128(vrndmq_f32(v));
+		else if constexpr (is_scalar_v<float>) return vector128(vrndmq_f64(v));
+		else static_assert(false_v<scalar>, "NEON : floor is not defined in given type.");
+	}
+	vector128 round() const noexcept {
+		if constexpr (is_scalar_v<double>) return vector128(vrndaq_f32(v));
+		else if constexpr (is_scalar_v<float>) return vector128(vrndaq_f64(v));
+		else static_assert(false_v<scalar>, "NEON : round is not defined in given type.");
+	}
 	// this + a * b 
 	vector128 addmul(const vector128& a, const vector128& b) const noexcept {
 		if constexpr (is_scalar_v<double>) return vector128(vfmaq_f64(v, a.v, b.v));
@@ -528,6 +545,20 @@ public:
 		else if constexpr(is_scalar_v<int8_t>) return vector128(vaddvq_s8(v));
 		else if constexpr(is_scalar_v<uint8_t>) return vector128(vaddvq_u8(v));
 		else static_assert(false_v<scalar>, "NEON : sum is not defined in given type.");
+	}
+	// duplicate a lan
+	vector128 dup(const size_t idx) const noexcept {
+		if constexpr (is_scalar_v<double>) return vector128(vdupq_laneq_f64(v, idx));
+		else if constexpr (is_scalar_v<float>) return vector128(vdupq_laneq_f32(v, idx));
+		else if constexpr (is_scalar_v<int64_t>) return vector128(vdupq_laneq_s64(v, idx));
+		else if constexpr (is_scalar_v<uint64_t>) return vector128(vdupq_laneq_u64(v, idx));
+		else if constexpr (is_scalar_v<int32_t>) return vector128(vdupq_laneq_s32(v, idx));
+		else if constexpr (is_scalar_v<uint32_t>) return vector128(vdupq_laneq_u32(v, idx));
+		else if constexpr (is_scalar_v<int16_t>) return vector128(vdupq_laneq_s16(v, idx));
+		else if constexpr (is_scalar_v<uint16_t>) return vector128(vdupq_laneq_u16(v, idx));
+		else if constexpr (is_scalar_v<int8_t>) return vector128(vdupq_laneq_s8(v, idx));
+		else if constexpr (is_scalar_v<uint8_t>) return vector128(vdupq_laneq_u8(v, idx));
+		else static_assert(false_v<scalar>, "NEON : duplicate is not defined in given type.");
 	}
 
 	// reinterpret cast (data will not change)
@@ -620,4 +651,5 @@ namespace type {
 	using fp64x2_t = vector128<double>;
 }
 
+#endif
 #endif

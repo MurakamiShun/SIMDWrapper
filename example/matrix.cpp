@@ -11,8 +11,8 @@
 template<typename Type, typename SFINAE = std::enable_if_t<std::disjunction_v<std::is_same<Type, float>, std::is_same<Type, double>>>>
 struct mat4x4 {
 #if defined(ENABLE_SIMD) && defined(__AVX2__)
-	using vector = std::conditional_t< std::is_same_v<Type, double>, type::fp64x4_t, type::fp32x8_t>;
-	std::array<vector, std::is_same_v<Type, double> ? 4 : 2> elm = {};
+	using vector = std::conditional_t< std::is_same_v<Type, double>, type::fp64x4_t, type::fp32x4_t>;
+	std::array<vector, 4> elm = {};
 #elif defined(ENABLE_SIMD)
 	using vector = std::conditional_t< std::is_same_v<Type, double>, type::fp64x2_t, type::fp32x4_t>;
 	std::array<vector, std::is_same_v<Type, double> ? 8 : 4> elm = {};
@@ -32,46 +32,45 @@ struct mat4x4 {
 			}
 		}
 	}
-
 #ifdef ENABLE_SIMD
 	mat4x4 operator*(const mat4x4& mat) const noexcept {
 		if constexpr(std::is_same_v<vector, type::fp64x2_t>) {
 			mat4x4 result;
-			result.elm[0] = (mat.elm[0] * elm[0][0])
-				.addmul(mat.elm[2], elm[0][1])
-				.addmul(mat.elm[4], elm[1][0])
-				.addmul(mat.elm[6], elm[1][1]);
-			result.elm[1] = (mat.elm[1] * elm[0][0])
-				.addmul(mat.elm[3], elm[0][1])
-				.addmul(mat.elm[5], elm[1][0])
-				.addmul(mat.elm[7], elm[1][1]);
+			result.elm[0] = (mat.elm[0] * elm[0].dup(0))
+				.addmul(mat.elm[2], elm[0].dup(1))
+				.addmul(mat.elm[4], elm[1].dup(0))
+				.addmul(mat.elm[6], elm[1].dup(1));
+			result.elm[1] = (mat.elm[1] * elm[0].dup(0))
+				.addmul(mat.elm[3], elm[0].dup(1))
+				.addmul(mat.elm[5], elm[1].dup(0))
+				.addmul(mat.elm[7], elm[1].dup(1));
 			
-			result.elm[2] = (mat.elm[0] * elm[2][0])
-				.addmul(mat.elm[2], elm[2][1])
-				.addmul(mat.elm[4], elm[3][0])
-				.addmul(mat.elm[6], elm[3][1]);
-			result.elm[3] = (mat.elm[1] * elm[2][0])
-				.addmul(mat.elm[3], elm[2][1])
-				.addmul(mat.elm[5], elm[3][0])
-				.addmul(mat.elm[7], elm[3][1]);
+			result.elm[2] = (mat.elm[0] * elm[2].dup(0))
+				.addmul(mat.elm[2], elm[2].dup(1))
+				.addmul(mat.elm[4], elm[3].dup(0))
+				.addmul(mat.elm[6], elm[3].dup(1));
+			result.elm[3] = (mat.elm[1] * elm[2].dup(0))
+				.addmul(mat.elm[3], elm[2].dup(1))
+				.addmul(mat.elm[5], elm[3].dup(0))
+				.addmul(mat.elm[7], elm[3].dup(1));
 			
-			result.elm[4] = (mat.elm[0] * elm[4][0])
-				.addmul(mat.elm[2], elm[4][1])
-				.addmul(mat.elm[4], elm[5][0])
-				.addmul(mat.elm[6], elm[5][1]);
-			result.elm[5] = (mat.elm[1] * elm[4][0])
-				.addmul(mat.elm[3], elm[4][1])
-				.addmul(mat.elm[5], elm[5][0])
-				.addmul(mat.elm[7], elm[5][1]);
+			result.elm[4] = (mat.elm[0] * elm[4].dup(0))
+				.addmul(mat.elm[2], elm[4].dup(1))
+				.addmul(mat.elm[4], elm[5].dup(0))
+				.addmul(mat.elm[6], elm[5].dup(1));
+			result.elm[5] = (mat.elm[1] * elm[4].dup(0))
+				.addmul(mat.elm[3], elm[4].dup(1))
+				.addmul(mat.elm[5], elm[5].dup(0))
+				.addmul(mat.elm[7], elm[5].dup(1));
 			
-			result.elm[6] = (mat.elm[0] * elm[6][0])
-				.addmul(mat.elm[2], elm[6][1])
-				.addmul(mat.elm[4], elm[7][0])
-				.addmul(mat.elm[6], elm[7][1]);
-			result.elm[7] = (mat.elm[1] * elm[6][0])
-				.addmul(mat.elm[3], elm[6][1])
-				.addmul(mat.elm[5], elm[7][0])
-				.addmul(mat.elm[7], elm[7][1]);
+			result.elm[6] = (mat.elm[0] * elm[6].dup(0))
+				.addmul(mat.elm[2], elm[6].dup(1))
+				.addmul(mat.elm[4], elm[7].dup(0))
+				.addmul(mat.elm[6], elm[7].dup(1));
+			result.elm[7] = (mat.elm[1] * elm[6].dup(0))
+				.addmul(mat.elm[3], elm[6].dup(1))
+				.addmul(mat.elm[5], elm[7].dup(0))
+				.addmul(mat.elm[7], elm[7].dup(1));
 			return result;
 		}
 		else if constexpr(std::is_same_v<vector, type::fp32x4_t>
@@ -80,38 +79,24 @@ struct mat4x4 {
 #endif
 			) {
 			mat4x4 result;
-			result.elm[0] = (mat.elm[0] * elm[0][0])
-				.addmul(mat.elm[1], elm[0][1])
-				.addmul(mat.elm[2], elm[0][2])
-				.addmul(mat.elm[3], elm[0][3]);
-			result.elm[1] = (mat.elm[0] * elm[1][0])
-				.addmul(mat.elm[1], elm[1][1])
-				.addmul(mat.elm[2], elm[1][2])
-				.addmul(mat.elm[3], elm[1][3]);
-			result.elm[2] = (mat.elm[0] * elm[2][0])
-				.addmul(mat.elm[1], elm[2][1])
-				.addmul(mat.elm[2], elm[2][2])
-				.addmul(mat.elm[3], elm[2][3]);
-			result.elm[3] = (mat.elm[0] * elm[3][0])
-				.addmul(mat.elm[1], elm[3][1])
-				.addmul(mat.elm[2], elm[3][2])
-				.addmul(mat.elm[3], elm[3][3]);
+			result.elm[0] = (mat.elm[0] * elm[0].dup(0))
+				.addmul(mat.elm[1], elm[0].dup(1))
+				.addmul(mat.elm[2], elm[0].dup(2))
+				.addmul(mat.elm[3], elm[0].dup(3));
+			result.elm[1] = (mat.elm[0] * elm[1].dup(0))
+				.addmul(mat.elm[1], elm[1].dup(1))
+				.addmul(mat.elm[2], elm[1].dup(2))
+				.addmul(mat.elm[3], elm[1].dup(3));
+			result.elm[2] = (mat.elm[0] * elm[2].dup(0))
+				.addmul(mat.elm[1], elm[2].dup(1))
+				.addmul(mat.elm[2], elm[2].dup(2))
+				.addmul(mat.elm[3], elm[2].dup(3));
+			result.elm[3] = (mat.elm[0] * elm[3].dup(0))
+				.addmul(mat.elm[1], elm[3].dup(1))
+				.addmul(mat.elm[2], elm[3].dup(2))
+				.addmul(mat.elm[3], elm[3].dup(3));
 			return result;
 		}
-#ifdef __AVX2__
-		else if constexpr(std::is_same_v<vector, type::fp32x8_t>) {
-			mat4x4 result;
-			result.elm[0] = (mat.elm[0] * function::concat(type::fp32x4_t(elm[0][0]), type::fp32x4_t(elm[0][5])))
-				.addmul(mat.elm[0].swap_hilo(), function::concat(type::fp32x4_t(elm[0][1]), type::fp32x4_t(elm[0][4])))
-				.addmul(mat.elm[1], function::concat(type::fp32x4_t(elm[0][2]), type::fp32x4_t(elm[0][7])))
-				.addmul(mat.elm[1].swap_hilo(), function::concat(type::fp32x4_t(elm[0][3]), type::fp32x4_t(elm[0][6])));
-			result.elm[1] = (mat.elm[0] * function::concat(type::fp32x4_t(elm[1][0]), type::fp32x4_t(elm[1][5])))
-				.addmul(mat.elm[0].swap_hilo(), function::concat(type::fp32x4_t(elm[1][1]), type::fp32x4_t(elm[1][4])))
-				.addmul(mat.elm[1], function::concat(type::fp32x4_t(elm[1][2]), type::fp32x4_t(elm[1][7])))
-				.addmul(mat.elm[1].swap_hilo(), function::concat(type::fp32x4_t(elm[1][3]), type::fp32x4_t(elm[1][6])));
-			return result;
-		}
-#endif
 	}
 #else
 	mat4x4 operator*(const mat4x4& mat) const noexcept {
@@ -159,6 +144,13 @@ std::ostream& operator<<(std::ostream& os, const mat4x4<T>& mat) {
 
 
 int main() {
+	mat4x4<float> f = {
+		{11,12,13,14},
+		{21,22,23,24},
+		{31,32,33,34},
+		{41,42,43,44}
+	};
+	std::cout << f*f << std::endl;
 	{
 		std::cout << "fp32" << std::endl;
 		float tmp=0;
@@ -167,12 +159,12 @@ int main() {
 		for(auto p = 0; p < 1; ++p){
 			auto start = std::chrono::system_clock::now();
 			// 448*10^6*50 = 22.4GFLOPS
-			for(auto i=0; i < 1000000; ++i) {
+			for(auto i=0; i < 1000000*50; ++i) {
 				// 112 * 4 = 448FLOPS
 				mat = mat*mat*mat*mat*mat;
 			}
 
-			std::cout << std::fixed << std::setprecision(1) << 448*1000.0 / static_cast<double>(
+			std::cout << std::fixed << std::setprecision(1) << 448*50 / static_cast<double>(
 				std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count()
 			) << " GFlops" << std::endl;
 		}
@@ -186,12 +178,12 @@ int main() {
 		for(auto p = 0; p < 1; ++p){
 			auto start = std::chrono::system_clock::now();
 			// 448*10^6*50 = 22.4GFLOPS
-			for(auto i=0; i < 1000000; ++i) {
+			for(auto i=0; i < 1000000*50; ++i) {
 				// 112 * 4 = 448FLOPS
 				mat = mat*mat*mat*mat*mat;
 			}
 
-			std::cout << std::fixed << std::setprecision(1) << 448*1000.0 / static_cast<double>(
+			std::cout << std::fixed << std::setprecision(1) << 448*50 / static_cast<double>(
 				std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count()
 			) << " GFlops" << std::endl;
 		}

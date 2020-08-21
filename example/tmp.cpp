@@ -16,6 +16,8 @@ int main(){
     vector128<double> a(31);
     vector128<double> b(7);
 
+    std::cout << vector128<double>(-0.1).floor() << std::endl;
+
     std::cout << a << std::endl;
     std::cout << std::fixed << std::setprecision(15) << b.rcp()[1] << std::endl;
 

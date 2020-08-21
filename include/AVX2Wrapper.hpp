@@ -1,5 +1,8 @@
 #pragma once
 #if defined(__AVX2__) && (defined(__x86_64__) || defined(_M_AMD64) || defined(_M_IX86))
+#if __cplusplus < 201703L
+#error C++17 is required.
+#else
 #include "SSEWrapper.hpp"
 
 template<typename Scalar>
@@ -885,6 +888,14 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : floor is not defined in given type.");
 	}
+	vector256 round() const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_round_pd(v, _MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_round_ps(v, _MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC));
+		else
+			static_assert(false_v<Scalar>, "AVX2 : round is not defined in given type.");
+	}
 	// this * a + b
 	vector256 muladd(const vector256& a, const vector256& b) const noexcept {
 		if constexpr (is_scalar_v<double>)
@@ -947,15 +958,26 @@ public:
 		else
 			static_assert(false_v<Scalar>, "AVX2 : hadd is not defined in given type.");
 	}
-	static constexpr size_t permeate_idx(const size_t index) {
-		size_t mask = index;
-		for(auto i = 1; i < elements_size; ++i)
-			mask = (mask << 2) + index;
-		return mask;
-	}
-	vector256 permeate(const size_t index) const noexcept {
-		if constexpr (is_scalar_v<double>) return vector256(_mm256_permute4x64_pd(v, index));
-		else static_assert(false_v<Scalar>, "AVX2 : permeate is not defined in given type.");
+	// duplicate a lane
+	vector256 dup(const size_t idx) const noexcept {
+		if constexpr (is_scalar_v<double>){
+			auto tmp = _mm256_extractf128_pd(v, idx>>1);
+			tmp = _mm_shuffle_pd(tmp, tmp, idx&1);
+			return vector256(_mm256_setr_m128d(tmp, tmp));	
+			// permute is low throughput
+			//return vector256(_mm256_permute4x64_pd(v, load_mask));
+		}
+		else if constexpr (is_scalar_v<float>){
+			auto tmp = _mm256_extractf128_ps(v, idx>>2);
+			tmp = _mm_shuffle_ps(tmp, tmp, idx&3);
+			return vector256(_mm256_setr_m128(tmp, tmp));
+		}
+		else if constexpr (is_scalar_size_v<int32_t>){
+			auto tmp = _mm256_extractf128_si256(v, idx>>2);
+			tmp = _mm_shuffle_epi32(tmp, tmp, idx&3);
+			return vector256(_mm256_setr_m128i(tmp, tmp));
+		}
+		else static_assert(false_v<Scalar>, "AVX2 : duplicate is not defined in given type.");
 	}
 	// (mask) ? this : a
 	template<typename MaskScalar>
@@ -1231,11 +1253,13 @@ public:
 				_mm256_extractf128_pd(v, 1),
 				_mm256_extractf128_pd(v, 0)
 			));
-		else if constexpr (is_scalar_v<float>)
+		else if constexpr (is_scalar_v<float>){
 			return vector256(_mm256_setr_m128(
 				_mm256_extractf128_ps(v, 1),
 				_mm256_extractf128_ps(v, 0)
 			));
+			//return vector256(_mm256_permute2f128_ps(v, v, 0b100));
+		}
 		else if constexpr (std::is_integral_v<scalar>)
 			return vector256(_mm256_setr_m128i(
 				_mm256_extractf128_si256(v, 1),
@@ -1370,4 +1394,5 @@ namespace type {
 	using fp64x4_t = vector256<double>;
 }
 
+#endif
 #endif

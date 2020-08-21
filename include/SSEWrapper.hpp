@@ -1,5 +1,8 @@
 #pragma once
 #if defined(__x86_64__) || defined(_M_AMD64) || defined(_M_IX86)
+#if __cplusplus < 201703L
+#error C++17 is required.
+#else
 
 #include <cstdint>
 #include <vector>
@@ -927,6 +930,14 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : floor is not defined in given type.");
 	}
+	vector128 round() const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_round_pd(v, _MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_round_ps(v, _MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC));
+		else
+			static_assert(false_v<Scalar>, "SSE4.2 : round is not defined in given type.");
+	}
 	// { this[0] + this[1], arg[0] + arg[1], this[2] + this[3], ... }
 	vector128 hadd(const vector128& arg) const noexcept {
 		if constexpr (is_scalar_v<double>)
@@ -963,33 +974,22 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : cmp_blend is not defined in given type.");
 	}
-	#ifdef __FMA__
-	// this + a * b
-	vector128 addmul(const vector128& a, const vector128& b) const noexcept {
-		if constexpr (is_scalar_v<double>)
-			return vector128(_mm_fmadd_pd(a.v, b.v, v));
-		else if constexpr (is_scalar_v<float>)
-			return vector128(_mm_fmadd_ps(a.v, b.v, v));
-		else
-			static_assert(false_v<Scalar>, "FMA : addmul is not defined in given type.");
-	}
-	#else
 	// this + a * b
 	vector128 addmul(const vector128& a, const vector128& b) const noexcept {
 		return *this + a * b;
 	}
-	#endif
-	
-	vector128 permeate(const size_t index) const noexcept {
-		constexpr size_t idx = [index]() constexpr {
-			size_t mask = index;
-			for(auto i = 1; i < elements_size; ++i)
-				mask = (mask << 2) + index;
-			return mask;
-		}();
-		if constexpr (is_scalar_v<float>) return vector128(_mm_shuffle_ps(v, v, index));
-		else if constexpr (is_scalar_v<double>) return vector128(_mm_shuffle_pd(v, v, idx));
-		else static_assert(false_v<Scalar>, "SSE4.2 : permeate is not defined in given type.");
+	// this - a * b
+	vector128 submul(const vector128& a, const vector128& b) const noexcept {
+		return *this - a * b;
+	}
+	vector128 dup(const size_t idx) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector128(_mm_shuffle_pd(v, v, idx & (idx<<1)));
+		else if constexpr (is_scalar_v<float>)
+			return vector128(_mm_shuffle_ps(v, v, idx & (idx<<2) & (idx<<4) & (idx<<6)));
+		else if constexpr (is_scalar_size_v<int32_t>)
+			return vector128(_mm_shuffle_epi32(v, idx & (idx<<2) & (idx<<4) & (idx<<6)));
+		else static_assert(false_v<Scalar>, "SSE4.2 : duplicate is not defined in given type.");
 	}
 	template<typename Cvt>
 	explicit operator vector128<Cvt>() const noexcept {
@@ -1085,4 +1085,5 @@ namespace type {
 	using fp64x2_t = vector128<double>;
 }
 
+#endif
 #endif
