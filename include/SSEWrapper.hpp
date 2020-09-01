@@ -1067,6 +1067,12 @@ namespace function {
 			vector128<float>(_mm_movehl_ps(tmp[3], tmp[1]))
 		};
 	}
+	std::array<vector128<double>, 2> transpose(const std::array<vector128<double>, 2>& arg) noexcept {
+		return {
+			vector128<float>(_mm_shuffle_pd(arg[0], arg[1], 0)),
+			vector128<float>(_mm_shuffle_pd(arg[0], arg[1], 0b11))
+		};
+	}
 }
 
 

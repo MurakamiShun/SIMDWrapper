@@ -923,6 +923,15 @@ public:
 		else
 			static_assert(false_v<Scalar>, "FMA : nmuladd is not defined in given type.");
 	}
+	// this - a * b
+	vector256 submul(const vector256& a, const vector256& b) const noexcept {
+		if constexpr (is_scalar_v<double>)
+			return vector256(_mm256_fnmadd_pd(a.v, b.v, v));
+		else if constexpr (is_scalar_v<float>)
+			return vector256(_mm256_fnmadd_ps(a.v, b.v, v));
+		else
+			static_assert(false_v<Scalar>, "FMA : submul is not defined in given type.");
+	}
 	// this * a - b
 	vector256 mulsub(const vector256& a, const vector256& b) const noexcept {
 		if constexpr (is_scalar_v<double>)

@@ -92,10 +92,34 @@ Arithmetic operations
 .. _vector256_abs:
 .. cpp:function:: vector256 abs() const noexcept
     
-    Computed the element-wise absolute values of ``this``.
+    Computes the element-wise absolute values of ``this``.
     
     .. math::
         {\rm out}[i] = |{\rm this}[i]|
+
+.. _vector256_sum:
+.. cpp:function:: scalar sum() const noexcept
+    
+    Computes the total value of all elements.
+    
+    .. math::
+        {\rm out} = \sum_{i=0}^{N-1} {\rm this}[i]
+
+.. _vector256_addmul:
+.. cpp:function:: vector256 addmul(const vector256& a, const vector256& b) const noexcept
+    
+    Computes the element-wise multiply add.
+    
+    .. math::
+        {\rm out}[i] = {\rm this}[i] + a[i] * b[i]
+
+.. _vector256_submul:
+.. cpp:function:: vector256 submul(const vector256& a, const vector256& b) const noexcept
+    
+    Computes the element-wise negated multiply add.
+    
+    .. math::
+        {\rm out}[i] = {\rm this}[i] - a[i] * b[i]
 
 .. _vector256_hadd:
 .. cpp:function:: vector256 hadd(const vector256& input) const noexcept
@@ -423,6 +447,22 @@ Other operations
 
     .. math::
         {\rm out}[i] = \lfloor {\rm this}[i] \rfloor
+
+.. _vector256_round:
+.. cpp:function:: vector256 round() const noexcept
+
+    Round ``this`` to an integer value at each element.
+
+    .. math::
+        {\rm out}[i] = {\rm Round}({\rm this}[i])
+
+.. _vector256_dup:
+.. cpp:function:: vector256 dup(const size_t index) const noexcept
+
+    Duplicates a element value to all elements.
+
+    .. math::
+        {\rm out}[i] = {\rm this}[{\rm index}]
 
 .. _vector256_to_str:
 .. cpp:function:: std::string to_str(const std::pair<std::string_view, std::string_view> brancket, std::string_view delim) const noexcept

@@ -10,8 +10,8 @@ vector128
 .. toctree::
    :maxdepth: 1
 
-   member_function_details
-   function_details
+   ../../vector128_member_function_details
+   ../../vector128_function_details
 
 member functions
 ================
@@ -24,11 +24,16 @@ Arithmetic operations
     * :ref:`operator * <vector128_operator*>`
     * :ref:`operator / <vector128_operator/>`
     * :ref:`rcp <vector128_rcp>`
-    * :ref:`fast_div <vector128_fast_div>`
     * :ref:`sqrt <vector128_sqrt>`
     * :ref:`rsqrt <vector128_rsqrt>`
     * :ref:`abs <vector128_abs>`
-    * :ref:`hadd <vector128_hadd>`
+    * :ref:`sum <vector128_sum>`
+    * :ref:`muladd <vector128_muladd>`
+    * :ref:`nmuladd <vector128_nmuladd>`
+    * :ref:`mulsub <vector128_mulsub>`
+    * :ref:`nmulsub <vector128_mulsub>`
+    * :ref:`addmul <vector128_addmul>`
+    * :ref:`submul <vector128_submul>`
 
 Comparison operations
 ^^^^^^^^^^^^^^^^^^^^^
@@ -73,6 +78,8 @@ Other operations
     * :ref:`cmp_blend <vector128_cmp_blend>`
     * :ref:`ceil <vector128_ceil>`
     * :ref:`floor <vector128_floor>`
+    * :ref:`round <vector128_round>`
+    * :ref:`dup <vector128_dup>`
     * :ref:`to_str <vector128_to_str>`
     * :ref:`operator [] <vector128_operator\[\]>`
 
@@ -83,4 +90,5 @@ Functions
     * :ref:`min <vector128_min_function>`
     * :ref:`cmp_blend <vector128_cmp_blend_function>`
     * :ref:`hadd <vector128_hadd_function>`
+    * :ref:`transpose <vector128_transpose_function>`
     * :ref:`reinterpret <vector128_reinterpret_function>`

@@ -634,6 +634,13 @@ namespace function {
 			vector128<float>(tmp.val[2]), vector128<float>(tmp.val[3])
 		};
 	}
+	std::array<vector128<double>, 2> transpose(const std::array<vector128<double>, 2>& arg) {
+		auto tmp = vld2q_f64(reinterpret_cast<const double*>(arg.data()));
+		return {
+			vector128<double>(tmp.val[0]),
+			vector128<double>(tmp.val[1])
+		};
+	}
 }
 
 namespace type {

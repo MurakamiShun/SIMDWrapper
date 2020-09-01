@@ -10,8 +10,8 @@ vector256
 .. toctree::
    :maxdepth: 1
 
-   member_function_details
-   function_details
+   ../../vector256_member_function_details
+   ../../vector256_function_details
 
 member functions
 ================
@@ -33,6 +33,8 @@ Arithmetic operations
     * :ref:`nmuladd <vector256_nmuladd>`
     * :ref:`mulsub <vector256_mulsub>`
     * :ref:`nmulsub <vector256_mulsub>`
+    * :ref:`addmul <vector256_addmul>`
+    * :ref:`submul <vector256_submul>`
 
 Comparison operations
 ^^^^^^^^^^^^^^^^^^^^^
@@ -77,6 +79,8 @@ Other operations
     * :ref:`cmp_blend <vector256_cmp_blend>`
     * :ref:`ceil <vector256_ceil>`
     * :ref:`floor <vector256_floor>`
+    * :ref:`round <vector256_round>`
+    * :ref:`dup <vector256_dup>`
     * :ref:`to_str <vector256_to_str>`
     * :ref:`operator [] <vector256_operator\[\]>`
     * :ref:`shuffle <vector256_shuffle>`

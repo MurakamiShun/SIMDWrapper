@@ -10,8 +10,8 @@ vector128
 .. toctree::
    :maxdepth: 1
 
-   ../member_function_details
-   ../function_details
+   ../../vector128_member_function_details
+   ../../vector128_function_details
 
 member functions
 ================
@@ -29,6 +29,8 @@ Arithmetic operations
     * :ref:`rsqrt <vector128_rsqrt>`
     * :ref:`abs <vector128_abs>`
     * :ref:`hadd <vector128_hadd>`
+    * :ref:`addmul <vector128_addmul>`
+    * :ref:`submul <vector128_submul>`
 
 Comparison operations
 ^^^^^^^^^^^^^^^^^^^^^

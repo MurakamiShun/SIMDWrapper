@@ -92,10 +92,34 @@ Arithmetic operations
 .. _vector128_abs:
 .. cpp:function:: vector128 abs() const noexcept
     
-    Computed the element-wise absolute values of ``this``.
+    Computes the element-wise absolute values of ``this``.
     
     .. math::
         {\rm out}[i] = |{\rm this}[i]|
+
+.. _vector128_sum:
+.. cpp:function:: scalar sum() const noexcept
+    
+    Computes the total value of all elements.
+    
+    .. math::
+        {\rm out} = \sum_{i=0}^{N-1} {\rm this}[i]
+
+.. _vector128_addmul:
+.. cpp:function:: vector128 addmul(const vector128& a, const vector128& b) const noexcept
+    
+    Computes the element-wise multiply add.
+    
+    .. math::
+        {\rm out}[i] = {\rm this}[i] + a[i] * b[i]
+
+.. _vector128_submul:
+.. cpp:function:: vector128 submul(const vector128& a, const vector128& b) const noexcept
+    
+    Computes the element-wise negated multiply add.
+    
+    .. math::
+        {\rm out}[i] = {\rm this}[i] - a[i] * b[i]
 
 .. _vector128_hadd:
 .. cpp:function:: vector128 hadd(const vector128& input) const noexcept
@@ -402,6 +426,22 @@ Other operations
 
     .. math::
         {\rm out}[i] = \lfloor {\rm this}[i] \rfloor
+
+.. _vector128_round:
+.. cpp:function:: vector128 round() const noexcept
+
+    Round ``this`` to an integer value at each element.
+
+    .. math::
+        {\rm out}[i] = {\rm Round}({\rm this}[i])
+
+.. _vector128_dup:
+.. cpp:function:: vector128 dup(const size_t index) const noexcept
+
+    Duplicates a element value to all elements.
+
+    .. math::
+        {\rm out}[i] = {\rm this}[{\rm index}]
 
 .. _vector128_to_str:
 .. cpp:function:: std::string to_str(const std::pair<std::string_view, std::string_view> brancket, std::string_view delim) const noexcept
