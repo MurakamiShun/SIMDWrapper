@@ -5,13 +5,13 @@ vector128
 .. cpp:class:: template<typename Scalar>\
             vector128 
 
-    This class provides SSE4.2 operations on x86-64 architecture.
+    This class provides Arm SIMD(NEON) operations on Arm architecture.
 
 .. toctree::
    :maxdepth: 1
 
-   ../member_function_details
-   ../function_details
+   member_function_details
+   function_details
 
 member functions
 ================

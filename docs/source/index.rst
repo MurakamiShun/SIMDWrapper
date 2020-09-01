@@ -11,6 +11,7 @@ Welcome to SIMDWrapper's documentation!
    :caption: API
 
    /api/x86-64/index
+   /api/Arm/index
 
 Indices and tables
 ==================
