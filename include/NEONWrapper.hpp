@@ -49,22 +49,19 @@ struct vector128_type {
 	template<typename T, typename... List>
 	using is_any = std::disjunction<std::is_same<T, List>...>;
 	
-	template<typename T>
-	static constexpr auto is_scalar_v = std::is_same<Scalar, T>::value;
-
 	static_assert(is_any<Scalar, float, double>::value || std::is_integral_v<Scalar>, "NEON : Given type is not supported.");
 
 	using scalar = Scalar;
-	using vector = typename std::conditional_t< is_scalar_v<double>, float64x2_t,
-		typename std::conditional_t< is_scalar_v<float>, float32x4_t,
-		typename std::conditional_t< is_scalar_v<int64_t>, int64x2_t,
-		typename std::conditional_t< is_scalar_v<uint64_t>, uint64x2_t,
-		typename std::conditional_t< is_scalar_v<int32_t>, int32x4_t,
-		typename std::conditional_t< is_scalar_v<uint32_t>, uint32x4_t,
-		typename std::conditional_t< is_scalar_v<int16_t>, int16x8_t,
-		typename std::conditional_t< is_scalar_v<uint16_t>, uint16x8_t,
-		typename std::conditional_t< is_scalar_v<int8_t>, int8x16_t,
-		typename std::conditional_t< is_scalar_v<uint8_t>, uint8x16_t,
+	using vector = typename std::conditional_t< std::is_same_v<Scalar, double>, float64x2_t,
+		typename std::conditional_t< std::is_same_v<Scalar, float>, float32x4_t,
+		typename std::conditional_t< std::is_same_v<Scalar, int64_t>, int64x2_t,
+		typename std::conditional_t< std::is_same_v<Scalar, uint64_t>, uint64x2_t,
+		typename std::conditional_t< std::is_same_v<Scalar, int32_t>, int32x4_t,
+		typename std::conditional_t< std::is_same_v<Scalar, uint32_t>, uint32x4_t,
+		typename std::conditional_t< std::is_same_v<Scalar, int16_t>, int16x8_t,
+		typename std::conditional_t< std::is_same_v<Scalar, uint16_t>, uint16x8_t,
+		typename std::conditional_t< std::is_same_v<Scalar, int8_t>, int8x16_t,
+		typename std::conditional_t< std::is_same_v<Scalar, uint8_t>, uint8x16_t,
 		std::false_type>>>>>>>>>>;
 
 	static constexpr size_t elements_size = 16 / sizeof(scalar);
@@ -78,7 +75,7 @@ private:
 	static constexpr size_t elements_size = vector128_type<Scalar>::elements_size;
 
 	template<typename T>
-	static constexpr bool is_scalar_v = std::is_same<scalar, T>::value;
+	static constexpr bool is_scalar_v = std::is_same_v<scalar, T>;
 
 	template<typename T>
 	static constexpr bool is_scalar_size_v = (sizeof(scalar) == sizeof(T));
