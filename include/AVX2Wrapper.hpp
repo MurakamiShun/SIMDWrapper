@@ -1013,8 +1013,8 @@ public:
 		}
 		else return vector256((*this)[idx]);
 	#else
+		typename vector128_type<scalar>::vector tmp;
 		if constexpr (is_scalar_v<double>){
-			typename vector128_type<scalar>::vector tmp;
 			switch(idx) {
 				case 0:
 					tmp = _mm256_extractf128_pd(v, 0);
@@ -1036,7 +1036,6 @@ public:
 			}
 		}
 		else if constexpr (is_scalar_v<float>){
-			typename vector128_type<scalar>::vector tmp;
 			switch(idx) {
 				case 0:
 					tmp = _mm256_extractf128_pd(v, 0);
@@ -1074,7 +1073,6 @@ public:
 			}
 		}
 		else if constexpr (is_scalar_size_v<int32_t>){
-			typename vector128_type<scalar>::vector tmp;
 			switch(idx) {
 				case 0:
 					tmp = _mm256_extractf128_si256(v, 0);

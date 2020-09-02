@@ -9,6 +9,7 @@
 #include <sstream>
 #include <arm_neon.h>
 #include <iostream>
+#include <array>
 
 #ifdef __linux__
 #include <sys/auxv.h>
@@ -548,6 +549,7 @@ public:
 	}
 	// duplicate a lane
 	vector128 dup(const size_t idx) const noexcept {
+	#ifndef __clang__
 		if constexpr (is_scalar_v<double>) return vector128(vdupq_laneq_f64(v, idx));
 		else if constexpr (is_scalar_v<float>) return vector128(vdupq_laneq_f32(v, idx));
 		else if constexpr (is_scalar_v<int64_t>) return vector128(vdupq_laneq_s64(v, idx));
@@ -559,6 +561,115 @@ public:
 		else if constexpr (is_scalar_v<int8_t>) return vector128(vdupq_laneq_s8(v, idx));
 		else if constexpr (is_scalar_v<uint8_t>) return vector128(vdupq_laneq_u8(v, idx));
 		else static_assert(false_v<scalar>, "NEON : duplicate is not defined in given type.");
+	#else
+		if constexpr (is_scalar_v<double>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_f64(v, 0));
+				case 1: return vector128(vdupq_laneq_f64(v, 1));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<float>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_f32(v, 0));
+				case 1: return vector128(vdupq_laneq_f32(v, 1));
+				case 2: return vector128(vdupq_laneq_f32(v, 2));
+				case 3: return vector128(vdupq_laneq_f32(v, 3));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<int64_t>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_s64(v, 0));
+				case 1: return vector128(vdupq_laneq_s64(v, 1));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<uint64_t>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_u64(v, 0));
+				case 1: return vector128(vdupq_laneq_u64(v, 1));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<int32_t>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_s32(v, 0));
+				case 1: return vector128(vdupq_laneq_s32(v, 1));
+				case 2: return vector128(vdupq_laneq_s32(v, 2));
+				case 3: return vector128(vdupq_laneq_s32(v, 3));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<uint32_t>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_u32(v, 0));
+				case 1: return vector128(vdupq_laneq_u32(v, 1));
+				case 2: return vector128(vdupq_laneq_u32(v, 2));
+				case 3: return vector128(vdupq_laneq_u32(v, 3));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<int16_t>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_s16(v, 0));
+				case 1: return vector128(vdupq_laneq_s16(v, 1));
+				case 2: return vector128(vdupq_laneq_s16(v, 2));
+				case 3: return vector128(vdupq_laneq_s16(v, 3));
+				case 4: return vector128(vdupq_laneq_s16(v, 4));
+				case 5: return vector128(vdupq_laneq_s16(v, 5));
+				case 6: return vector128(vdupq_laneq_s16(v, 6));
+				case 7: return vector128(vdupq_laneq_s16(v, 7));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<uint16_t>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_u16(v, 0));
+				case 1: return vector128(vdupq_laneq_u16(v, 1));
+				case 2: return vector128(vdupq_laneq_u16(v, 2));
+				case 3: return vector128(vdupq_laneq_u16(v, 3));
+				case 4: return vector128(vdupq_laneq_u16(v, 4));
+				case 5: return vector128(vdupq_laneq_u16(v, 5));
+				case 6: return vector128(vdupq_laneq_u16(v, 6));
+				case 7: return vector128(vdupq_laneq_u16(v, 7));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<int8_t>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_s8(v, 0));
+				case 1: return vector128(vdupq_laneq_s8(v, 1));
+				case 2: return vector128(vdupq_laneq_s8(v, 2));
+				case 3: return vector128(vdupq_laneq_s8(v, 3));
+				case 4: return vector128(vdupq_laneq_s8(v, 4));
+				case 5: return vector128(vdupq_laneq_s8(v, 5));
+				case 6: return vector128(vdupq_laneq_s8(v, 6));
+				case 7: return vector128(vdupq_laneq_s8(v, 7));
+				case 8: return vector128(vdupq_laneq_s8(v, 8));
+				case 9: return vector128(vdupq_laneq_s8(v, 9));
+				case 10: return vector128(vdupq_laneq_s8(v, 10));
+				case 11: return vector128(vdupq_laneq_s8(v, 11));
+				case 12: return vector128(vdupq_laneq_s8(v, 12));
+				case 13: return vector128(vdupq_laneq_s8(v, 13));
+				case 14: return vector128(vdupq_laneq_s8(v, 14));
+				case 15: return vector128(vdupq_laneq_s8(v, 15));
+				default: return vector128();
+			}
+		else if constexpr (is_scalar_v<uint8_t>)
+			switch(idx) {
+				case 0: return vector128(vdupq_laneq_u8(v, 0));
+				case 1: return vector128(vdupq_laneq_u8(v, 1));
+				case 2: return vector128(vdupq_laneq_u8(v, 2));
+				case 3: return vector128(vdupq_laneq_u8(v, 3));
+				case 4: return vector128(vdupq_laneq_u8(v, 4));
+				case 5: return vector128(vdupq_laneq_u8(v, 5));
+				case 6: return vector128(vdupq_laneq_u8(v, 6));
+				case 7: return vector128(vdupq_laneq_u8(v, 7));
+				case 8: return vector128(vdupq_laneq_u8(v, 8));
+				case 9: return vector128(vdupq_laneq_u8(v, 9));
+				case 10: return vector128(vdupq_laneq_u8(v, 10));
+				case 11: return vector128(vdupq_laneq_u8(v, 11));
+				case 12: return vector128(vdupq_laneq_u8(v, 12));
+				case 13: return vector128(vdupq_laneq_u8(v, 13));
+				case 14: return vector128(vdupq_laneq_u8(v, 14));
+				case 15: return vector128(vdupq_laneq_u8(v, 15));
+				default: return vector128();
+			}
+		else static_assert(false_v<scalar>, "NEON : duplicate is not defined in given type.");
+	#endif
 	}
 
 	// reinterpret cast (data will not change)
