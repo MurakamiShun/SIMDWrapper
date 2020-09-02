@@ -404,14 +404,14 @@ public:
 		else static_assert(false_v<scalar>, "NEON : operator<< is not defined in given type.");
 	#else
 		alignas(16) scalar a = arg;
-		if constexpr(is_scalar_v<int64_t>) return vector128(vshlq_n_s64(v, vld1q_dup_s64(&a)));
-		else if constexpr(is_scalar_v<uint64_t>) return vector128(vshlq_n_u64(v, vld1q_dup_u64(&a)));
-		else if constexpr(is_scalar_v<int32_t>) return vector128(vshlq_n_s32(v, vld1q_dup_s32(&a)));
-		else if constexpr(is_scalar_v<uint32_t>) return vector128(vshlq_n_u32(v, vld1q_dup_u32(&a)));
-		else if constexpr(is_scalar_v<int16_t>) return vector128(vshlq_n_s16(v, vld1q_dup_s16(&a)));
-		else if constexpr(is_scalar_v<uint16_t>) return vector128(vshlq_n_u16(v, vld1q_dup_u16(&a)));
-		else if constexpr(is_scalar_v<int8_t>) return vector128(vshlq_n_s8(v, vld1q_dup_s8(&a)));
-		else if constexpr(is_scalar_v<uint8_t>) return vector128(vshlq_n_u8(v, vld1q_dup_u8(&a)));
+		if constexpr(is_scalar_v<int64_t>) return vector128(vshlq_s64(v, vld1q_dup_s64(&a)));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vshlq_u64(v, vld1q_dup_u64(&a)));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vshlq_s32(v, vld1q_dup_s32(&a)));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vshlq_u32(v, vld1q_dup_u32(&a)));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vshlq_s16(v, vld1q_dup_s16(&a)));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vshlq_u16(v, vld1q_dup_u16(&a)));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vshlq_s8(v, vld1q_dup_s8(&a)));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vshlq_u8(v, vld1q_dup_u8(&a)));
 		else static_assert(false_v<scalar>, "NEON : operator<< is not defined in given type.");
 	#endif
 	}
@@ -439,14 +439,14 @@ public:
 		else static_assert(false_v<scalar>, "NEON : operator>> is not defined in given type.");
 	#else
 		alignas(16) scalar a = arg;
-		if constexpr(is_scalar_v<int64_t>) return vector128(vshrq_n_s64(v, vld1q_dup_s64(&a)));
-		else if constexpr(is_scalar_v<uint64_t>) return vector128(vshrq_n_u64(v, vld1q_dup_u64(&a)));
-		else if constexpr(is_scalar_v<int32_t>) return vector128(vshrq_n_s32(v, vld1q_dup_s32(&a)));
-		else if constexpr(is_scalar_v<uint32_t>) return vector128(vshrq_n_u32(v, vld1q_dup_u32(&a)));
-		else if constexpr(is_scalar_v<int16_t>) return vector128(vshrq_n_s16(v, vld1q_dup_s16(&a)));
-		else if constexpr(is_scalar_v<uint16_t>) return vector128(vshrq_n_u16(v, vld1q_dup_u16(&a)));
-		else if constexpr(is_scalar_v<int8_t>) return vector128(vshrq_n_s8(v, vld1q_dup_s8(&a)));
-		else if constexpr(is_scalar_v<uint8_t>) return vector128(vshrq_n_u8(v, vld1q_dup_u8(&a)));
+		if constexpr(is_scalar_v<int64_t>) return vector128(vshrq_s64(v, vld1q_dup_s64(&a)));
+		else if constexpr(is_scalar_v<uint64_t>) return vector128(vshrq_u64(v, vld1q_dup_u64(&a)));
+		else if constexpr(is_scalar_v<int32_t>) return vector128(vshrq_s32(v, vld1q_dup_s32(&a)));
+		else if constexpr(is_scalar_v<uint32_t>) return vector128(vshrq_u32(v, vld1q_dup_u32(&a)));
+		else if constexpr(is_scalar_v<int16_t>) return vector128(vshrq_s16(v, vld1q_dup_s16(&a)));
+		else if constexpr(is_scalar_v<uint16_t>) return vector128(vshrq_u16(v, vld1q_dup_u16(&a)));
+		else if constexpr(is_scalar_v<int8_t>) return vector128(vshrq_s8(v, vld1q_dup_s8(&a)));
+		else if constexpr(is_scalar_v<uint8_t>) return vector128(vshrq_u8(v, vld1q_dup_u8(&a)));
 		else static_assert(false_v<scalar>, "NEON : operator>> is not defined in given type.");
 	#endif
 	}
