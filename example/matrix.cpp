@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include <chrono>
+#include <array>
 #include "../include/SSEWrapper.hpp"
 #include "../include/AVX2Wrapper.hpp"
 #include "../include/NEONWrapper.hpp"
