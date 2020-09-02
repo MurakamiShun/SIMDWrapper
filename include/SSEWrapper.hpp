@@ -974,6 +974,22 @@ public:
 		else
 			static_assert(false_v<Scalar>, "SSE4.2 : cmp_blend is not defined in given type.");
 	}
+	// this * a + b
+	vector128 muladd(const vector128& a, const vector128& b) const noexcept {
+		return *this * a + b;
+	}
+	// this * a - b
+	vector128 mulsub(const vector128& a, const vector128& b) const noexcept {
+		return *this * a - b;
+	}
+	// -(this * a) + b
+	vector128 nmuladd(const vector128& a, const vector128& b) const noexcept {
+		return b - (*this * a);
+	}
+	// -(this * a) - b
+	vector128 nmulsub(const vector128& a, const vector128& b) const noexcept {
+		return -b - (*this * a);
+	}
 	// this + a * b
 	vector128 addmul(const vector128& a, const vector128& b) const noexcept {
 		return *this + a * b;
@@ -984,12 +1000,28 @@ public:
 	}
 	vector128 dup(const size_t idx) const noexcept {
 		if constexpr (is_scalar_v<double>)
-			return vector128(_mm_shuffle_pd(v, v, idx & (idx<<1)));
+			switch(idx){
+				case 0: return vector128(_mm_shuffle_pd(v, v, 0));
+				case 1: return vector128(_mm_shuffle_pd(v, v, 3));
+				default: return vector128();
+			}
 		else if constexpr (is_scalar_v<float>)
-			return vector128(_mm_shuffle_ps(v, v, idx & (idx<<2) & (idx<<4) & (idx<<6)));
+			switch(idx){
+				case 0: return vector128(_mm_shuffle_ps(v, v, 0));
+				case 1: return vector128(_mm_shuffle_ps(v, v, 85));
+				case 2: return vector128(_mm_shuffle_ps(v, v, 170));
+				case 3: return vector128(_mm_shuffle_ps(v, v, 255));
+				default: return vector128();
+			}
 		else if constexpr (is_scalar_size_v<int32_t>)
-			return vector128(_mm_shuffle_epi32(v, idx & (idx<<2) & (idx<<4) & (idx<<6)));
-		else static_assert(false_v<Scalar>, "SSE4.2 : duplicate is not defined in given type.");
+			switch(idx){
+				case 0: return vector128(_mm_shuffle_epi32(v, 0));
+				case 1: return vector128(_mm_shuffle_epi32(v, 85));
+				case 2: return vector128(_mm_shuffle_epi32(v, 170));
+				case 3: return vector128(_mm_shuffle_epi32(v, 255));
+				default: return vector128();
+			}
+		else return vector128((*this)[idx]);
 	}
 	template<typename Cvt>
 	explicit operator vector128<Cvt>() const noexcept {
@@ -1069,12 +1101,11 @@ namespace function {
 	}
 	std::array<vector128<double>, 2> transpose(const std::array<vector128<double>, 2>& arg) noexcept {
 		return {
-			vector128<float>(_mm_shuffle_pd(arg[0], arg[1], 0)),
-			vector128<float>(_mm_shuffle_pd(arg[0], arg[1], 0b11))
+			vector128<double>(_mm_shuffle_pd(arg[0].v, arg[1].v, 0)),
+			vector128<double>(_mm_shuffle_pd(arg[0].v, arg[1].v, 0b11))
 		};
 	}
 }
-
 
 namespace type {
 	using i8x16_t = vector128<int8_t>;

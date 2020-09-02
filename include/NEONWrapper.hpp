@@ -21,7 +21,7 @@ private:
 		bool NEON = false;
 		instruction_set() {
 			auto hwcaps = getauxval(AT_HWCAP);
-    		NEON = hwcaps & HWCAP_ASIMD;
+			NEON = hwcaps & HWCAP_ASIMD;
 		}
 	};
 	static inline instruction_set CPU_ref;
@@ -546,7 +546,7 @@ public:
 		else if constexpr(is_scalar_v<uint8_t>) return vector128(vaddvq_u8(v));
 		else static_assert(false_v<scalar>, "NEON : sum is not defined in given type.");
 	}
-	// duplicate a lan
+	// duplicate a lane
 	vector128 dup(const size_t idx) const noexcept {
 		if constexpr (is_scalar_v<double>) return vector128(vdupq_laneq_f64(v, idx));
 		else if constexpr (is_scalar_v<float>) return vector128(vdupq_laneq_f32(v, idx));

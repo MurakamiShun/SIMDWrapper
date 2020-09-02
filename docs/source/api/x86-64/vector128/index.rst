@@ -28,9 +28,14 @@ Arithmetic operations
     * :ref:`sqrt <vector128_sqrt>`
     * :ref:`rsqrt <vector128_rsqrt>`
     * :ref:`abs <vector128_abs>`
-    * :ref:`hadd <vector128_hadd>`
+    * :ref:`sum <vector128_sum>`
+    * :ref:`muladd <vector128_muladd>`
+    * :ref:`nmuladd <vector128_nmuladd>`
+    * :ref:`mulsub <vector128_mulsub>`
+    * :ref:`nmulsub <vector128_mulsub>`
     * :ref:`addmul <vector128_addmul>`
     * :ref:`submul <vector128_submul>`
+    * :ref:`hadd <vector128_hadd>`
 
 Comparison operations
 ^^^^^^^^^^^^^^^^^^^^^

@@ -28,13 +28,13 @@ Arithmetic operations
     * :ref:`sqrt <vector256_sqrt>`
     * :ref:`rsqrt <vector256_rsqrt>`
     * :ref:`abs <vector256_abs>`
-    * :ref:`hadd <vector256_hadd>`
     * :ref:`muladd <vector256_muladd>`
     * :ref:`nmuladd <vector256_nmuladd>`
     * :ref:`mulsub <vector256_mulsub>`
     * :ref:`nmulsub <vector256_mulsub>`
     * :ref:`addmul <vector256_addmul>`
     * :ref:`submul <vector256_submul>`
+    * :ref:`hadd <vector256_hadd>`
 
 Comparison operations
 ^^^^^^^^^^^^^^^^^^^^^

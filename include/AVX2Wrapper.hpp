@@ -898,57 +898,81 @@ public:
 	}
 	// this * a + b
 	vector256 muladd(const vector256& a, const vector256& b) const noexcept {
+	#ifdef __FMA__
 		if constexpr (is_scalar_v<double>)
 			return vector256(_mm256_fmadd_pd(v, a.v, b.v));
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fmadd_ps(v, a.v, b.v));
 		else
 			static_assert(false_v<Scalar>, "FMA : muladd is not defined in given type.");
+	#else
+		return (*this) * a + b;
+	#endif
 	}
 	// this + a * b
 	vector256 addmul(const vector256& a, const vector256& b) const noexcept {
+	#ifdef __FMA__
 		if constexpr (is_scalar_v<double>)
 			return vector256(_mm256_fmadd_pd(a.v, b.v, v));
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fmadd_ps(a.v, b.v, v));
 		else
 			static_assert(false_v<Scalar>, "FMA : addmul is not defined in given type.");
+	#else
+		return (*this) + a * b;
+	#endif
 	}
 	// -(this * a) + b
 	vector256 nmuladd(const vector256& a, const vector256& b) const noexcept {
+	#ifdef __FMA__
 		if constexpr (is_scalar_v<double>)
 			return vector256(_mm256_fnmadd_pd(v, a.v, b.v));
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fnmadd_ps(v, a.v, b.v));
 		else
 			static_assert(false_v<Scalar>, "FMA : nmuladd is not defined in given type.");
+	#else
+		return b - (*this) * a;
+	#endif
 	}
 	// this - a * b
 	vector256 submul(const vector256& a, const vector256& b) const noexcept {
+	#ifdef __FMA__
 		if constexpr (is_scalar_v<double>)
 			return vector256(_mm256_fnmadd_pd(a.v, b.v, v));
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fnmadd_ps(a.v, b.v, v));
 		else
 			static_assert(false_v<Scalar>, "FMA : submul is not defined in given type.");
+	#else
+		return (*this) - a + b;
+	#endif
 	}
 	// this * a - b
 	vector256 mulsub(const vector256& a, const vector256& b) const noexcept {
+	#ifdef __FMA__
 		if constexpr (is_scalar_v<double>)
 			return vector256(_mm256_fmsub_pd(v, a.v, b.v));
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fmsub_ps(v, a.v, b.v));
 		else
 			static_assert(false_v<Scalar>, "FMA : mulsub is not defined in given type.");
+	#else
+		return (*this) * a - b;
+	#endif
 	}
 	// -(this * a) - b
 	vector256 nmulsub(const vector256& a, const vector256& b) const noexcept {
+	#ifdef __FMA__
 		if constexpr (is_scalar_v<double>)
 			return vector256(_mm256_fnmsub_pd(v, a.v, b.v));
 		else if constexpr (is_scalar_v<float>)
 			return vector256(_mm256_fnmsub_ps(v, a.v, b.v));
 		else
 			static_assert(false_v<Scalar>, "FMA : nmullsub is not defined in given type.");
+	#else
+		return -(*this) * a - b;
+	#endif
 	}
 	// { this[0] + this[1], arg[0] + arg[1], this[2] + this[3], ... }
 	vector256 hadd(const vector256& arg) const noexcept {
@@ -969,6 +993,7 @@ public:
 	}
 	// duplicate a lane
 	vector256 dup(const size_t idx) const noexcept {
+	#ifndef __clang__
 		if constexpr (is_scalar_v<double>){
 			auto tmp = _mm256_extractf128_pd(v, idx>>1);
 			tmp = _mm_shuffle_pd(tmp, tmp, idx&1);
@@ -983,10 +1008,111 @@ public:
 		}
 		else if constexpr (is_scalar_size_v<int32_t>){
 			auto tmp = _mm256_extractf128_si256(v, idx>>2);
-			tmp = _mm_shuffle_epi32(tmp, tmp, idx&3);
+			tmp = _mm_shuffle_epi32(tmp, idx&3);
 			return vector256(_mm256_setr_m128i(tmp, tmp));
 		}
-		else static_assert(false_v<Scalar>, "AVX2 : duplicate is not defined in given type.");
+		else return vector256((*this)[idx]);
+	#else
+		if constexpr (is_scalar_v<double>){
+			typename vector128_type<scalar>::vector tmp;
+			switch(idx) {
+				case 0:
+					tmp = _mm256_extractf128_pd(v, 0);
+					tmp = _mm_shuffle_pd(tmp, tmp, 0);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 1:
+					tmp = _mm256_extractf128_pd(v, 0);
+					tmp = _mm_shuffle_pd(tmp, tmp, 1);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 2:
+					tmp = _mm256_extractf128_pd(v, 1);
+					tmp = _mm_shuffle_pd(tmp, tmp, 0);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 3:
+					tmp = _mm256_extractf128_pd(v, 1);
+					tmp = _mm_shuffle_pd(tmp, tmp, 1);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				default: return vector256();
+			}
+		}
+		else if constexpr (is_scalar_v<float>){
+			typename vector128_type<scalar>::vector tmp;
+			switch(idx) {
+				case 0:
+					tmp = _mm256_extractf128_pd(v, 0);
+					tmp = _mm_shuffle_pd(tmp, tmp, 0);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 1:
+					tmp = _mm256_extractf128_pd(v, 0);
+					tmp = _mm_shuffle_pd(tmp, tmp, 1);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 2:
+					tmp = _mm256_extractf128_pd(v, 0);
+					tmp = _mm_shuffle_pd(tmp, tmp, 2);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 3:
+					tmp = _mm256_extractf128_pd(v, 0);
+					tmp = _mm_shuffle_pd(tmp, tmp, 3);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 4:
+					tmp = _mm256_extractf128_pd(v, 1);
+					tmp = _mm_shuffle_pd(tmp, tmp, 0);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 5:
+					tmp = _mm256_extractf128_pd(v, 1);
+					tmp = _mm_shuffle_pd(tmp, tmp, 1);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 6:
+					tmp = _mm256_extractf128_pd(v, 1);
+					tmp = _mm_shuffle_pd(tmp, tmp, 2);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				case 7:
+					tmp = _mm256_extractf128_pd(v, 1);
+					tmp = _mm_shuffle_pd(tmp, tmp, 3);
+					return vector256(_mm256_setr_m128d(tmp, tmp));
+				default: return vector256();
+			}
+		}
+		else if constexpr (is_scalar_size_v<int32_t>){
+			typename vector128_type<scalar>::vector tmp;
+			switch(idx) {
+				case 0:
+					tmp = _mm256_extractf128_si256(v, 0);
+					tmp = _mm_shuffle_epi32(tmp, 0);
+					return vector256(_mm256_setr_m128i(tmp, tmp));
+				case 1:
+					tmp = _mm256_extractf128_si256(v, 0);
+					tmp = _mm_shuffle_epi32(tmp, 1);
+					return vector256(_mm256_setr_m128i(tmp, tmp));
+				case 2:
+					tmp = _mm256_extractf128_si256(v, 0);
+					tmp = _mm_shuffle_epi32(tmp, 2);
+					return vector256(_mm256_setr_m128i(tmp, tmp));
+				case 3:
+					tmp = _mm256_extractf128_si256(v, 0);
+					tmp = _mm_shuffle_epi32(tmp, 3);
+					return vector256(_mm256_setr_m128i(tmp, tmp));
+				case 4:
+					tmp = _mm256_extractf128_si256(v, 1);
+					tmp = _mm_shuffle_epi32(tmp, 0);
+					return vector256(_mm256_setr_m128i(tmp, tmp));
+				case 5:
+					tmp = _mm256_extractf128_si256(v, 1);
+					tmp = _mm_shuffle_epi32(tmp, 1);
+					return vector256(_mm256_setr_m128i(tmp, tmp));
+				case 6:
+					tmp = _mm256_extractf128_si256(v, 1);
+					tmp = _mm_shuffle_epi32(tmp, 2);
+					return vector256(_mm256_setr_m128i(tmp, tmp));
+				case 7:
+					tmp = _mm256_extractf128_si256(v, 1);
+					tmp = _mm_shuffle_epi32(tmp, 3);
+					return vector256(_mm256_setr_m128i(tmp, tmp));
+				default: return vector256();
+			}
+		}
+		else return vector256((*this)[idx]);
+	#endif
 	}
 	// (mask) ? this : a
 	template<typename MaskScalar>
