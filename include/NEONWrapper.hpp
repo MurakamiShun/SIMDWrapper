@@ -49,23 +49,38 @@ struct vector128_type {
 	template<typename T, typename... List>
 	using is_any = std::disjunction<std::is_same<T, List>...>;
 	
-	template<typename T>
-	static constexpr auto is_scalar_v = std::is_same<Scalar, T>::value;
-
 	static_assert(is_any<Scalar, float, double>::value || std::is_integral_v<Scalar>, "NEON : Given type is not supported.");
 
+	template<typename... List>
+	struct get_vector;
+	template<typename First, typename... List>
+	struct get_vector<First, List...> {
+		using type = typename std::conditional_t<
+			std::is_same_v<Scalar, typename First::first_type>,
+			typename First::second_type, typename get_vector<List...>::type
+		>;
+	};
+	template<typename Last>
+	struct get_vector<Last> {
+		using type = typename std::conditional_t<
+			std::is_same_v<Scalar, typename Last::first_type>,
+			typename Last::second_type, std::false_type
+		>;
+	};
+
 	using scalar = Scalar;
-	using vector = typename std::conditional_t< is_scalar_v<double>, float64x2_t,
-		typename std::conditional_t< is_scalar_v<float>, float32x4_t,
-		typename std::conditional_t< is_scalar_v<int64_t>, int64x2_t,
-		typename std::conditional_t< is_scalar_v<uint64_t>, uint64x2_t,
-		typename std::conditional_t< is_scalar_v<int32_t>, int32x4_t,
-		typename std::conditional_t< is_scalar_v<uint32_t>, uint32x4_t,
-		typename std::conditional_t< is_scalar_v<int16_t>, int16x8_t,
-		typename std::conditional_t< is_scalar_v<uint16_t>, uint16x8_t,
-		typename std::conditional_t< is_scalar_v<int8_t>, int8x16_t,
-		typename std::conditional_t< is_scalar_v<uint8_t>, uint8x16_t,
-		std::false_type>>>>>>>>>>;
+	using vector = typename get_vector<
+		std::pair<double, float64x2_t>,
+		std::pair<float, float32x4_t>,
+		std::pair<int64_t, int64x2_t>,
+		std::pair<uint64_t, uint64x2_t>,
+		std::pair<int32_t, int32x4_t>,
+		std::pair<uint32_t, uint32x4_t>,
+		std::pair<int16_t, int16x8_t>,
+		std::pair<uint16_t, uint16x8_t>,
+		std::pair<int8_t, int8x16_t>,
+		std::pair<uint8_t, uint8x16_t>,
+	>::type;
 
 	static constexpr size_t elements_size = 16 / sizeof(scalar);
 };
@@ -572,7 +587,7 @@ public:
 	}
 	// duplicate a lane
 	vector128 dup(const size_t idx) const noexcept {
-	#ifndef __clang__
+	/*
 		if constexpr (is_scalar_v<double>) return vector128(vdupq_laneq_f64(v, idx));
 		else if constexpr (is_scalar_v<float>) return vector128(vdupq_laneq_f32(v, idx));
 		else if constexpr (is_scalar_v<int64_t>) return vector128(vdupq_laneq_s64(v, idx));
@@ -584,7 +599,7 @@ public:
 		else if constexpr (is_scalar_v<int8_t>) return vector128(vdupq_laneq_s8(v, idx));
 		else if constexpr (is_scalar_v<uint8_t>) return vector128(vdupq_laneq_u8(v, idx));
 		else static_assert(false_v<scalar>, "NEON : duplicate is not defined in given type.");
-	#else
+	*/
 		if constexpr (is_scalar_v<double>)
 			switch(idx) {
 				case 0: return vector128(vdupq_laneq_f64(v, 0));
@@ -692,7 +707,6 @@ public:
 				default: return vector128();
 			}
 		else static_assert(false_v<scalar>, "NEON : duplicate is not defined in given type.");
-	#endif
 	}
 
 	// reinterpret cast (data will not change)
