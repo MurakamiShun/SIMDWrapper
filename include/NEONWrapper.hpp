@@ -93,7 +93,7 @@ private:
 	static constexpr size_t elements_size = vector128_type<Scalar>::elements_size;
 
 	template<typename T>
-	static constexpr bool is_scalar_v = std::is_same<scalar, T>::value;
+	static constexpr bool is_scalar_v = std::is_same_v<scalar, T>;
 
 	template<typename T>
 	static constexpr bool is_scalar_size_v = (sizeof(scalar) == sizeof(T));
@@ -241,7 +241,7 @@ public:
 		else static_assert(false_v<scalar>, "NEON : aligned load is not defined in given type.");
 	}
 
-	void aligned_store(scalar* arg) const noexcept {
+	void aligned_store(scalar* const arg) const noexcept {
 		if constexpr (is_scalar_v<double>) vst1q_f64(arg, v);
 		else if constexpr(is_scalar_v<float>) vst1q_f32(arg, v);
 		else if constexpr(is_scalar_v<int64_t>) vst1q_s64(arg, v);
@@ -587,8 +587,12 @@ public:
 	}
 	// duplicate a lane
 	vector128 dup(const size_t idx) const noexcept {
+<<<<<<< HEAD
 	/*
 		if constexpr (is_scalar_v<double>) return vector128(vdupq_laneq_f64(v, idx));
+=======
+		/*if constexpr (is_scalar_v<double>) return vector128(vdupq_laneq_f64(v, idx));
+>>>>>>> 401c788e92a68e8b8eb57ca6a80f023f1ff85400
 		else if constexpr (is_scalar_v<float>) return vector128(vdupq_laneq_f32(v, idx));
 		else if constexpr (is_scalar_v<int64_t>) return vector128(vdupq_laneq_s64(v, idx));
 		else if constexpr (is_scalar_v<uint64_t>) return vector128(vdupq_laneq_u64(v, idx));
@@ -730,12 +734,11 @@ public:
 					std::make_integer_sequence<uint8_t, 16>(),
 					[](auto n){ return (n / stride) * stride; }
 			));
-			const vector128<uint8_t> strides = stride;
 			const auto actually_idx = vaddq_u8(
 				vqtbl1q_u8(
 					vmulq_u8(
-						*reinterpret_cast<const uint8x16_t*>(&idx.v),
-						strides.v
+						idx.template reinterpret<uint8_t>().v,
+						vector128<uint8_t>(stride).v
 					),
 					copy_idx.v
 				),
@@ -778,8 +781,10 @@ namespace function {
 	std::array<vector128<float>, 4> transpose(const std::array<vector128<float>, 4>& arg) {
 		auto tmp = vld4q_f32(reinterpret_cast<const float*>(arg.data()));
 		return {
-			vector128<float>(tmp.val[0]), vector128<float>(tmp.val[1]),
-			vector128<float>(tmp.val[2]), vector128<float>(tmp.val[3])
+			vector128<float>(tmp.val[0]),
+			vector128<float>(tmp.val[1]),
+			vector128<float>(tmp.val[2]),
+			vector128<float>(tmp.val[3])
 		};
 	}
 	std::array<vector128<double>, 2> transpose(const std::array<vector128<double>, 2>& arg) {
