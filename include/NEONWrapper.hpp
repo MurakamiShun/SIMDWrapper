@@ -79,7 +79,7 @@ struct vector128_type {
 		std::pair<int16_t, int16x8_t>,
 		std::pair<uint16_t, uint16x8_t>,
 		std::pair<int8_t, int8x16_t>,
-		std::pair<uint8_t, uint8x16_t>,
+		std::pair<uint8_t, uint8x16_t>
 	>::type;
 
 	static constexpr size_t elements_size = 16 / sizeof(scalar);
@@ -587,12 +587,7 @@ public:
 	}
 	// duplicate a lane
 	vector128 dup(const size_t idx) const noexcept {
-<<<<<<< HEAD
-	/*
-		if constexpr (is_scalar_v<double>) return vector128(vdupq_laneq_f64(v, idx));
-=======
 		/*if constexpr (is_scalar_v<double>) return vector128(vdupq_laneq_f64(v, idx));
->>>>>>> 401c788e92a68e8b8eb57ca6a80f023f1ff85400
 		else if constexpr (is_scalar_v<float>) return vector128(vdupq_laneq_f32(v, idx));
 		else if constexpr (is_scalar_v<int64_t>) return vector128(vdupq_laneq_s64(v, idx));
 		else if constexpr (is_scalar_v<uint64_t>) return vector128(vdupq_laneq_u64(v, idx));
