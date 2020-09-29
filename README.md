@@ -1,5 +1,5 @@
 # SIMDWrapper [![SIMDWrapper](https://circleci.com/gh/akisute514/SIMDWrapper.svg?style=svg)](https://circleci.com/gh/akisute514/SIMDWrapper)
-SIMDWrapper is a C++17 header only library for AVX/AVX2/FMA .
+SIMDWrapper is a C++17 header only library for AVX/AVX2/FMA ASIMD(NEON) .
 ## Usage
 - code
 ```c++
