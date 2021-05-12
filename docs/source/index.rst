@@ -6,6 +6,14 @@
 Welcome to SIMDWrapper's documentation!
 =======================================
 
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Installation
+
+   /installation/cmake
+
+
 .. toctree::
    :maxdepth: 2
    :caption: API

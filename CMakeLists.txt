@@ -23,11 +23,9 @@ install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}Targets
 #       INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+file(GLOB library_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 install(
-    FILES 
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/AVX2Wrapper.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/NEONWrapper.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/SSEWrapper.hpp
+    FILES ${library_headers}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SIMDWrapper
 )
 install(
