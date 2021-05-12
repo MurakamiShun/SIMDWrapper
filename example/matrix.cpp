@@ -3,9 +3,9 @@
 #include <iostream>
 #include <chrono>
 #include <array>
-#include "../include/SSEWrapper.hpp"
-#include "../include/AVX2Wrapper.hpp"
-#include "../include/NEONWrapper.hpp"
+#include <SIMDWrapper/SSEWrapper.hpp>
+#include <SIMDWrapper/AVX2Wrapper.hpp>
+#include <SIMDWrapper/NEONWrapper.hpp>
 
 //#define ENABLE_SIMD
 

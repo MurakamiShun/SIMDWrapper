@@ -1,5 +1,7 @@
 #include <iostream>
-#include "../include/AVX2Wrapper.hpp"
+#include <SIMDWrapper/SSEWrapper.hpp>
+#include <SIMDWrapper/AVX2Wrapper.hpp>
+#include <SIMDWrapper/NEONWrapper.hpp>
 #include <chrono>
 #include <iomanip>
 

@@ -1,5 +1,6 @@
-#include "../include/AVX2Wrapper.hpp"
-#include "../include/SSEWrapper.hpp"
+#include <SIMDWrapper/SSEWrapper.hpp>
+#include <SIMDWrapper/AVX2Wrapper.hpp>
+#include <SIMDWrapper/NEONWrapper.hpp>
 #include <vector>
 #include <chrono>
 #include <iostream>
