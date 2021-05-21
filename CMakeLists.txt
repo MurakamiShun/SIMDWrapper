@@ -26,7 +26,11 @@ install(TARGETS ${PROJECT_NAME}
 file(GLOB library_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 install(
     FILES ${library_headers}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SIMDWrapper
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+install(
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/SIMDWrapper
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 install(
     EXPORT ${PROJECT_NAME}Targets

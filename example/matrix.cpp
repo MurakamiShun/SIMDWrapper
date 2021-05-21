@@ -3,24 +3,27 @@
 #include <iostream>
 #include <chrono>
 #include <array>
-#include <SIMDWrapper/SSEWrapper.hpp>
-#include <SIMDWrapper/AVX2Wrapper.hpp>
-#include <SIMDWrapper/NEONWrapper.hpp>
-
-//#define ENABLE_SIMD
+#include <SIMDWrapper.hpp>
 
 template<typename Type, typename SFINAE = std::enable_if_t<std::disjunction_v<std::is_same<Type, float>, std::is_same<Type, double>>>>
 struct mat4x4 {
-#if defined(ENABLE_SIMD) && defined(__AVX2__)
-	using vector = std::conditional_t< std::is_same_v<Type, double>, type::fp64x4_t, type::fp32x4_t>;
-	std::array<vector, 4> elm = {};
-#elif defined(ENABLE_SIMD)
-	using vector = std::conditional_t< std::is_same_v<Type, double>, type::fp64x2_t, type::fp32x4_t>;
-	std::array<vector, std::is_same_v<Type, double> ? 8 : 4> elm = {};
-#else
-	using vector = std::array<Type, 4>;
-	std::array<vector, 4> elm = {};
-#endif
+private:
+	static constexpr auto make_vector_type() {
+		if constexpr(enabled_simd256){
+			if constexpr(std::is_same_v<Type, double>) return std::array<type::fp64x4_t, 4>();
+			else return std::array<type::fp32x4_t, 4>();
+		}
+		else if constexpr(enabled_simd128){
+			if constexpr(std::is_same_v<Type, double>) return std::array<type::fp64x2_t, 8>();
+			else return std::array<type::fp32x4_t, 4>();
+		}
+		else{
+			return std::array<std::array<Type, 4>, 4>();
+		}
+	}
+public:
+	decltype(make_vector_type()) elm = {};
+	using vector = typename decltype(elm)::value_type;
 	
 	mat4x4() = default;
 	mat4x4(const decltype(elm)& init) : elm(init){}
@@ -33,7 +36,6 @@ struct mat4x4 {
 			}
 		}
 	}
-#ifdef ENABLE_SIMD
 	mat4x4 operator*(const mat4x4& mat) const noexcept {
 		if constexpr(std::is_same_v<vector, type::fp64x2_t>) {
 			mat4x4 result;
@@ -75,10 +77,7 @@ struct mat4x4 {
 			return result;
 		}
 		else if constexpr(std::is_same_v<vector, type::fp32x4_t>
-#ifdef __AVX2__
-			|| std::is_same_v<vector, type::fp64x4_t>
-#endif
-			) {
+			|| std::is_same_v<vector, type::fp64x4_t>) {
 			mat4x4 result;
 			result.elm[0] = (mat.elm[0] * elm[0].dup(0))
 				.addmul(mat.elm[1], elm[0].dup(1))
@@ -98,35 +97,33 @@ struct mat4x4 {
 				.addmul(mat.elm[3], elm[3].dup(3));
 			return result;
 		}
-	}
-#else
-	mat4x4 operator*(const mat4x4& mat) const noexcept {
-		mat4x4 result;
-		for(auto y = 0; y < 4; ++y) {
-			result.elm[y][0] = elm[y][0] * mat.elm[0][0]
-					+ elm[y][1] * mat.elm[1][0]
-					+ elm[y][2] * mat.elm[2][0]
-					+ elm[y][3] * mat.elm[3][0];
+		else {
+			mat4x4 result;
+			for(auto y = 0; y < 4; ++y) {
+				result.elm[y][0] = elm[y][0] * mat.elm[0][0]
+						+ elm[y][1] * mat.elm[1][0]
+						+ elm[y][2] * mat.elm[2][0]
+						+ elm[y][3] * mat.elm[3][0];
 
-			result.elm[y][1] = elm[y][0] * mat.elm[0][1]
-					+ elm[y][1] * mat.elm[1][1]
-					+ elm[y][2] * mat.elm[2][1]
-					+ elm[y][3] * mat.elm[3][1];
+				result.elm[y][1] = elm[y][0] * mat.elm[0][1]
+						+ elm[y][1] * mat.elm[1][1]
+						+ elm[y][2] * mat.elm[2][1]
+						+ elm[y][3] * mat.elm[3][1];
 
-			result.elm[y][2] = elm[y][0] * mat.elm[0][2]
-					+ elm[y][1] * mat.elm[1][2]
-					+ elm[y][2] * mat.elm[2][2]
-					+ elm[y][3] * mat.elm[3][2];
+				result.elm[y][2] = elm[y][0] * mat.elm[0][2]
+						+ elm[y][1] * mat.elm[1][2]
+						+ elm[y][2] * mat.elm[2][2]
+						+ elm[y][3] * mat.elm[3][2];
 
-			result.elm[y][3] = elm[y][0] * mat.elm[0][3]
-					+ elm[y][1] * mat.elm[1][3]
-					+ elm[y][2] * mat.elm[2][3]
-					+ elm[y][3] * mat.elm[3][3];
-			
+				result.elm[y][3] = elm[y][0] * mat.elm[0][3]
+						+ elm[y][1] * mat.elm[1][3]
+						+ elm[y][2] * mat.elm[2][3]
+						+ elm[y][3] * mat.elm[3][3];
+				
+			}
+			return result;
 		}
-		return result;
 	}
-#endif
 };
 
 template<typename T, typename SFINAE = std::enable_if_t<std::disjunction_v<std::is_same<T, float>, std::is_same<T, double>>>>

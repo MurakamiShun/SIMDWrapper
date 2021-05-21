@@ -4,6 +4,8 @@
 #error C++17 is required.
 #else
 
+#define ENABLED_SIMD128
+
 #include <cstdint>
 #include <type_traits>
 #include <sstream>
@@ -789,21 +791,6 @@ namespace function {
 			vector128<double>(tmp.val[1])
 		};
 	}
-}
-
-namespace type {
-	using i8x16_t = vector128<int8_t>;
-	using i16x8_t = vector128<int16_t>;
-	using i32x4_t = vector128<int32_t>;
-	using i64x2_t = vector128<int64_t>;
-
-	using u8x16_t = vector128<uint8_t>;
-	using u16x8_t = vector128<uint16_t>;
-	using u32x4_t = vector128<uint32_t>;
-	using u64x2_t = vector128<uint64_t>;
-
-	using fp32x4_t = vector128<float>;
-	using fp64x2_t = vector128<double>;
 }
 
 #endif
