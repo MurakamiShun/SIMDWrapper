@@ -11,12 +11,12 @@ instrcution
     .. code-block:: cpp
 
         #include <iostream>
-        #include <SSEWrapper.hpp>
+        #include <SIMDWrapper/SSEWrapper.hpp>
 
         int main() {
-            std::cout << SIMDW::instruction::SSE4_2() << '\n'
-                      << SIMDW::instruction::AVX2()   << '\n'
-                      << SIMDW::instruction::FMA()    << std::endl;
+            std::cout << SIMDWrapper::instruction::SSE4_2() << '\n'
+                      << SIMDWrapper::instruction::AVX2()   << '\n'
+                      << SIMDWrapper::instruction::FMA()    << std::endl;
         }
 
     .. cpp:function:: static bool SSE4_1() noexcept

@@ -3,9 +3,10 @@ SIMDWrapper is a C++17 header only library for AVX/AVX2/FMA ASIMD(NEON) .
 ## Usage
 - code
 ```c++
-#include "AVX2Wrapper.hpp"
+#include <SIMDWrapper.hpp>
 #include <iostream>
 int main() {
+	using namespace SIMDWrapper;
 	std::cout << "AVX :" << std::boolalpha << Instruction::AVX() << "\n"
 		<< "AVX2:" << Instruction::AVX2() << "\n"
 		<< "FMA :" << Instruction::FMA() << std::endl;

@@ -1,9 +1,8 @@
 #include <iostream>
-#include <SIMDWrapper/SSEWrapper.hpp>
-#include <SIMDWrapper/AVX2Wrapper.hpp>
-#include <SIMDWrapper/NEONWrapper.hpp>
+#include <SIMDWrapper.hpp>
 #include <chrono>
 #include <iomanip>
+using namespace SIMDWrapper;
 
 constexpr double f(double x, double y_n){
     return y_n*(2-x*y_n);

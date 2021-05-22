@@ -1,5 +1,6 @@
-#include "../include/AVX2Wrapper.hpp"
+#include <SIMDWrapper.hpp>
 #include <iostream>
+using namespace SIMDWrapper;
 
 int main() {
 	

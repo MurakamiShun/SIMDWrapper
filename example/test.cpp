@@ -1,10 +1,9 @@
-#include <SIMDWrapper/SSEWrapper.hpp>
-#include <SIMDWrapper/AVX2Wrapper.hpp>
-#include <SIMDWrapper/NEONWrapper.hpp>
+#include <SIMDWrapper.hpp>
 #include <vector>
 #include <chrono>
 #include <iostream>
 #include <array>
+using namespace SIMDWrapper;
 
 int main() {
 	std::cout << "AVX :" << std::boolalpha << instruction::AVX() << std::endl;

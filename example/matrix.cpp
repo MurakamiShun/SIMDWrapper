@@ -4,6 +4,7 @@
 #include <chrono>
 #include <array>
 #include <SIMDWrapper.hpp>
+using namespace SIMDWrapper;
 
 template<typename Type, typename SFINAE = std::enable_if_t<std::disjunction_v<std::is_same<Type, float>, std::is_same<Type, double>>>>
 struct mat4x4 {
