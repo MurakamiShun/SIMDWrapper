@@ -1,0 +1,843 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>member function details &mdash; SIMDWrapper  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="function details" href="vector256_function_details.html" />
+    <link rel="prev" title="vector256" href="x86-64/vector256/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SIMDWrapper
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/cmake.html">Installation with CMake</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="x86-64/index.html">x86-64</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="x86-64/instruction.html">instrcution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="x86-64/vector128/index.html">vector128</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="x86-64/vector256/index.html">vector256</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">member function details</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#arithmetic-operations">Arithmetic operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#comparison-operations">Comparison operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boolean-operations">Boolean operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#binary-operations">Binary operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cast-operations">Cast operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-operations">Other operations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="vector256_function_details.html">function details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="x86-64/vector256/index.html#member-functions">member functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="x86-64/vector256/index.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Arm/index.html">Arm</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SIMDWrapper</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="x86-64/index.html">x86-64</a> &raquo;</li>
+        
+          <li><a href="x86-64/vector256/index.html">vector256</a> &raquo;</li>
+        
+      <li>member function details</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/vector256_member_function_details.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="member-function-details">
+<h1>member function details<a class="headerlink" href="#member-function-details" title="Permalink to this headline">¶</a></h1>
+<section id="arithmetic-operations">
+<h2>Arithmetic operations<a class="headerlink" href="#arithmetic-operations" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="vector256-operator"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKplERK9vector256">
+<span id="_CPPv3NKplERK9vector256"></span><span id="_CPPv2NKplERK9vector256"></span><span id="add-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">+</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKplERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>return a new vector with input added to <code class="docutils literal notranslate"><span class="pre">this</span></code> at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[ i ] = {\rm this}[ i ] + {\rm input}[ i ]\]</div>
+</dd></dl>
+
+<span class="target" id="id1"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKmiERK9vector256">
+<span id="_CPPv3NKmiERK9vector256"></span><span id="_CPPv2NKmiERK9vector256"></span><span id="sub-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">-</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKmiERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>return a new vector calculated input minus <code class="docutils literal notranslate"><span class="pre">this</span></code> at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[i] - {\rm input}[i]\]</div>
+</dd></dl>
+
+<span class="target" id="id2"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKmlERK9vector256">
+<span id="_CPPv3NKmlERK9vector256"></span><span id="_CPPv2NKmlERK9vector256"></span><span id="mul-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">*</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKmlERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>return a new vector with <code class="docutils literal notranslate"><span class="pre">this</span></code> multipled by input at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[i] \times {\rm input}[i]\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>This operation is valid only double, float, int32_t and uint32_t.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<span class="target" id="id3"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKdvERK9vector256">
+<span id="_CPPv3NKdvERK9vector256"></span><span id="_CPPv2NKdvERK9vector256"></span><span id="div-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">/</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKdvERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>return a new vector with <code class="docutils literal notranslate"><span class="pre">this</span></code> divied by input at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = \frac{{\rm this}[i]}{{\rm input}[i]}\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>This operation is valid only double and float.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<span class="target" id="vector256-rcp"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK3rcpEv">
+<span id="_CPPv3NK3rcpEv"></span><span id="_CPPv2NK3rcpEv"></span><span id="rcpC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rcp</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Computes element-wise approximate reciprocals of float value</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = \frac{1}{{\rm this}[i]}\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>This operation is valid only float and  double.</p></li>
+<li><p>This approximation is less than <span class="math notranslate nohighlight">\(1.5 \times 2^{-12}\)</span></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<span class="target" id="vector256-fast-div"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK8fast_divERK9vector256">
+<span id="_CPPv3NK8fast_divERK9vector256"></span><span id="_CPPv2NK8fast_divERK9vector256"></span><span id="fast_div__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fast_div</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK8fast_divERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes element-wise approximate division faster than <code class="docutils literal notranslate"><span class="pre">operator/</span></code></p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[i] \times \frac{1}{{\rm input}[i]}\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>This operation is valid only float</p></li>
+<li><p>Result will be approximate value.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<span class="target" id="vector256-sqrt"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4sqrtEv">
+<span id="_CPPv3NK4sqrtEv"></span><span id="_CPPv2NK4sqrtEv"></span><span id="sqrtC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sqrt</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Computes element-wise square root.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = \sqrt{{\rm this}[i]}\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>This operation is valid only float and double.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<span class="target" id="vector256-rsqrt"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rsqrtEv">
+<span id="_CPPv3NK5rsqrtEv"></span><span id="_CPPv2NK5rsqrtEv"></span><span id="rsqrtC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsqrt</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Computes element-wise approximate reciprocal square root.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = \frac{1}{\sqrt{{\rm this}[i]}}\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>This operation is valid only float.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<span class="target" id="vector256-abs"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK3absEv">
+<span id="_CPPv3NK3absEv"></span><span id="_CPPv2NK3absEv"></span><span id="absC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">abs</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Computes the element-wise absolute values of <code class="docutils literal notranslate"><span class="pre">this</span></code>.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = |{\rm this}[i]|\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-sum"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK3sumEv">
+<span id="_CPPv3NK3sumEv"></span><span id="_CPPv2NK3sumEv"></span><span id="sumC"></span><span class="n"><span class="pre">scalar</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sum</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Computes the total value of all elements.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out} = \sum_{i=0}^{N-1} {\rm this}[i]\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-addmul"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6addmulERK9vector256RK9vector256">
+<span id="_CPPv3NK6addmulERK9vector256RK9vector256"></span><span id="_CPPv2NK6addmulERK9vector256RK9vector256"></span><span id="addmul__vector256CR.vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">addmul</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">a</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">b</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK6addmulERK9vector256RK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes the element-wise multiply add.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[i] + a[i] * b[i]\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-submul"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6submulERK9vector256RK9vector256">
+<span id="_CPPv3NK6submulERK9vector256RK9vector256"></span><span id="_CPPv2NK6submulERK9vector256RK9vector256"></span><span id="submul__vector256CR.vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">submul</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">a</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">b</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK6submulERK9vector256RK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes the element-wise negated multiply add.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[i] - a[i] * b[i]\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-hadd"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4haddERK9vector256">
+<span id="_CPPv3NK4haddERK9vector256"></span><span id="_CPPv2NK4haddERK9vector256"></span><span id="hadd__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">hadd</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4haddERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes horizontally add adjacent pairs in <code class="docutils literal notranslate"><span class="pre">this</span></code> and input.</p>
+<table class="colwidths-given docutils align-default" id="id20">
+<caption><span class="caption-text">hadd example (32bit elements)</span><a class="headerlink" href="#id20" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>output index</p></th>
+<th class="head"><p>element value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>this[0] + this[1]</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>this[2] + this[3]</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>input[0] + input[1]</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>input[2] + input[3]</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>this[4] + this[5]</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>this[6] + this[7]</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>input[4] + input[5]</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>input[6] + input[7]</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="vector256-muladd"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6muladdERK9vector256RK9vector256">
+<span id="_CPPv3NK6muladdERK9vector256RK9vector256"></span><span id="_CPPv2NK6muladdERK9vector256RK9vector256"></span><span id="muladd__vector256CR.vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">muladd</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">scale</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bias</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK6muladdERK9vector256RK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes element-wise multiple scale and add bias.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[i] * {\rm scale}[i] + {\rm bias}[i]\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-nmuladd"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK7nmuladdERK9vector256RK9vector256">
+<span id="_CPPv3NK7nmuladdERK9vector256RK9vector256"></span><span id="_CPPv2NK7nmuladdERK9vector256RK9vector256"></span><span id="nmuladd__vector256CR.vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nmuladd</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">scale</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bias</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK7nmuladdERK9vector256RK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes element-wise multiple negative scale and add bias.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = -({\rm this}[i] * {\rm scale}[i]) + {\rm bias}[i]\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-mulsub"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6mulsubERK9vector256RK9vector256">
+<span id="_CPPv3NK6mulsubERK9vector256RK9vector256"></span><span id="_CPPv2NK6mulsubERK9vector256RK9vector256"></span><span id="mulsub__vector256CR.vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mulsub</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">scale</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bias</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK6mulsubERK9vector256RK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes element-wise multiple scale and sub bias.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[i] * {\rm scale}[i] - {\rm bias}[i]\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-nmulsub"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK7nmulsubERK9vector256RK9vector256">
+<span id="_CPPv3NK7nmulsubERK9vector256RK9vector256"></span><span id="_CPPv2NK7nmulsubERK9vector256RK9vector256"></span><span id="nmulsub__vector256CR.vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nmulsub</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">scale</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bias</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK7nmulsubERK9vector256RK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes element-wise multiple negative scale and sub bias.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = -({\rm this}[i] * {\rm scale}[i]) - {\rm bias}[i]\]</div>
+</dd></dl>
+
+</section>
+<section id="comparison-operations">
+<h2>Comparison operations<a class="headerlink" href="#comparison-operations" title="Permalink to this headline">¶</a></h2>
+<p>Comparison operations make bit mask. value will be <span class="math notranslate nohighlight">\(\tilde 0\)</span> (all bits are 1) when conditional expression is true.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>true</p></th>
+<th class="head"><p>false</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\tilde 0\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<span class="target" id="id4"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKeqERK9vector256">
+<span id="_CPPv3NKeqERK9vector256"></span><span id="_CPPv2NKeqERK9vector256"></span><span id="eq-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">==</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKeqERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether <code class="docutils literal notranslate"><span class="pre">this</span></code> and input are equal at each element and make bitmask.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{r}
+        \tilde 0 &amp; ({\rm this}[i] = {\rm input}[i]) \\
+        0 &amp; ({\rm this}[i] \ne {\rm input}[i])
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="id5"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKneERK9vector256">
+<span id="_CPPv3NKneERK9vector256"></span><span id="_CPPv2NKneERK9vector256"></span><span id="neq-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">!=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKneERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether <code class="docutils literal notranslate"><span class="pre">this</span></code> and input are not equal at each element and make bitmask.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{r}
+        \tilde 0 &amp; ({\rm this}[i] \ne {\rm input}[i]) \\
+        0 &amp; ({\rm this}[i] = {\rm input}[i])
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="id6"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKleERK9vector256">
+<span id="_CPPv3NKleERK9vector256"></span><span id="_CPPv2NKleERK9vector256"></span><span id="lte-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&lt;=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKleERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether <code class="docutils literal notranslate"><span class="pre">this</span></code> is less than or equal input at each element and make bitmask.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{r}
+        \tilde 0 &amp; ({\rm this}[i] \le {\rm input}[i]) \\
+        0 &amp; ({\rm this}[i] &gt; {\rm input}[i])
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="id7"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKgeERK9vector256">
+<span id="_CPPv3NKgeERK9vector256"></span><span id="_CPPv2NKgeERK9vector256"></span><span id="gte-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&gt;=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKgeERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether <code class="docutils literal notranslate"><span class="pre">this</span></code> is greater than or equal input at each element and make bitmask.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{r}
+        \tilde 0 &amp; ({\rm this}[i] \ge {\rm input}[i]) \\
+        0 &amp; ({\rm this}[i] &lt; {\rm input}[i])
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="id8"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKltERK9vector256">
+<span id="_CPPv3NKltERK9vector256"></span><span id="_CPPv2NKltERK9vector256"></span><span id="lt-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&lt;</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKltERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether <code class="docutils literal notranslate"><span class="pre">this</span></code> is less than input at each element and make bitmask.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{r}
+        \tilde 0 &amp; ({\rm this}[i] &lt; {\rm input}[i]) \\
+        0 &amp; ({\rm this}[i] \ge {\rm input}[i])
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="id9"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKgtERK9vector256">
+<span id="_CPPv3NKgtERK9vector256"></span><span id="_CPPv2NKgtERK9vector256"></span><span id="gt-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&gt;</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKgtERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether <code class="docutils literal notranslate"><span class="pre">this</span></code> is greater than input at each element and make bitmask.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{r}
+        \tilde 0 &amp; ({\rm this}[i] &gt; {\rm input}[i]) \\
+        0 &amp; ({\rm this}[i] \le {\rm input}[i])
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+</section>
+<section id="boolean-operations">
+<h2>Boolean operations<a class="headerlink" href="#boolean-operations" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="id10"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKaaERK9vector256">
+<span id="_CPPv3NKaaERK9vector256"></span><span id="_CPPv2NKaaERK9vector256"></span><span id="sand-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&amp;&amp;</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKaaERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calculates <a class="reference internal" href="#id13"><span class="std std-ref">logical AND</span></a> of this and input.</p>
+</dd></dl>
+
+<span class="target" id="id11"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKooERK9vector256">
+<span id="_CPPv3NKooERK9vector256"></span><span id="_CPPv2NKooERK9vector256"></span><span id="sor-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">||</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKooERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calculates <a class="reference internal" href="#id14"><span class="std std-ref">logical OR</span></a> of this and input.</p>
+</dd></dl>
+
+<span class="target" id="id12"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKntEv">
+<span id="_CPPv3NKntEv"></span><span id="_CPPv2NKntEv"></span><span id="not-operatorC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">!</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Calculates <a class="reference internal" href="#id16"><span class="std std-ref">logical NOT</span></a> of this.</p>
+</dd></dl>
+
+<span class="target" id="vector256-is-all-true"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11is_all_trueEv">
+<span id="_CPPv3NK11is_all_trueEv"></span><span id="_CPPv2NK11is_all_trueEv"></span><span id="is_all_trueC"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_all_true</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Check whether all elements of <code class="docutils literal notranslate"><span class="pre">this</span></code> are true.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out} = \prod \left\{
+    \begin{array}{l}
+        1 &amp;({\rm this}[i] = \tilde 0) \\
+        0 &amp;({\rm this}[i] = 0)
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-is-all-false"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK12is_all_falseEv">
+<span id="_CPPv3NK12is_all_falseEv"></span><span id="_CPPv2NK12is_all_falseEv"></span><span id="is_all_falseC"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_all_false</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Check whether all elements of <code class="docutils literal notranslate"><span class="pre">this</span></code> are false.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out} = \prod \left\{
+    \begin{array}{l}
+        1 &amp;({\rm this}[i] = 0) \\
+        0 &amp;({\rm this}[i] = \tilde 0)
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+</section>
+<section id="binary-operations">
+<h2>Binary operations<a class="headerlink" href="#binary-operations" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="id13"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKanERK9vector256">
+<span id="_CPPv3NKanERK9vector256"></span><span id="_CPPv2NKanERK9vector256"></span><span id="and-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&amp;</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKanERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calculates logical AND of this and input.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out} = {\rm this} \land {\rm input}\]</div>
+</dd></dl>
+
+<span class="target" id="id14"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKorERK9vector256">
+<span id="_CPPv3NKorERK9vector256"></span><span id="_CPPv2NKorERK9vector256"></span><span id="or-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">|</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKorERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calculates logical OR of this and input.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out} = {\rm this} \lor {\rm input}\]</div>
+</dd></dl>
+
+<span class="target" id="id15"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKeoERK9vector256">
+<span id="_CPPv3NKeoERK9vector256"></span><span id="_CPPv2NKeoERK9vector256"></span><span id="xor-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">^</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKeoERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calculates logical XOR of this and input.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out} = {\rm this} \oplus {\rm input}\]</div>
+</dd></dl>
+
+<span class="target" id="id16"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKcoEv">
+<span id="_CPPv3NKcoEv"></span><span id="_CPPv2NKcoEv"></span><span id="inv-operatorC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">~</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Calculates logical NOT of this and input.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out} = \widetilde{\rm this}\]</div>
+</dd></dl>
+
+<span class="target" id="id17"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKrsERK9vector256">
+<span id="_CPPv3NKrsERK9vector256"></span><span id="_CPPv2NKrsERK9vector256"></span><span id="rshift-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&gt;&gt;</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKrsERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Shifts <code class="docutils literal notranslate"><span class="pre">this</span></code> right by input byte at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] =  \left\lfloor
+    \frac{{\rm this}[i]}{2^{{\rm input}[i]}}
+\right\rfloor\]</div>
+</dd></dl>
+
+<span class="target" id="id18"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKlsERK9vector256">
+<span id="_CPPv3NKlsERK9vector256"></span><span id="_CPPv2NKlsERK9vector256"></span><span id="lshift-operator__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&lt;&lt;</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKlsERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Shifts <code class="docutils literal notranslate"><span class="pre">this</span></code> left by input byte at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] =  \left\lfloor
+    {\rm this}[i] \times 2^{{\rm input}[i]}
+\right\rfloor\]</div>
+</dd></dl>
+
+</section>
+<section id="cast-operations">
+<h2>Cast operations<a class="headerlink" href="#cast-operations" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="vector256-static-cast"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENKcv9vector256I3CvtEEv">
+<span id="_CPPv3I0ENKcv9vector256I3CvtEEv"></span><span id="_CPPv2I0ENKcv9vector256I3CvtEEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Cvt</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENKcv9vector256I3CvtEEv" title="operator vector256&lt;Cvt&gt;::Cvt"><span class="n"><span class="pre">Cvt</span></span></a><span class="p"><span class="pre">&gt;</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENKcv9vector256I3CvtEEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Convert <code class="docutils literal notranslate"><span class="pre">this</span></code> to Cvt at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm Convert\_To\_Cvt}({\rm this}[i])\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-reinterpret"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENK11reinterpretE9vector256I3CvtEv">
+<span id="_CPPv3I0ENK11reinterpretEv"></span><span id="_CPPv2I0ENK11reinterpretEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Cvt</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENK11reinterpretE9vector256I3CvtEv" title="reinterpret::Cvt"><span class="n"><span class="pre">Cvt</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reinterpret</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENK11reinterpretE9vector256I3CvtEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reinterpret cast <code class="docutils literal notranslate"><span class="pre">this</span></code> to Cvt at each element. Data will not change.</p>
+</dd></dl>
+
+</section>
+<section id="other-operations">
+<h2>Other operations<a class="headerlink" href="#other-operations" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="vector256-max"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK3maxERK9vector256">
+<span id="_CPPv3NK3maxERK9vector256"></span><span id="_CPPv2NK3maxERK9vector256"></span><span id="max__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK3maxERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compare <code class="docutils literal notranslate"><span class="pre">this</span></code> and input and Return maximum value at each element.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{l}
+        {\rm this}[i] &amp; ({\rm this}[i] &gt; {\rm input}[i]) \\
+        {\rm input}[i] &amp; ({\rm this}[i] \le {\rm input}[i])
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-min"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK3minERK9vector256">
+<span id="_CPPv3NK3minERK9vector256"></span><span id="_CPPv2NK3minERK9vector256"></span><span id="min__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">min</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK3minERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compare <code class="docutils literal notranslate"><span class="pre">this</span></code> and input and Return minimum value at each element.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{l}
+        {\rm this}[i] &amp; ({\rm this}[i] &lt; {\rm input}[i]) \\
+        {\rm input}[i] &amp; ({\rm this}[i] \ge {\rm input}[i])
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-cmp-blend"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK9cmp_blendERK9vector256RK9vector256">
+<span id="_CPPv3NK9cmp_blendERK9vector256RK9vector256"></span><span id="_CPPv2NK9cmp_blendERK9vector256RK9vector256"></span><span id="cmp_blend__vector256CR.vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmp_blend</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">condition</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK9cmp_blendERK9vector256RK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>If condition is true, return <code class="docutils literal notranslate"><span class="pre">this</span></code>. In other case, return input. This operation will apply at each element.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\rm out}[i] = \left\{
+    \begin{array}{l}
+        {\rm this}[i] &amp; ({\rm condition}[i] = \tilde 0) \\
+        {\rm input}[i] &amp; ({\rm condition}[i] = 0)
+    \end{array}
+\right.\end{split}\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-ceil"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4ceilEv">
+<span id="_CPPv3NK4ceilEv"></span><span id="_CPPv2NK4ceilEv"></span><span id="ceilC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ceil</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Round <code class="docutils literal notranslate"><span class="pre">this</span></code> up to an integer value at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = \lceil {\rm this}[i] \rceil\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-floor"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5floorEv">
+<span id="_CPPv3NK5floorEv"></span><span id="_CPPv2NK5floorEv"></span><span id="floorC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">floor</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Round <code class="docutils literal notranslate"><span class="pre">this</span></code> down to an integer value at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = \lfloor {\rm this}[i] \rfloor\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-round"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5roundEv">
+<span id="_CPPv3NK5roundEv"></span><span id="_CPPv2NK5roundEv"></span><span id="roundC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">round</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Round <code class="docutils literal notranslate"><span class="pre">this</span></code> to an integer value at each element.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm Round}({\rm this}[i])\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-dup"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK3dupEK6size_t">
+<span id="_CPPv3NK3dupEK6size_t"></span><span id="_CPPv2NK3dupEK6size_t"></span><span id="dup__sCC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Duplicates a element value to all elements.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[{\rm index}]\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-to-str"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6to_strEKNSt4pairINSt11string_viewENSt11string_viewEEENSt11string_viewE">
+<span id="_CPPv3NK6to_strEKNSt4pairINSt11string_viewENSt11string_viewEEENSt11string_viewE"></span><span id="_CPPv2NK6to_strEKNSt4pairINSt11string_viewENSt11string_viewEEENSt11string_viewE"></span><span id="to_str__std::pair:std::string_view.std::string_view:C.std::string_viewC"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">to_str</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">brancket</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delim</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><br /></dt>
+<dd><p>Convert all elements to a string.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;SSEWrapper.hpp&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">vector256</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">{</span> <span class="mi">-1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">-3</span><span class="p">,</span> <span class="mi">4</span> <span class="p">};</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">str</span> <span class="o">=</span> <span class="n">v</span><span class="p">.</span><span class="n">to_str</span><span class="p">();</span> <span class="c1">// [-1 2 -3 4]</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id21">
+<caption><span class="caption-text">branckets of vector</span><a class="headerlink" href="#id21" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>brancket name</p></th>
+<th class="head"><p>brancket charctor</p></th>
+<th class="head"><p>note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">print_format::brancket::round</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(</span></code> <code class="docutils literal notranslate"><span class="pre">)</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">print_format::brancket::square</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[</span></code> <code class="docutils literal notranslate"><span class="pre">]</span></code></p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">print_format::brancket::curly</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{</span></code> <code class="docutils literal notranslate"><span class="pre">}</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">print_format::brancket::pointy</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;</span></code> <code class="docutils literal notranslate"><span class="pre">&gt;</span></code></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default" id="id22">
+<caption><span class="caption-text">delims of elements</span><a class="headerlink" href="#id22" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>delim name</p></th>
+<th class="head"><p>delim charctor</p></th>
+<th class="head"><p>note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">print_format::delim::space</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\s</span></code></p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">print_format::delim::comma</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">,</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">print_format::delim::comma_space</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">,\s</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">print_format::delim::space_comma</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\s,</span></code></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="id19"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKixEK6size_t">
+<span id="_CPPv3NKixEK6size_t"></span><span id="_CPPv2NKixEK6size_t"></span><span id="subscript-operator__sCC"></span><span class="n"><span class="pre">scalar</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><br /></dt>
+<dd><p>Return a element at index.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out} = {\rm this}[{\rm index}]\]</div>
+</dd></dl>
+
+<span class="target" id="vector256-shuffle"></span><dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK7shuffleERK9vector256">
+<span id="_CPPv3NK7shuffleERK9vector256"></span><span id="_CPPv2NK7shuffleERK9vector256"></span><span id="shuffle__vector256CRC"></span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">shuffle</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="x86-64/vector256/index.html#_CPPv4I0E9vector256" title="vector256"><span class="n"><span class="pre">vector256</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">indices</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK7shuffleERK9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Shuffle elements.</p>
+<div class="math notranslate nohighlight">
+\[{\rm out}[i] = {\rm this}[{\rm indices[i]}]\]</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="vector256_function_details.html" class="btn btn-neutral float-right" title="function details" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="x86-64/vector256/index.html" class="btn btn-neutral float-left" title="vector256" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, MurakamiShun.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

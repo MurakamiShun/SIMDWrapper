@@ -1,0 +1,357 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>vector256 &mdash; SIMDWrapper  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="member function details" href="../../vector256_member_function_details.html" />
+    <link rel="prev" title="function details" href="../../vector128_function_details.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> SIMDWrapper
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/cmake.html">Installation with CMake</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">x86-64</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../instruction.html">instrcution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vector128/index.html">vector128</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">vector256</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../vector256_member_function_details.html">member function details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../vector256_function_details.html">function details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#member-functions">member functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#arithmetic-operations">Arithmetic operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#comparison-operations">Comparison operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boolean-operations">Boolean operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#binary-operations">Binary operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cast-operations">Cast operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-operations">Other operations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Arm/index.html">Arm</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SIMDWrapper</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">x86-64</a> &raquo;</li>
+        
+      <li>vector256</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/api/x86-64/vector256/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="vector256">
+<h1>vector256<a class="headerlink" href="#vector256" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0E9vector256">
+<span id="_CPPv3I0E9vector256"></span><span id="_CPPv2I0E9vector256"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Scalar</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vector256</span></span></span><a class="headerlink" href="#_CPPv4I0E9vector256" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>This class provides AVX2 and FMA operations on x86-64 architecture.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../vector256_member_function_details.html">member function details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vector256_function_details.html">function details</a></li>
+</ul>
+</div>
+<section id="member-functions">
+<h2>member functions<a class="headerlink" href="#member-functions" title="Permalink to this headline">¶</a></h2>
+<section id="arithmetic-operations">
+<h3>Arithmetic operations<a class="headerlink" href="#arithmetic-operations" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-operator"><span class="std std-ref">operator +</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id1"><span class="std std-ref">operator -</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id2"><span class="std std-ref">operator *</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id3"><span class="std std-ref">operator /</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-rcp"><span class="std std-ref">rcp</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-fast-div"><span class="std std-ref">fast_div</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-sqrt"><span class="std std-ref">sqrt</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-rsqrt"><span class="std std-ref">rsqrt</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-abs"><span class="std std-ref">abs</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-muladd"><span class="std std-ref">muladd</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-nmuladd"><span class="std std-ref">nmuladd</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-mulsub"><span class="std std-ref">mulsub</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-mulsub"><span class="std std-ref">nmulsub</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-addmul"><span class="std std-ref">addmul</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-submul"><span class="std std-ref">submul</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-hadd"><span class="std std-ref">hadd</span></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="comparison-operations">
+<h3>Comparison operations<a class="headerlink" href="#comparison-operations" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id4"><span class="std std-ref">operator ==</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id5"><span class="std std-ref">operator !=</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id6"><span class="std std-ref">operator &lt;=</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id7"><span class="std std-ref">operator &gt;=</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id8"><span class="std std-ref">operator &lt;</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id9"><span class="std std-ref">operator &gt;</span></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="boolean-operations">
+<h3>Boolean operations<a class="headerlink" href="#boolean-operations" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id10"><span class="std std-ref">operator &amp;&amp;</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id11"><span class="std std-ref">operator ||</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id12"><span class="std std-ref">operator !</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-is-all-true"><span class="std std-ref">is_all_true</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-is-all-false"><span class="std std-ref">is_all_false</span></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="binary-operations">
+<h3>Binary operations<a class="headerlink" href="#binary-operations" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id13"><span class="std std-ref">operator &amp;</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id14"><span class="std std-ref">operator |</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id15"><span class="std std-ref">operator ^</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id16"><span class="std std-ref">operator ~</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id17"><span class="std std-ref">operator &gt;&gt;</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id18"><span class="std std-ref">operator &lt;&lt;</span></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="cast-operations">
+<h3>Cast operations<a class="headerlink" href="#cast-operations" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-static-cast"><span class="std std-ref">static_cast</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-reinterpret"><span class="std std-ref">reinterpret</span></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="other-operations">
+<h3>Other operations<a class="headerlink" href="#other-operations" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-max"><span class="std std-ref">max</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-min"><span class="std std-ref">min</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-cmp-blend"><span class="std std-ref">cmp_blend</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-ceil"><span class="std std-ref">ceil</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-floor"><span class="std std-ref">floor</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-round"><span class="std std-ref">round</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-dup"><span class="std std-ref">dup</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-to-str"><span class="std std-ref">to_str</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#id19"><span class="std std-ref">operator []</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_member_function_details.html#vector256-shuffle"><span class="std std-ref">shuffle</span></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-max-function"><span class="std std-ref">max</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-min-function"><span class="std std-ref">min</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-cmp-blend-function"><span class="std std-ref">cmp_blend</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-hadd-function"><span class="std std-ref">hadd</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-muladd-function"><span class="std std-ref">muladd</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-nmuladd-function"><span class="std std-ref">nmuladd</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-mulsub-function"><span class="std std-ref">mulsub</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-mulsub-function"><span class="std std-ref">nmulsub</span></a></p></li>
+<li><p><a class="reference internal" href="../../vector256_function_details.html#vector256-reinterpret-function"><span class="std std-ref">reinterpret</span></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../../vector256_member_function_details.html" class="btn btn-neutral float-right" title="member function details" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../vector128_function_details.html" class="btn btn-neutral float-left" title="function details" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, MurakamiShun.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
