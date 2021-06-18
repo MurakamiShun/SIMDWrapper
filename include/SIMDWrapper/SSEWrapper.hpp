@@ -1,96 +1,16 @@
 #pragma once
+#include "x86common.hpp"
 #if defined(__SSE4_2__) && (defined(__x86_64__) || defined(_M_AMD64) || defined(_M_IX86))
-#if __cplusplus < 201703L
-#error C++17 is required.
-#else
 
 #define ENABLED_SIMD128
 
-#include <cstdint>
-#include <vector>
-#include <array>
-#include <type_traits>
-#include <tuple>
-#include <bitset>
-#include <sstream>
-#include <limits>
-
 #if defined(__GNUC__)
 #include <x86intrin.h>
-#include <cpuid.h>
 #elif defined(_MSC_VER)
 #include <intrin.h>
 #endif
 
 namespace SIMDWrapper {
-	class instruction {
-	public:
-		static bool SSE4_1() noexcept { return CPU_ref.SSE4_1; }
-		static bool SSE4_2() noexcept { return CPU_ref.SSE4_2; }
-		static bool AVX2() noexcept { return CPU_ref.AVX2; }
-		static bool AVX() noexcept { return CPU_ref.AVX; }
-		static bool FMA() noexcept { return CPU_ref.FMA; }
-
-		static bool SIMD128() noexcept { return CPU_ref.SSE4_2; }
-		static bool SIMD256() noexcept { return CPU_ref.AVX2; }
-	private:
-		struct instruction_set {
-			bool SSE4_1 = false;
-			bool SSE4_2 = false;
-			bool AVX2 = false;
-			bool AVX = false;
-			bool FMA = false;
-			instruction_set() {
-				std::vector<std::array<int, 4>> data;
-				std::array<int, 4> cpui;
-				#if defined(__GNUC__)
-				__cpuid(0, cpui[0], cpui[1], cpui[2], cpui[3]);
-				#elif defined(_MSC_VER)
-				__cpuid(cpui.data(), 0);
-				#endif
-				
-				const int ids = cpui[0];
-				for (int i = 0; i < ids; ++i) {
-					#if defined(__GNUC__)
-					__cpuid_count(i, 0, cpui[0], cpui[1], cpui[2], cpui[3]);
-					#elif defined(_MSC_VER)
-					__cpuidex(cpui.data(), i, 0);
-					#endif
-					data.push_back(cpui);
-				}
-				std::bitset<32> f_1_ECX;
-				if (ids >= 1) {
-					f_1_ECX = data[1][2];
-					SSE4_1 = f_1_ECX[19];
-					SSE4_2 = f_1_ECX[20];
-					AVX = f_1_ECX[28];
-					FMA = f_1_ECX[12];
-				}
-				std::bitset<32> f_7_EBX;
-				if (ids >= 7) {
-					f_7_EBX = data[7][1];
-					AVX2 = f_7_EBX[5];
-				}
-			}
-		};
-		static inline instruction_set CPU_ref;
-	};
-
-	namespace print_format {
-		namespace brancket {
-			constexpr auto round = std::make_pair("(", ")");
-			constexpr auto square = std::make_pair("[", "]");
-			constexpr auto curly = std::make_pair("{", "}");
-			constexpr auto pointy = std::make_pair("<", ">");
-		}
-		namespace delim {
-			constexpr auto space = " ";
-			constexpr auto comma = ",";
-			constexpr auto comma_space = ", ";
-			constexpr auto space_comma = " ,";
-		}
-	}
-
 	template<typename Scalar>
 	struct vector128_type {
 		template<typename T, typename... List>
@@ -1005,28 +925,31 @@ namespace SIMDWrapper {
 			return *this - a * b;
 		}
 		vector128 dup(const size_t idx) const noexcept {
-			if constexpr (is_scalar_v<double>)
+			if constexpr (is_scalar_v<double>) {
 				switch(idx){
-					case 0: return vector128(_mm_shuffle_pd(v, v, 0));
-					case 1: return vector128(_mm_shuffle_pd(v, v, 3));
+					case 0:  return vector128(_mm_shuffle_pd(v, v, 0));
+					case 1:  return vector128(_mm_shuffle_pd(v, v, 3));
 					default: return vector128();
 				}
-			else if constexpr (is_scalar_v<float>)
+			}
+			else if constexpr (is_scalar_v<float>) {
 				switch(idx){
-					case 0: return vector128(_mm_shuffle_ps(v, v, 0));
-					case 1: return vector128(_mm_shuffle_ps(v, v, 85));
-					case 2: return vector128(_mm_shuffle_ps(v, v, 170));
-					case 3: return vector128(_mm_shuffle_ps(v, v, 255));
+					case 0:  return vector128(_mm_shuffle_ps(v, v, 0));
+					case 1:  return vector128(_mm_shuffle_ps(v, v, 85));
+					case 2:  return vector128(_mm_shuffle_ps(v, v, 170));
+					case 3:  return vector128(_mm_shuffle_ps(v, v, 255));
 					default: return vector128();
 				}
-			else if constexpr (is_scalar_size_v<int32_t>)
+			}
+			else if constexpr (is_scalar_size_v<int32_t>) {
 				switch(idx){
-					case 0: return vector128(_mm_shuffle_epi32(v, 0));
-					case 1: return vector128(_mm_shuffle_epi32(v, 85));
-					case 2: return vector128(_mm_shuffle_epi32(v, 170));
-					case 3: return vector128(_mm_shuffle_epi32(v, 255));
+					case 0:  return vector128(_mm_shuffle_epi32(v, 0));
+					case 1:  return vector128(_mm_shuffle_epi32(v, 85));
+					case 2:  return vector128(_mm_shuffle_epi32(v, 170));
+					case 3:  return vector128(_mm_shuffle_epi32(v, 255));
 					default: return vector128();
 				}
+			}
 			else return vector128((*this)[idx]);
 		}
 		template<typename Cvt>
@@ -1113,5 +1036,5 @@ namespace SIMDWrapper {
 		}
 	}
 }
-#endif
+
 #endif

@@ -1,8 +1,5 @@
 #pragma once
 #if defined(__AVX2__) && (defined(__x86_64__) || defined(_M_AMD64) || defined(_M_IX86))
-#if __cplusplus < 201703L
-#error C++17 is required.
-#else
 #include "SSEWrapper.hpp"
 
 #define ENABLED_SIMD256
@@ -84,7 +81,7 @@ namespace SIMDWrapper {
 
 		class input_iterator {
 		private:
-			std::array<scalar, elements_size> tmp = {};
+			alignas(32) std::array<scalar, elements_size> tmp = {};
 			size_t index;
 		public:
 			template<size_t N>
@@ -996,124 +993,28 @@ namespace SIMDWrapper {
 		}
 		// duplicate a lane
 		vector256 dup(const size_t idx) const noexcept {
-		#ifndef __clang__
-			if constexpr (is_scalar_v<double>){
-				auto tmp = _mm256_extractf128_pd(v, idx>>1);
-				tmp = _mm_shuffle_pd(tmp, tmp, idx&1);
-				return vector256(_mm256_setr_m128d(tmp, tmp));	
-				// permute is low throughput
-				//return vector256(_mm256_permute4x64_pd(v, load_mask));
-			}
-			else if constexpr (is_scalar_v<float>){
-				auto tmp = _mm256_extractf128_ps(v, idx>>2);
-				tmp = _mm_shuffle_ps(tmp, tmp, idx&3);
-				return vector256(_mm256_setr_m128(tmp, tmp));
-			}
-			else if constexpr (is_scalar_size_v<int32_t>){
-				auto tmp = _mm256_extractf128_si256(v, idx>>2);
-				tmp = _mm_shuffle_epi32(tmp, idx&3);
-				return vector256(_mm256_setr_m128i(tmp, tmp));
-			}
-			else return vector256((*this)[idx]);
-		#else
-			typename vector128_type<scalar>::vector tmp;
+			/*	
+			*  // permute is low throughput on zen2
+			*	auto tmp = _mm256_extractf128_pd(v, idx>>1);
+			*	tmp = _mm_shuffle_pd(tmp, tmp, idx&1);
+			*	return vector256(_mm256_setr_m128d(tmp, tmp));		
+			*/
 			if constexpr (is_scalar_v<double>){
 				switch(idx) {
-					case 0:
-						tmp = _mm256_extractf128_pd(v, 0);
-						tmp = _mm_shuffle_pd(tmp, tmp, 0);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 1:
-						tmp = _mm256_extractf128_pd(v, 0);
-						tmp = _mm_shuffle_pd(tmp, tmp, 1);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 2:
-						tmp = _mm256_extractf128_pd(v, 1);
-						tmp = _mm_shuffle_pd(tmp, tmp, 0);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 3:
-						tmp = _mm256_extractf128_pd(v, 1);
-						tmp = _mm_shuffle_pd(tmp, tmp, 1);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
+					case 0:  return vector256(_mm256_permute4x64_pd(v,  0b00'00'00'00));
+					case 1:  return vector256(_mm256_permute4x64_pd(v,  0b01'01'01'01));
+					case 2:  return vector256(_mm256_permute4x64_pd(v,  0b10'10'10'10));
+					case 3:  return vector256(_mm256_permute4x64_pd(v,  0b11'11'11'11));
 					default: return vector256();
 				}
 			}
 			else if constexpr (is_scalar_v<float>){
-				switch(idx) {
-					case 0:
-						tmp = _mm256_extractf128_pd(v, 0);
-						tmp = _mm_shuffle_pd(tmp, tmp, 0);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 1:
-						tmp = _mm256_extractf128_pd(v, 0);
-						tmp = _mm_shuffle_pd(tmp, tmp, 1);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 2:
-						tmp = _mm256_extractf128_pd(v, 0);
-						tmp = _mm_shuffle_pd(tmp, tmp, 2);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 3:
-						tmp = _mm256_extractf128_pd(v, 0);
-						tmp = _mm_shuffle_pd(tmp, tmp, 3);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 4:
-						tmp = _mm256_extractf128_pd(v, 1);
-						tmp = _mm_shuffle_pd(tmp, tmp, 0);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 5:
-						tmp = _mm256_extractf128_pd(v, 1);
-						tmp = _mm_shuffle_pd(tmp, tmp, 1);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 6:
-						tmp = _mm256_extractf128_pd(v, 1);
-						tmp = _mm_shuffle_pd(tmp, tmp, 2);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					case 7:
-						tmp = _mm256_extractf128_pd(v, 1);
-						tmp = _mm_shuffle_pd(tmp, tmp, 3);
-						return vector256(_mm256_setr_m128d(tmp, tmp));
-					default: return vector256();
-				}
+				return vector256(_mm256_permutevar8x32_ps(v, _mm256_set1_epi32(idx)));
 			}
 			else if constexpr (is_scalar_size_v<int32_t>){
-				switch(idx) {
-					case 0:
-						tmp = _mm256_extractf128_si256(v, 0);
-						tmp = _mm_shuffle_epi32(tmp, 0);
-						return vector256(_mm256_setr_m128i(tmp, tmp));
-					case 1:
-						tmp = _mm256_extractf128_si256(v, 0);
-						tmp = _mm_shuffle_epi32(tmp, 1);
-						return vector256(_mm256_setr_m128i(tmp, tmp));
-					case 2:
-						tmp = _mm256_extractf128_si256(v, 0);
-						tmp = _mm_shuffle_epi32(tmp, 2);
-						return vector256(_mm256_setr_m128i(tmp, tmp));
-					case 3:
-						tmp = _mm256_extractf128_si256(v, 0);
-						tmp = _mm_shuffle_epi32(tmp, 3);
-						return vector256(_mm256_setr_m128i(tmp, tmp));
-					case 4:
-						tmp = _mm256_extractf128_si256(v, 1);
-						tmp = _mm_shuffle_epi32(tmp, 0);
-						return vector256(_mm256_setr_m128i(tmp, tmp));
-					case 5:
-						tmp = _mm256_extractf128_si256(v, 1);
-						tmp = _mm_shuffle_epi32(tmp, 1);
-						return vector256(_mm256_setr_m128i(tmp, tmp));
-					case 6:
-						tmp = _mm256_extractf128_si256(v, 1);
-						tmp = _mm_shuffle_epi32(tmp, 2);
-						return vector256(_mm256_setr_m128i(tmp, tmp));
-					case 7:
-						tmp = _mm256_extractf128_si256(v, 1);
-						tmp = _mm_shuffle_epi32(tmp, 3);
-						return vector256(_mm256_setr_m128i(tmp, tmp));
-					default: return vector256();
-				}
+				return vector256(_mm256_permutevar8x32_epi32(v, _mm256_set1_epi32(idx)));
 			}
 			else return vector256((*this)[idx]);
-		#endif
 		}
 		// (mask) ? this : a
 		template<typename MaskScalar>
@@ -1383,26 +1284,15 @@ namespace SIMDWrapper {
 			else
 				static_assert(false_v<Scalar>, "AVX2 : shuffle is not defined in given type.");
 		}
-		vector256 swap_hilo() const noexcept {
+		vector256 swap128() const noexcept {
 			if constexpr (is_scalar_v<double>)
-				return vector256(_mm256_setr_m128d(
-					_mm256_extractf128_pd(v, 1),
-					_mm256_extractf128_pd(v, 0)
-				));
-			else if constexpr (is_scalar_v<float>){
-				return vector256(_mm256_setr_m128(
-					_mm256_extractf128_ps(v, 1),
-					_mm256_extractf128_ps(v, 0)
-				));
-				//return vector256(_mm256_permute2f128_ps(v, v, 0b100));
-			}
+				return vector256(_mm256_permute2f128_pd(v,v,0b0000'0001));
+			else if constexpr (is_scalar_v<float>)
+				return vector256(_mm256_permute2f128_ps(v,v,0b0000'0001));
 			else if constexpr (std::is_integral_v<scalar>)
-				return vector256(_mm256_setr_m128i(
-					_mm256_extractf128_si256(v, 1),
-					_mm256_extractf128_si256(v, 0)
-				));
+				return vector256(_mm256_permute2f128_si256(v,v,0b0000'0001));
 			else
-				static_assert(false_v<Scalar>, "AVX2 : swap_hi_lo is not defined in given type.");
+				static_assert(false_v<Scalar>, "AVX2 : swap128 is not defined in given type.");
 		
 		}
 		std::string to_str(const std::pair<std::string_view, std::string_view> brancket = print_format::brancket::square, std::string_view delim = print_format::delim::space) const {
@@ -1515,5 +1405,5 @@ namespace SIMDWrapper {
 		}
 	}
 }
-#endif
+
 #endif

@@ -12,7 +12,7 @@ private:
 	static constexpr auto make_vector_type() {
 		if constexpr(enabled_simd256){
 			if constexpr(std::is_same_v<Type, double>) return std::array<type::fp64x4_t, 4>();
-			else return std::array<type::fp32x4_t, 4>();
+			else return std::array<type::fp32x8_t, 2>();
 		}
 		else if constexpr(enabled_simd128){
 			if constexpr(std::is_same_v<Type, double>) return std::array<type::fp64x2_t, 8>();
@@ -96,6 +96,28 @@ public:
 				.addmul(mat.elm[1], elm[3].dup(1))
 				.addmul(mat.elm[2], elm[3].dup(2))
 				.addmul(mat.elm[3], elm[3].dup(3));
+			return result;
+		}
+		else if constexpr (std::is_same_v<vector, type::fp32x8_t>){
+			mat4x4 result;
+			result.elm[0] = (mat.elm[0] * elm[0].shuffle(0,0,0,0,5,5,5,5))
+				.addmul(mat.elm[0].swap128(), elm[0].shuffle(1,1,1,1,4,4,4,4))
+				.addmul(mat.elm[1], elm[0].shuffle(2,2,2,2,7,7,7,7))
+				.addmul(mat.elm[1].swap128(), elm[0].shuffle(3,3,3,3,6,6,6,6));
+			result.elm[1] = (mat.elm[0] * elm[1].shuffle(0,0,0,0,5,5,5,5))
+				.addmul(mat.elm[0].swap128(), elm[1].shuffle(1,1,1,1,4,4,4,4))
+				.addmul(mat.elm[1], elm[1].shuffle(2,2,2,2,7,7,7,7))
+				.addmul(mat.elm[1].swap128(), elm[1].shuffle(3,3,3,3,6,6,6,6));
+				/*
+				result.elm[0] = (mat.elm[0] *          _mm256_permutevar_ps(elm[0].v, type::i32x8_t(0,0,0,0,1,1,1,1).v))
+				.addmul(     mat.elm[0].swap128(), _mm256_permutevar_ps(elm[0].v, type::i32x8_t(1,1,1,1,0,0,0,0).v))
+				.addmul(     mat.elm[1],           _mm256_permutevar_ps(elm[0].v, type::i32x8_t(2,2,2,2,3,3,3,3).v))
+				.addmul(     mat.elm[1].swap128(), _mm256_permutevar_ps(elm[0].v, type::i32x8_t(3,3,3,3,2,2,2,2).v));
+			result.elm[1] = (mat.elm[0] *          _mm256_permutevar_ps(elm[1].v, type::i32x8_t(0,0,0,0,1,1,1,1).v))
+				.addmul(     mat.elm[0].swap128(), _mm256_permutevar_ps(elm[1].v, type::i32x8_t(1,1,1,1,0,0,0,0).v))
+				.addmul(     mat.elm[1],           _mm256_permutevar_ps(elm[1].v, type::i32x8_t(2,2,2,2,3,3,3,3).v))
+				.addmul(     mat.elm[1].swap128(), _mm256_permutevar_ps(elm[1].v, type::i32x8_t(3,3,3,3,2,2,2,2).v));
+				*/
 			return result;
 		}
 		else {

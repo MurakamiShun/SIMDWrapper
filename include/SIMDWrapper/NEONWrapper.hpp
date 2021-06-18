@@ -1,8 +1,6 @@
 #pragma once
+#include "common.hpp"
 #ifdef __aarch64__
-#if __cplusplus < 201703L
-#error C++17 is required.
-#else
 
 #define ENABLED_SIMD128
 
@@ -33,21 +31,6 @@ namespace SIMDWrapper {
 }
 #endif
 namespace SIMDWrapper {
-	namespace print_format {
-		namespace brancket {
-			constexpr auto round = std::make_pair("(", ")");
-			constexpr auto square = std::make_pair("[", "]");
-			constexpr auto curly = std::make_pair("{", "}");
-			constexpr auto pointy = std::make_pair("<", ">");
-		}
-		namespace delim {
-			constexpr auto space = " ";
-			constexpr auto comma = ",";
-			constexpr auto comma_space = ", ";
-			constexpr auto space_comma = " ,";
-		}
-	}
-
 	template<typename Scalar>
 	struct vector128_type {
 		template<typename T, typename... List>
@@ -795,5 +778,4 @@ namespace SIMDWrapper {
 		}
 	}
 }
-#endif
 #endif
