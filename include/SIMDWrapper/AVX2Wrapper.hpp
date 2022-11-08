@@ -1387,18 +1387,18 @@ namespace SIMDWrapper {
 			return {
 				_mm256_setr_m128d(
 					_mm256_extractf128_pd(tmp[0], 0),
-					_mm256_extractf128_pd(tmp[3], 0)
-				),
-				_mm256_setr_m128d(
-					_mm256_extractf128_pd(tmp[1], 0),
 					_mm256_extractf128_pd(tmp[2], 0)
 				),
 				_mm256_setr_m128d(
-					_mm256_extractf128_pd(tmp[0], 1),
-					_mm256_extractf128_pd(tmp[3], 1)
+					_mm256_extractf128_pd(tmp[1], 0),
+					_mm256_extractf128_pd(tmp[3], 0)
 				),
 				_mm256_setr_m128d(
 					_mm256_extractf128_pd(tmp[0], 1),
+					_mm256_extractf128_pd(tmp[2], 1)
+				),
+				_mm256_setr_m128d(
+					_mm256_extractf128_pd(tmp[1], 1),
 					_mm256_extractf128_pd(tmp[3], 1)
 				)
 			};
